@@ -44,14 +44,14 @@ These are provisional. A topic becomes Tier C only after it passes the explain/d
 | Python object/runtime model | ⬜ | ⬜ | ⬜ | ⬜ | — | |
 | Typing and interface contracts | ⬜ | ⬜ | ⬜ | ⬜ | — | |
 | Packaging and dependency management | ⬜ | ⬜ | ⬜ | ⬜ | — | |
-| Asyncio, threading, multiprocessing, GIL | ⬜ | ⬜ | ⬜ | ⬜ | — | |
+| Asyncio, threading, multiprocessing, GIL | 🟡 | ⬜ | 🟡 | ⬜ | A (provisional) | Has used async/await; event-loop internals and execution-model trade-offs are unclear |
 | HTTP and request lifecycle | ⬜ | ⬜ | ⬜ | ⬜ | — | |
 | REST API design and evolution | ⬜ | ⬜ | ⬜ | ⬜ | — | |
-| FastAPI architecture and internals | ⬜ | ⬜ | ⬜ | ⬜ | — | |
+| FastAPI architecture and internals | ⬜ | ⬜ | 🟡 | ⬜ | A (provisional) | Can build APIs within an existing structure; architecture ownership not yet established |
 | Authentication and authorization | ⬜ | ⬜ | ⬜ | ⬜ | — | |
 | Clean/hexagonal/modular architecture | ⬜ | ⬜ | ⬜ | ⬜ | — | |
 | SOLID and design patterns | ⬜ | ⬜ | ⬜ | ⬜ | — | |
-| SQL modeling, transactions, and indexes | ⬜ | ⬜ | ⬜ | ⬜ | — | |
+| SQL modeling, transactions, and indexes | ⬜ | ⬜ | 🟡 | ⬜ | A (provisional) | Can use SQL/ORM; needs depth in diagnostics, indexes, and concurrent updates |
 | ORM, migrations, and connection pooling | ⬜ | ⬜ | ⬜ | ⬜ | — | |
 | Caching and Redis | ⬜ | ⬜ | ⬜ | ⬜ | — | |
 | Messaging and event-driven systems | ⬜ | ⬜ | ⬜ | ⬜ | — | |
@@ -77,5 +77,14 @@ These are provisional. A topic becomes Tier C only after it passes the explain/d
 - Tier B topics are scheduled as short refreshers.
 - Tier C topics are removed from the teaching queue.
 - Tiers are reviewed after each phase and after mock interviews.
+
+## Audit Log
+
+### 2026-09-03 — Backend Round 1
+
+- FastAPI architecture: provisional Tier A
+- Database performance and transactions: provisional Tier A
+- Concurrency and asyncio: provisional Tier A
+- Next: integrated production-scenario validation
 
 Last updated: 2026-09-03
