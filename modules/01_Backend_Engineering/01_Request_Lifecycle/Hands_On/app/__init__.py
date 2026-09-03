@@ -1,0 +1,1 @@
+"""FastAPI exercise application package."""
