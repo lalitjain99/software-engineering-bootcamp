@@ -2,9 +2,9 @@
 
 ## Overall Status
 
-🟡 Backend Engineering — Topic 01 Hands-On Exercise
+🟢 Backend Engineering — Topic 01 Complete
 
-The notes and interview exercise are complete. The current task is to observe the request-response flow in a running FastAPI application.
+The request-response mental model has been validated through notes, interview questions, and a running FastAPI exercise.
 
 ## Goals
 
@@ -18,7 +18,7 @@ The notes and interview exercise are complete. The current task is to observe th
 | Phase | Focus | Target weeks | Status | Completion |
 |---|---|---:|:---:|---:|
 | 0 | Skills audit and setup | 0–1 | 🟡 | 35% |
-| 1 | Backend engineering depth | 1–14 | 🟡 | 4% |
+| 1 | Backend engineering depth | 1–14 | 🟡 | 5% |
 | 2 | System design | 15–24 | ⚪ | 0% |
 | 3 | DevOps, cloud, and production | 25–32 | ⚪ | 0% |
 | 4 | Leadership and interview synthesis | 33–36 | ⚪ | 0% |
@@ -29,21 +29,27 @@ The notes and interview exercise are complete. The current task is to observe th
 |---|:---:|
 | `Notes.md` | 🟢 |
 | `Interview.md` | 🟢 |
-| `Hands_On/` | 🟡 |
-| Topic completion | 🟡 |
+| `Hands_On/` | 🟢 |
+| Topic completion | 🟢 |
+
+## Topic 01 Evidence
+
+- Identified `HTTP/1.1 200 OK` as the successful status line.
+- Identified `content-type: application/json` as the response content type.
+- Distinguished FastAPI path validation failure from function-level not-found handling.
+- Demonstrated that changing the listening port from `8000` to `8001` changes which address reaches the application.
+- Explained that an unused port fails because no process is listening there.
 
 ## Weekly Tracker
 
 | Week | Core topic | Tier | Capstone layer | Coding | Leadership journal | Hours |
 |---:|---|:---:|---|:---:|:---:|---:|
-| 1 | [Topic 01](modules/01_Backend_Engineering/01_Request_Lifecycle/Notes.md) | A | Not started yet | 🟡 Topic exercise | ⬜ | — |
+| 1 | [Topic 01](modules/01_Backend_Engineering/01_Request_Lifecycle/Notes.md) | A | Not started yet | 🟢 Topic exercise | ⬜ | — |
 
 ## Current Next Actions
 
-1. Run the [Topic 01 hands-on exercise](modules/01_Backend_Engineering/01_Request_Lifecycle/Hands_On/README.md).
-2. Observe successful, invalid-input, and not-found responses.
-3. Restart Uvicorn on port `8001` and compare the two ports.
-4. Share the five completion-check answers.
-5. Mark Topic 01 complete and begin Topic 02: HTTP methods.
+1. Begin Topic 02: HTTP methods and their meaning.
+2. Derive why different operations require different methods.
+3. Learn safe and idempotent method semantics only after the basic methods are clear.
 
 Last updated: 2026-09-03
