@@ -9,6 +9,8 @@
 - Default plan: 36 weeks
 - Python basics are not retaught unless the skills audit exposes a gap
 - Topic depth is controlled by Tier A/B/C, not by a fixed document template
+- Each lesson introduces one primary mental model
+- Advanced terms are introduced only after the problem that requires them
 
 ## Status Legend
 
@@ -20,126 +22,75 @@
 ## Phase 0 — Skills Audit and Setup (Week 0–1)
 
 - 🟡 Complete [Skills_Audit.md](Skills_Audit.md)
-- ⚪ Assign Tier A, B, or C to each topic
+- ⚪ Assign Tier A, B, or C incrementally
 - ⚪ Establish the capstone baseline and development workflow
 - ⚪ Record the first leadership-journal entry
 
-**Exit outcome:** a personalized backlog that spends time on genuine gaps rather than revisiting every Python basic.
+The audit does not block a topic once a clear Tier A gap has been identified.
 
 ## Phase 1 — Backend Engineering Depth (Weeks 1–14)
 
-### 1. Production Python
+### Atomic Learning Sequence
 
-- Runtime and object model relevant to production
-- Type hints, contracts, exceptions, logging, configuration, and dependency management
-- Threads, processes, the GIL, asyncio, cancellation, and backpressure
-- Profiling, memory, and performance reasoning
+The backend grows step by step. Each topic begins with the previous design and introduces one new problem.
 
-### 2. HTTP and API Engineering
+1. 🟡 **[The simplest backend request](modules/01_Backend_Engineering/01_Request_Lifecycle/Notes.md)**
+   - Client, server, request, route, Python function, and response
+2. ⚪ **When one endpoint becomes too large**
+   - Separate routing, business logic, and data access
+3. ⚪ **Persisting data**
+   - Database connection, models, queries, and transaction basics
+4. ⚪ **When requests spend time waiting**
+   - Blocking, synchronous execution, and the motivation for asynchronous I/O
+5. ⚪ **Handling multiple tasks**
+   - Event loop, threads, processes, and workload choice
+6. ⚪ **When work cannot finish inside a request**
+   - Background execution, workers, and queues
+7. ⚪ **When operations repeat or fail**
+   - Retries, idempotency, and safe state transitions
+8. ⚪ **When the application becomes slow or unreliable**
+   - Measurement, database diagnosis, resilience, and observability
 
-- HTTP lifecycle, methods, headers, status codes, TLS, proxies, and gateways
-- REST resource modeling, versioning, pagination, filtering, idempotency, and compatibility
-- Validation and consistent error contracts
-- Authentication, authorization, rate limiting, and API security
+Only after this foundation will we expand into deeper API design, security, testing, caching, messaging, and production architecture.
 
-### 3. FastAPI at Technical Lead Depth
+### Backend Capability Map
 
-- Dependency injection, middleware, lifespan, background work, and async boundaries
-- Modular project structure and separation of concerns
-- Configuration, observability, exception strategy, and OpenAPI governance
-- When FastAPI is appropriate—and when it is not
+The sequence above eventually develops these capabilities:
 
-### 4. Application Architecture and Code Quality
+- Production Python and dependency management
+- HTTP and API engineering
+- FastAPI architecture
+- Application architecture and code quality
+- Data modeling and persistence
+- Caching, messaging, and background work
+- Testing, security, performance, and reliability
 
-- Layered, clean, hexagonal, and modular-monolith architectures
-- SOLID and design patterns as decision tools
-- Domain boundaries, coupling, cohesion, and dependency direction
-- Refactoring strategy, code reviews, and technical-debt decisions
-
-### 5. Data and Persistence
-
-- Data modeling and schema evolution
-- Transactions, isolation levels, locking, and concurrency control
-- Indexes, query plans, connection pools, ORMs, and migrations
-- SQL versus NoSQL decision-making
-
-### 6. Backend Building Blocks
-
-- Caching strategies, invalidation, Redis, and cache failure modes
-- Background jobs, schedulers, retries, and dead-letter handling
-- Queues, Pub/Sub, event-driven architecture, delivery semantics, and idempotent consumers
-- File and object-storage workflows
-
-### 7. Testing, Security, and Reliability
-
-- Unit, integration, contract, end-to-end, and load testing
-- Test doubles and testable architecture
-- Secrets, common web vulnerabilities, dependency and container scanning
-- Timeouts, retries, circuit breakers, graceful degradation, and failure budgets
-
-**Phase output:** a production-quality FastAPI application and the ability to defend its architectural decisions.
+**Phase output:** a production-quality FastAPI application and the ability to explain how each design decision emerged.
 
 ## Phase 2 — System Design (Weeks 15–24)
 
-### 1. Design Method
-
-- Clarify functional and non-functional requirements
-- Estimate scale, storage, throughput, and latency
-- Identify constraints and define measurable success
-- Compare alternatives through explicit trade-offs
-
-### 2. Distributed-System Foundations
-
-- Processes, networks, partial failure, clocks, and coordination
-- Availability, consistency, partition tolerance, and replication
-- Stateless services, horizontal scaling, load balancing, and service discovery
-- Synchronous versus asynchronous communication
-
-### 3. Data and Scale
-
-- Partitioning, replication, read/write paths, and hot partitions
-- Distributed caching, CDN, queues, streams, and search
-- Consistency models, eventual consistency, and conflict handling
-- Reliability patterns and observability
-
-### 4. Design Practice
-
-- Reusable system-design building blocks
-- High-level design case studies
-- Low-level design and component boundaries
-- Architecture Decision Records (ADRs)
-- Communicating trade-offs in Tech Lead interviews
-
-**Phase output:** multiple timed design exercises plus an architecture evolution of the capstone.
+- Requirements clarification and capacity estimation
+- Distributed-system foundations
+- Scaling, data, caching, queues, and consistency
+- High-level and low-level design practice
+- Architecture Decision Records and trade-off communication
 
 ## Phase 3 — DevOps, Cloud, and Production (Weeks 25–32)
 
-- Linux processes, signals, filesystems, and production debugging
-- Networking, DNS, TLS, reverse proxies, ingress, and service communication
-- Docker images, layers, multi-stage builds, supply-chain security, and runtime limits
-- CI/CD pipelines, quality gates, artifacts, release controls, and rollback
-- Kubernetes workloads, services, probes, resources, configuration, secrets, autoscaling, and disruption
-- GCP as the primary cloud, with Azure service mapping where useful
-- IAM, workload identity, networking, storage, managed databases, messaging, and secrets
-- Terraform, Helm, environment promotion, and configuration strategy
-- Metrics, logs, traces, SLOs, alerts, incident response, and postmortems
-- Rolling, blue-green, and canary deployments
-
-**Phase output:** containerized capstone deployed through CI/CD with infrastructure as code, observability, security controls, and a rollback strategy.
+- Linux and networking foundations
+- Docker and container security
+- CI/CD and release strategies
+- Kubernetes and GCP, with Azure mapping where useful
+- Infrastructure as code
+- Observability, SLOs, incident response, and rollback
 
 ## Phase 4 — Leadership and Interview Synthesis (Weeks 33–36)
 
-- Converting technical work into clear STAR and engineering-leadership stories
-- Architecture reviews and decision facilitation
-- Estimation, prioritization, risk management, and technical debt
-- Mentoring, delegation, code-review standards, and conflict handling
-- Incident ownership and blameless postmortems
-- Senior/Tech Lead backend interviews
-- High-level and low-level system-design interviews
-- Production, cloud, and troubleshooting interviews
-- Behavioral and leadership mock interviews
-
-**Phase output:** an interview story bank, architecture walkthrough, resume-aligned project narrative, and mock-interview feedback loop.
+- Technical decision and behavioral story bank
+- Architecture reviews
+- Estimation, prioritization, risk, and technical debt
+- Mentoring and code-review standards
+- Backend, system-design, production, and leadership mock interviews
 
 ## Deliverable Rules
 
