@@ -13,6 +13,8 @@ All meaningful changes to the Software Engineering Bootcamp roadmap are recorded
 - Folded common mistakes into `Interview.md` for Tier A topics.
 - Set the operating constraint to 5–8 hours per week with a 6–12 month interview-readiness target.
 - Finalized Tier A classifications for request lifecycle, FastAPI architecture, concurrency, and database engineering.
+- Replaced the overly broad first lesson with an atomic client-request-route-response lesson.
+- Split the backend foundation into eight progressive topics so later terminology is introduced only when needed.
 
 ### Added
 
@@ -20,7 +22,7 @@ All meaningful changes to the Software Engineering Bootcamp roadmap are recorded
 - Continuous leadership journal and light coding practice.
 - An evolving production-grade FastAPI capstone.
 - A 36-week default sequence and weekly time allocation.
-- First Tier A learning notes: production request lifecycle and workload boundaries.
+- First Tier A learning notes: the simplest backend request.
 
 ## 2026-09-02
 
