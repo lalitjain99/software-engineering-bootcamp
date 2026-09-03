@@ -68,6 +68,65 @@ http://127.0.0.1:8000/products/101
 | `8000` | Port—the specific entry point used by the server program |
 | `/products/101` | Path—the resource the client wants |
 
+### Why do we need a port?
+
+The host address identifies the **machine**, but one machine can run many network applications at the same time. The port identifies which application should receive the request.
+
+| Address part | Question it answers |
+|---|---|
+| `127.0.0.1` | Which machine? |
+| `8000` | Which application on that machine? |
+| `/products/101` | Which route inside that application? |
+
+For example, the same machine could run:
+
+| Application | Common port |
+|---|---:|
+| HTTP web server | `80` |
+| HTTPS web server | `443` |
+| FastAPI/Uvicorn during development | `8000` |
+| PostgreSQL | `5432` |
+| Redis | `6379` |
+
+When a request arrives, the order matters:
+
+```text
+Request reaches 127.0.0.1:8000
+              ↓
+The operating system finds the program listening on port 8000
+              ↓
+The request is delivered to Uvicorn/FastAPI
+              ↓
+FastAPI examines /products/101 and selects a route
+```
+
+The path cannot replace the port. The path is inside the HTTP request, and FastAPI can read it only after the operating system has delivered the request to the correct program.
+
+### Can we omit the port?
+
+Yes, but only when the application is available on the protocol's default port.
+
+```text
+http://127.0.0.1/products/101
+```
+
+is interpreted as:
+
+```text
+http://127.0.0.1:80/products/101
+```
+
+Similarly, HTTPS uses port `443` by default.
+
+| URL scheme | Default port |
+|---|---:|
+| `http` | `80` |
+| `https` | `443` |
+
+Therefore, if Uvicorn is listening on port `8000`, the client must include `:8000`. Omitting it would send the request to port `80`, where Uvicorn is not listening.
+
+In production, users normally see only HTTPS without a port. A public-facing server receives the request on port `443` and may pass it internally to FastAPI on port `8000`. We will study that production arrangement later.
+
 An **endpoint** is a combination of an HTTP method and a path.
 
 ```text
@@ -229,6 +288,8 @@ Before discussing folders, databases, queues, or scaling, a Technical Lead shoul
 
 ```text
 Who sends it?
+→ Which machine receives it?
+→ Which port identifies the server program?
 → Which endpoint matches it?
 → How is input validated?
 → Which Python function runs?
@@ -246,6 +307,8 @@ More advanced designs are extensions of this flow. We will introduce them only w
 | Client | Program that sends a request |
 | Server | Running program that waits for requests |
 | HTTP | Communication format used by client and server |
+| Host | Machine to which the request is sent |
+| Port | Number identifying a network application on that machine |
 | Endpoint | HTTP method plus path |
 | Route | Mapping from an endpoint to a function |
 | Response status | Number describing the request outcome |
@@ -258,9 +321,11 @@ More advanced designs are extensions of this flow. We will introduce them only w
 Using only this lesson, try to answer:
 
 1. What is the difference between a client and a server?
-2. Why are `GET /products/101` and `DELETE /products/101` different endpoints?
-3. What happens when `/products/abc` is called?
-4. How does the returned Python dictionary become an HTTP response?
+2. Why do we need both a host address and a port?
+3. What port is used when `http://127.0.0.1/products/101` omits the port?
+4. Why are `GET /products/101` and `DELETE /products/101` different endpoints?
+5. What happens when `/products/abc` is called?
+6. How does the returned Python dictionary become an HTTP response?
 
 If any answer is unclear, revisit only that section.
 
