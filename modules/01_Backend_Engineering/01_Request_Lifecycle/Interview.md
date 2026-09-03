@@ -129,6 +129,14 @@ No. An endpoint is defined by both method and path. The paths are identical, but
 
 No. The dictionary exists inside the Python process. FastAPI converts it into a network-friendly representation—normally JSON—and constructs an HTTP response containing a status code, headers, and body.
 
+FastAPI, using Starlette internally:
+
+Converts the Python dictionary into JSON.
+Encodes that JSON into bytes for transmission.
+Chooses a status code—200 OK by default.
+Adds response headers such as Content-Type.
+Creates the response body.
+
 </details>
 
 ### 11. Can two ordinary applications listen on `127.0.0.1:8000` at the same time?
