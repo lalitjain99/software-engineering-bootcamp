@@ -1,319 +1,287 @@
-# How a Production Backend Processes a Request
+# Topic 01 — The Simplest Backend Request
 
-> **Tier A Notes** — Backend Engineering / Topic 01
+> **Single learning goal:** Trace one request from a client to a FastAPI function and back as a response.
 
-## 🎯 Why We Start Here
+## 🌱 Start with the Problem
 
-You already know how to write a FastAPI endpoint. The next step is understanding what that endpoint should—and should not—be responsible for.
+Imagine a shopping application. The screen needs the details of product `101`.
 
-Consider an endpoint that generates a large report:
+The client could store every product permanently inside the application, but that quickly creates problems:
 
-```http
-POST /reports
-```
+- Product details can change.
+- Many users need the same current data.
+- The business must control which data is returned.
 
-A first implementation might validate the input, query PostgreSQL, generate a PDF, upload it to GCS, send an email, and finally return a response.
+So the shared logic and data access live in a **backend**.
 
-It works locally. In production, it starts timing out, creating duplicate reports, overloading the database, and losing work during deployments.
+For now, think of the backend as a Python program that:
 
-The problem is not FastAPI syntax. The problem is that work with very different characteristics has been placed inside one HTTP request.
+1. Keeps running.
+2. Waits for requests.
+3. Runs the correct function for each request.
+4. Sends a response.
 
----
-
-## 🕰️ The Request Clock and the Job Clock
-
-An HTTP request lives on the **request clock**. Clients, gateways, load balancers, and servers all expect a response within a limited time.
-
-Report generation lives on the **job clock**. It may take seconds or minutes, require retries, consume heavy CPU, and need to survive a pod restart.
-
-When job-clock work is forced into the request clock, production failures appear:
-
-- The client or gateway times out while the server is still working.
-- A retry starts the same work again.
-- Each long request occupies application capacity.
-- A restart destroys unfinished in-process work.
-- Scaling the API also unintentionally scales heavy processing.
-
-A Technical Lead separates these clocks.
+That is the only mental model we need for this lesson.
 
 ---
 
-## 🚶 The Normal Path of a Short Request
+## 👥 The Three Parts
 
-A production request usually moves through several boundaries:
+### 1. Client
+
+The client asks for something. It could be:
+
+- A browser
+- A mobile application
+- Postman
+- Another backend service
+
+### 2. Server
+
+The server is the running backend program. In a FastAPI project, a server program such as Uvicorn listens for incoming requests and passes them to FastAPI.
+
+### 3. Request and response
+
+The client sends an HTTP **request**. The server processes it and sends an HTTP **response**.
 
 ```text
-Client
-  → Load balancer / API gateway / ingress
-  → ASGI server
-  → FastAPI router
-  → Application service
-  → Repository or external service
-  → Response
+Client  ───── request ─────▶  Backend
+Client  ◀──── response ───── Backend
 ```
 
-Each boundary has a different responsibility.
-
-### API layer
-
-- Understand HTTP.
-- Authenticate and authorize the caller.
-- Validate request shape.
-- Call one application use case.
-- Translate results and errors into an HTTP response.
-
-### Application/service layer
-
-- Orchestrate the business use case.
-- Apply workflow rules.
-- Control transaction boundaries.
-- Call repositories, queues, and external-service interfaces.
-
-### Repository/data-access layer
-
-- Hide persistence details from business logic.
-- Execute queries and map stored data.
-- Avoid leaking ORM operations throughout the application.
-
-### Infrastructure layer
-
-- Implement access to PostgreSQL, Redis, queues, GCS, email, and other external systems.
-
-The router should be thin. A thin router is not the objective by itself; it is the result of keeping HTTP concerns separate from application decisions.
+HTTP is simply the agreed format the client and server use to communicate.
 
 ---
 
-## 🧮 Classify the Work Before Choosing a Tool
+## 📍 The Address of an Endpoint
 
-Three questions guide the execution model:
+Suppose the client calls:
 
-1. **How long can this work take?**
-2. **Is it waiting for I/O or consuming CPU?**
-3. **Must it survive process or pod failure?**
+```text
+http://127.0.0.1:8000/products/101
+```
 
-| Work | Character | Typical choice |
+| Part | Meaning |
+|---|---|
+| `http` | Communication protocol |
+| `127.0.0.1` | Host—the machine running the server |
+| `8000` | Port—the specific entry point used by the server program |
+| `/products/101` | Path—the resource the client wants |
+
+An **endpoint** is a combination of an HTTP method and a path.
+
+```text
+GET /products/101
+```
+
+`GET /products/101` and `DELETE /products/101` are different endpoints because their methods are different.
+
+---
+
+## ✉️ What Is Inside a Request?
+
+For this lesson, a request has four useful parts:
+
+| Part | Purpose | Example |
 |---|---|---|
-| Validate a small request | Fast CPU work | Execute in request |
-| Query through an async database driver | I/O-bound waiting | `asyncio` |
-| Call an async HTTP service | I/O-bound waiting | `asyncio` |
-| Call a blocking legacy SDK | Blocking I/O | Thread, or replace the SDK |
-| Generate a CPU-heavy PDF | CPU-bound | Separate worker process |
-| Send a critical email | Durable side effect | Queue and worker |
-| Record a tiny non-critical metric | Short best-effort work | Possibly in-process background task |
-| Generate a 30-second report | Long and retryable | Durable queue and worker |
+| Method | Describes the intended action | `GET` |
+| Path | Identifies the target | `/products/101` |
+| Headers | Carry extra information | `Accept: application/json` |
+| Body | Carries input data when needed | Common with `POST` |
 
-### `asyncio`
-
-`asyncio` helps one thread make progress on other tasks while a task is **waiting** for non-blocking I/O. It does not make CPU-heavy Python work run faster.
-
-If CPU-heavy PDF generation runs directly inside an async endpoint, it blocks the event-loop thread and delays unrelated requests.
-
-### Threads
-
-Threads are useful when code waits on blocking I/O and the library does not provide an async interface. They are normally not the first choice for CPU-heavy Python because of the GIL.
-
-### Processes
-
-Separate processes can execute CPU-heavy Python in parallel because each process has its own interpreter and GIL. A worker service or process pool can therefore isolate PDF generation from API request handling.
-
-### FastAPI `BackgroundTasks`
-
-`BackgroundTasks` runs work in the same application process after the response is sent. It is suitable only for small, non-critical work.
-
-It is not a durable job system:
-
-- Work can disappear when the pod restarts.
-- It has no built-in distributed coordination.
-- Retry and dead-letter handling are limited or absent.
-- CPU-heavy work still competes with API capacity.
-
-### Message queue
-
-A queue separates request acceptance from durable processing. It supports independent scaling, retries, buffering during load spikes, and worker recovery.
-
-A queue does not automatically prevent duplicates. Most delivery systems can deliver a message more than once, so consumers must be idempotent.
+A simple `GET` request usually does not need a body.
 
 ---
 
-## 🏗️ A Better Report-Generation Flow
+## 🐍 The FastAPI Endpoint
 
-```mermaid
-flowchart TB
-    C["Client"] --> A["FastAPI API"]
-    A --> D["Create job record"]
-    A --> Q["Publish job"]
-    A --> R["202 Accepted + job ID"]
-    Q --> W["Worker"]
-    W --> P["Read data in controlled batches"]
-    P --> F["Generate and upload PDF"]
-    F --> S["Update status and notify"]
+```python
+from fastapi import FastAPI, HTTPException
+
+app = FastAPI()
+
+products = {
+    101: {"id": 101, "name": "Mechanical Keyboard", "price": 4500}
+}
+
+@app.get("/products/{product_id}")
+def get_product(product_id: int):
+    product = products.get(product_id)
+
+    if product is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    return product
 ```
 
-The request path becomes:
+Let us follow this code without introducing any architecture patterns.
 
-1. Validate and authorize the request.
-2. Accept an `Idempotency-Key` or derive a safe business key.
-3. Create a report job with status `PENDING`.
-4. Publish work for a separate worker.
-5. Return `202 Accepted` with the job ID and status URL.
+### Step 1: the client sends a request
 
 ```http
-HTTP/1.1 202 Accepted
-Location: /reports/jobs/8e17...
+GET /products/101
+```
+
+### Step 2: FastAPI finds a matching route
+
+This decorator registers the route:
+
+```python
+@app.get("/products/{product_id}")
+```
+
+It means:
+
+- Accept the `GET` method.
+- Match a path shaped like `/products/some-value`.
+- Pass that value to `get_product` as `product_id`.
+
+### Step 3: FastAPI validates the input
+
+The annotation says `product_id` must be an integer:
+
+```python
+product_id: int
+```
+
+FastAPI converts the text `"101"` from the URL into the integer `101`.
+
+If the client calls `/products/abc`, conversion fails. FastAPI returns a validation error without running the function body.
+
+### Step 4: Python runs the function
+
+```python
+product = products.get(product_id)
+```
+
+For now, the data comes from a Python dictionary. A database will be introduced later, after this request flow is clear.
+
+### Step 5: the function returns a Python value
+
+```python
+return product
+```
+
+FastAPI converts the dictionary into JSON and builds the HTTP response.
+
+---
+
+## 📤 What Is Inside a Response?
+
+A response contains:
+
+| Part | Purpose | Example |
+|---|---|---|
+| Status code | Describes the outcome | `200` |
+| Headers | Describe the response | `Content-Type: application/json` |
+| Body | Contains the returned data | Product JSON |
+
+For product `101`, the response is approximately:
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
 
 {
-  "job_id": "8e17...",
-  "status": "PENDING"
+  "id": 101,
+  "name": "Mechanical Keyboard",
+  "price": 4500
 }
 ```
 
-The worker then:
+If the client asks for product `999`, our function raises an `HTTPException` and the response becomes:
 
-1. Claims the job safely.
-2. Moves it to `PROCESSING`.
-3. Reads database data in bounded pages or streams.
-4. Generates and uploads the report.
-5. Moves the job to `SUCCEEDED` with the object location.
-6. Publishes or sends the notification.
-7. Records failure details and retry state when something goes wrong.
+```http
+HTTP/1.1 404 Not Found
 
-### An important production detail
-
-Creating the database record and publishing the message are two separate operations. If the database commit succeeds but publishing fails, the job can remain stuck.
-
-A common later-stage solution is the **transactional outbox pattern**: save the job and an outbox event in one database transaction, then have a publisher reliably deliver the event. We will derive this pattern properly in the messaging module.
-
----
-
-## 🔁 Preventing Duplicate Work
-
-Client retries and queue redelivery are normal. The system must make repeating the same request safe.
-
-A basic idempotency design:
-
-1. The client sends an `Idempotency-Key`.
-2. Store it with the caller identity, request fingerprint, and result.
-3. Add a database unique constraint on the appropriate key.
-4. If the same request arrives again, return the existing job instead of creating another.
-
-Do not rely only on an application-level “check then insert”: two replicas can check simultaneously and both see no record. The database unique constraint provides the final concurrency-safe guard.
-
-The worker also protects state transitions. For example, it should claim only a job currently in `PENDING`, using an atomic conditional update or suitable locking.
-
-Idempotency is not simply “ignore duplicates.” It means repeating an operation produces the same intended business effect.
-
----
-
-## 🐢 Investigating Database Slowdown
-
-A Technical Lead does not begin with “add a cache” or “increase the database size.” First locate the bottleneck.
-
-### 1. Measure the actual query
-
-- Which endpoint and query are slow?
-- Is latency in acquiring a connection, executing SQL, transferring rows, or converting ORM objects?
-- How do p50, p95, and p99 latency change under load?
-
-### 2. Inspect the execution plan
-
-Use the database execution plan—commonly `EXPLAIN` or `EXPLAIN ANALYZE`—to find:
-
-- Full-table scans
-- Missing or ineffective indexes
-- Expensive joins or sorts
-- Incorrect row estimates
-- Too many rows being read
-
-### 3. Check application query behaviour
-
-- N+1 ORM queries
-- Fetching unused columns
-- Unbounded result sets
-- Missing pagination or batching
-- Repeating the same query
-
-### 4. Check transactions and locks
-
-- Long-running transactions
-- Lock waits or deadlocks
-- An isolation level stronger than required
-- Multiple workers updating the same rows
-
-### 5. Check the connection pool
-
-Sometimes the query is fast but requests wait for a connection because the pool is exhausted. Increasing the pool blindly can overload PostgreSQL further; API concurrency, worker concurrency, and database capacity must be designed together.
-
----
-
-## 🗂️ A Practical Component Structure
-
-```text
-app/
-├── api/
-│   ├── routes/
-│   │   └── reports.py
-│   └── schemas/
-├── application/
-│   └── report_service.py
-├── domain/
-│   └── report_job.py
-├── repositories/
-│   └── report_repository.py
-├── infrastructure/
-│   ├── database/
-│   ├── messaging/
-│   ├── storage/
-│   └── email/
-├── workers/
-│   └── report_worker.py
-└── main.py
+{
+  "detail": "Product not found"
+}
 ```
 
-This is a starting model, not a structure to copy mechanically. A small service may not need every directory. The design should expose meaningful boundaries without creating empty abstractions.
-
-Dependencies should generally point inward:
-
-- API depends on the application use case.
-- Application logic depends on interfaces or contracts.
-- Infrastructure provides concrete implementations.
-- Business rules do not import FastAPI, SQLAlchemy, GCS, or a queue SDK unless there is a deliberate reason.
+The status code and body tell the client what happened.
 
 ---
 
-## 🧠 Technical Lead Decision Checklist
+## 🔄 The Complete Flow
 
-Before approving a backend flow, ask:
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+    participant F as FastAPI
+    participant P as Python function
+    C->>S: GET /products/101
+    S->>F: Pass request
+    F->>F: Match route and validate
+    F->>P: get_product(101)
+    P-->>F: Product dictionary
+    F-->>C: 200 response with JSON
+```
 
-- What must finish before we respond?
-- What can fail independently?
-- Must the work survive a restart?
-- Is the work I/O-bound or CPU-bound?
-- What happens when the client retries?
-- What happens when the queue redelivers?
-- Where is the transaction boundary?
-- Can two replicas execute this concurrently?
-- How are timeout, retry, and cancellation handled?
-- How will we observe latency, failure, backlog, and saturation?
-- What is the simplest design that meets the actual requirements?
+The important point is not memorizing the boxes. It is seeing that a FastAPI endpoint is ordinary Python code connected to HTTP through routing, validation, and response conversion.
 
 ---
 
-## ✅ What You Should Retain
+## 🧠 One Technical Lead Habit
 
-1. An HTTP endpoint is an adapter, not the entire application.
-2. Separate short request work from long durable job work.
-3. `asyncio` improves I/O concurrency; it does not accelerate CPU-heavy Python.
-4. Threads, processes, in-process background tasks, and queues solve different problems.
-5. Critical long-running work belongs in a durable worker architecture.
-6. Retries require idempotency at both API and consumer boundaries.
-7. Database diagnosis starts with measurement, query plans, locks, and pool behaviour—not guesses.
-8. A Technical Lead connects application design to failure handling and production operation.
+Before discussing folders, databases, queues, or scaling, a Technical Lead should be able to trace the simplest successful request:
 
-## ➡️ After These Notes
+```text
+Who sends it?
+→ Which endpoint matches it?
+→ How is input validated?
+→ Which Python function runs?
+→ What response is returned?
+```
 
-Once this mental model is clear, the topic continues with:
+More advanced designs are extensions of this flow. We will introduce them only when the simple version develops a real limitation.
 
-- `Interview.md` — explanation checks, design questions, and common mistakes
-- `Hands_On/` — refactor a blocking report endpoint into a job-based architecture
+---
 
-The next deeper topics will separately derive HTTP lifecycle, FastAPI architecture, concurrency, database engineering, and messaging.
+## 📖 Small Glossary
+
+| Term | Simple meaning |
+|---|---|
+| Client | Program that sends a request |
+| Server | Running program that waits for requests |
+| HTTP | Communication format used by client and server |
+| Endpoint | HTTP method plus path |
+| Route | Mapping from an endpoint to a function |
+| Response status | Number describing the request outcome |
+| JSON | Text format commonly used for API data |
+
+---
+
+## ✅ Check Your Understanding
+
+Using only this lesson, try to answer:
+
+1. What is the difference between a client and a server?
+2. Why are `GET /products/101` and `DELETE /products/101` different endpoints?
+3. What happens when `/products/abc` is called?
+4. How does the returned Python dictionary become an HTTP response?
+
+If any answer is unclear, revisit only that section.
+
+---
+
+## 🛑 Intentional Stop Point
+
+This lesson does **not** cover:
+
+- Databases
+- Application layers
+- `async` and `await`
+- Threads or processes
+- Background workers or queues
+- Idempotency
+- Scaling
+
+Those concepts will appear later, one at a time, when the simple application gives us a reason to need them.
+
+## ➡️ Next Topic
+
+The next topic will ask: **what happens when an endpoint grows beyond one small function?**
+
+That problem will naturally lead us to separating routing, business logic, and data access.
