@@ -38,7 +38,7 @@ The application grows step by step. Each topic starts from the previous design a
 1. 🟢 **[The simplest backend request](modules/01_Backend_Engineering/01_Request_Lifecycle/Notes.md)**
    - Client, server, host, port, request, route, Python function, and response
    - Notes, interview exercise, and hands-on exercise complete
-2. ⚪ **HTTP methods and their meaning**
+2. 🟡 **[HTTP methods and their meaning](modules/01_Backend_Engineering/02_HTTP_Methods/Notes.md)**
    - `GET`, `POST`, `PUT`, `PATCH`, and `DELETE`
    - Safe operations, idempotent operations, and choosing the correct method
 3. ⚪ **Sending input to an API**
