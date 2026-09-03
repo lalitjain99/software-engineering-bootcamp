@@ -39,13 +39,13 @@
 
 | Week | Core topic | Tier | Capstone layer | Coding | Leadership journal | Hours |
 |---:|---|:---:|---|:---:|:---:|---:|
-| 1 | Skills audit | — | Layer 0 planning | ⬜ | ⬜ | — |
+| 1 | Backend audit: architecture, database, concurrency | A (provisional) | Layer 0 planning | ⬜ | ⬜ | — |
 
 ## Current Next Actions
 
-1. Complete the explain/decide/build/operate audit.
-2. Assign tiers and select the first Tier A backend topic.
-3. Define the capstone's initial requirements.
-4. Create the first leadership-journal entry.
+1. Complete the integrated backend production scenario.
+2. Finalize tiers for FastAPI architecture, database engineering, and concurrency.
+3. Continue the audit across API design, testing, security, and reliability.
+4. Define the capstone's initial requirements and first leadership-journal entry.
 
 Last updated: 2026-09-03
