@@ -11,6 +11,7 @@
 - Topic depth is controlled by Tier A/B/C, not by a fixed document template
 - Each lesson introduces one primary mental model
 - Advanced terms are introduced only after the problem that requires them
+- A topic is not automatically one week; Tier B refreshers may take only one short session
 
 ## Status Legend
 
@@ -30,40 +31,63 @@ The audit does not block a topic once a clear Tier A gap has been identified.
 
 ## Phase 1 — Backend Engineering Depth (Weeks 1–14)
 
-### Atomic Learning Sequence
+The application grows step by step. Each topic starts from the previous design and introduces one new problem.
 
-The backend grows step by step. Each topic begins with the previous design and introduces one new problem.
+### Track 1A — Journey of an API Endpoint
 
 1. 🟡 **[The simplest backend request](modules/01_Backend_Engineering/01_Request_Lifecycle/Notes.md)**
-   - Client, server, request, route, Python function, and response
-2. ⚪ **When one endpoint becomes too large**
+   - Client, server, host, port, request, route, Python function, and response
+2. ⚪ **HTTP methods and their meaning**
+   - `GET`, `POST`, `PUT`, `PATCH`, and `DELETE`
+   - Safe operations, idempotent operations, and choosing the correct method
+3. ⚪ **Sending input to an API**
+   - Path parameters, query parameters, and request body
+   - How to decide where each input belongs
+4. ⚪ **HTTP headers**
+   - Request versus response headers
+   - `Content-Type`, `Accept`, `Authorization`, correlation IDs, and custom headers
+5. ⚪ **Status codes and error responses**
+   - Success, client-error, and server-error families
+   - Designing consistent error contracts
+6. ⚪ **HTTP, HTTPS, and protocol foundations**
+   - The roles of IP, TCP, TLS, HTTP, and HTTPS
+   - Why encryption changes HTTP into HTTPS
+   - A gradual introduction to HTTP/1.1, HTTP/2, and HTTP/3
+7. ⚪ **API styles and communication mechanisms**
+   - REST, GraphQL, gRPC, WebSocket, Server-Sent Events, and webhooks
+   - These are not all the same kind of protocol; compare the problems they solve
+   - Choosing based on communication direction, latency, compatibility, and contract needs
+
+**Checkpoint:** trace an API request, explain its complete HTTP contract, and choose an appropriate communication mechanism without discussing internal application architecture yet.
+
+### Track 1B — Growing the Application
+
+8. ⚪ **When one endpoint becomes too large**
    - Separate routing, business logic, and data access
-3. ⚪ **Persisting data**
+9. ⚪ **Persisting data**
    - Database connection, models, queries, and transaction basics
-4. ⚪ **When requests spend time waiting**
-   - Blocking, synchronous execution, and the motivation for asynchronous I/O
-5. ⚪ **Handling multiple tasks**
-   - Event loop, threads, processes, and workload choice
-6. ⚪ **When work cannot finish inside a request**
-   - Background execution, workers, and queues
-7. ⚪ **When operations repeat or fail**
-   - Retries, idempotency, and safe state transitions
-8. ⚪ **When the application becomes slow or unreliable**
-   - Measurement, database diagnosis, resilience, and observability
+10. ⚪ **When requests spend time waiting**
+    - Blocking, synchronous execution, and the motivation for asynchronous I/O
+11. ⚪ **Handling multiple tasks**
+    - Event loop, threads, processes, and workload choice
+12. ⚪ **When work cannot finish inside a request**
+    - Background execution, workers, and queues
+13. ⚪ **When operations repeat or fail**
+    - Retries, idempotency, and safe state transitions
+14. ⚪ **When the application becomes slow or unreliable**
+    - Measurement, database diagnosis, resilience, and observability
 
-Only after this foundation will we expand into deeper API design, security, testing, caching, messaging, and production architecture.
+### Track 1C — Production Backend Depth
 
-### Backend Capability Map
+After the foundations above, focused topics will deepen:
 
-The sequence above eventually develops these capabilities:
-
-- Production Python and dependency management
-- HTTP and API engineering
-- FastAPI architecture
-- Application architecture and code quality
-- Data modeling and persistence
-- Caching, messaging, and background work
-- Testing, security, performance, and reliability
+- FastAPI architecture and dependency management
+- API versioning and compatibility
+- Authentication and authorization
+- Caching and messaging
+- Testing strategy and code quality
+- Application security
+- Performance and reliability
 
 **Phase output:** a production-quality FastAPI application and the ability to explain how each design decision emerged.
 
