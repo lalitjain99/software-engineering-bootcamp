@@ -1,6 +1,14 @@
 # Software Engineering Bootcamp — Master Index
 
-> This is the evolving source of truth for the roadmap. The module boundaries and order are intentionally provisional until the learning goals are refined.
+> Core objective: develop Technical Lead-level judgment across backend design, system architecture, production delivery, and engineering leadership.
+
+## Roadmap Constraints
+
+- 5–8 hours per week
+- Interview-ready target: 6–12 months
+- Default plan: 36 weeks
+- Python basics are not retaught unless the skills audit exposes a gap
+- Topic depth is controlled by Tier A/B/C, not by a fixed document template
 
 ## Status Legend
 
@@ -9,93 +17,166 @@
 - 🟢 Complete
 - 🔁 Revisiting
 
-## Learning Path
+## Phase 0 — Skills Audit and Setup (Week 0–1)
 
-### Phase 0 — Engineering Mindset
+- 🟡 Complete [Skills_Audit.md](Skills_Audit.md)
+- ⚪ Assign Tier A, B, or C to each topic
+- ⚪ Establish the capstone baseline and development workflow
+- ⚪ Record the first leadership-journal entry
 
-- ⚪ **Module 00: Thinking Like an Engineer**
-  - Problem decomposition
-  - Requirements, constraints, and assumptions
-  - Correctness, complexity, and trade-offs
-  - From working code to production engineering
+**Exit outcome:** a personalized backlog that spends time on genuine gaps rather than revisiting every Python basic.
 
-### Phase 1 — Programming Foundations
+## Phase 1 — Backend Engineering Depth (Weeks 1–14)
 
-- ⚪ **Module 01: Python Engineering**
-  - Python data model and internals
-  - Functions, classes, typing, and exceptions
-  - Iterators, generators, decorators, and context managers
-  - Packaging, dependency management, and project structure
-- ⚪ **Module 02: Data Structures, Algorithms, and Complexity**
-  - Core data structures
-  - Common algorithmic patterns
-  - Time and space complexity
-  - Practical performance reasoning
-- ⚪ **Module 03: Concurrency and Asynchronous Programming**
-  - Processes, threads, and the GIL
-  - Asyncio and event loops
-  - Concurrency versus parallelism
-  - Backpressure, cancellation, and failure handling
+### 1. Production Python
 
-### Phase 2 — Code and Component Design
+- Runtime and object model relevant to production
+- Type hints, contracts, exceptions, logging, configuration, and dependency management
+- Threads, processes, the GIL, asyncio, cancellation, and backpressure
+- Profiling, memory, and performance reasoning
 
-- ⚪ **Module 04: Clean Code and Refactoring**
-- ⚪ **Module 05: Object-Oriented Design and SOLID**
-- ⚪ **Module 06: Design Patterns and Extensible Components**
-- ⚪ **Module 07: Testing and Quality Engineering**
+### 2. HTTP and API Engineering
 
-### Phase 3 — Backend and Data Engineering
+- HTTP lifecycle, methods, headers, status codes, TLS, proxies, and gateways
+- REST resource modeling, versioning, pagination, filtering, idempotency, and compatibility
+- Validation and consistent error contracts
+- Authentication, authorization, rate limiting, and API security
 
-- ⚪ **Module 08: HTTP, APIs, and Backend Architecture**
-- ⚪ **Module 09: Databases and Data Modeling**
-- ⚪ **Module 10: Caching and Performance**
-- ⚪ **Module 11: Messaging and Event-Driven Systems**
-- ⚪ **Module 12: Authentication, Authorization, and API Security**
+### 3. FastAPI at Technical Lead Depth
 
-### Phase 4 — Distributed Systems and System Design
+- Dependency injection, middleware, lifespan, background work, and async boundaries
+- Modular project structure and separation of concerns
+- Configuration, observability, exception strategy, and OpenAPI governance
+- When FastAPI is appropriate—and when it is not
 
-- ⚪ **Module 13: Distributed Systems Foundations**
-- ⚪ **Module 14: Scalability, Availability, and Consistency**
-- ⚪ **Module 15: System Design Building Blocks**
-- ⚪ **Module 16: End-to-End High-Level Design**
-- ⚪ **Module 17: Low-Level Design and Machine Coding**
+### 4. Application Architecture and Code Quality
 
-### Phase 5 — Production Engineering
+- Layered, clean, hexagonal, and modular-monolith architectures
+- SOLID and design patterns as decision tools
+- Domain boundaries, coupling, cohesion, and dependency direction
+- Refactoring strategy, code reviews, and technical-debt decisions
 
-- ⚪ **Module 18: Linux, Networking, and Runtime Foundations**
-- ⚪ **Module 19: Docker and Container Engineering**
-- ⚪ **Module 20: Kubernetes and Cloud-Native Systems**
-- ⚪ **Module 21: CI/CD and Release Engineering**
-- ⚪ **Module 22: Observability and Site Reliability Engineering**
-- ⚪ **Module 23: Production Security**
+### 5. Data and Persistence
 
-### Phase 6 — Senior and Staff Engineering
+- Data modeling and schema evolution
+- Transactions, isolation levels, locking, and concurrency control
+- Indexes, query plans, connection pools, ORMs, and migrations
+- SQL versus NoSQL decision-making
 
-- ⚪ **Module 24: Architecture Decisions and Technical Strategy**
-- ⚪ **Module 25: Reliability, Incident Response, and Operations**
-- ⚪ **Module 26: Technical Leadership and Cross-Team Influence**
-- ⚪ **Module 27: Engineering Interview Preparation**
+### 6. Backend Building Blocks
 
-## Standard Topic Deliverables
+- Caching strategies, invalidation, Redis, and cache failure modes
+- Background jobs, schedulers, retries, and dead-letter handling
+- Queues, Pub/Sub, event-driven architecture, delivery semantics, and idempotent consumers
+- File and object-storage workflows
 
-Each full topic can include:
+### 7. Testing, Security, and Reliability
 
-1. `01_Lecture.md` — story-driven concept development
-2. `02_Revision.md` — structured revision notes
-3. `03_Interview.md` — Beginner, Intermediate, Advanced, and Staff Engineer questions with answers
-4. `04_Assignment.md` — exercises and reference solutions
-5. `05_CheatSheet.md` — compact recall material
-6. `06_Common_Mistakes.md` — misconceptions and production pitfalls
-7. `Code/` or `Code.ipynb` — implementation when useful
+- Unit, integration, contract, end-to-end, and load testing
+- Test doubles and testable architecture
+- Secrets, common web vulnerabilities, dependency and container scanning
+- Timeouts, retries, circuit breakers, graceful degradation, and failure budgets
 
-## Next Refinement
+**Phase output:** a production-quality FastAPI application and the ability to defend its architectural decisions.
 
-Before Module 00 begins, we will finalize:
+## Phase 2 — System Design (Weeks 15–24)
 
-- Target roles and interview level
-- Relative priority of backend, system design, DevOps/cloud, and leadership
-- Desired balance between theory, implementation, and projects
-- Weekly study capacity and expected duration
-- Whether coding interview preparation belongs inside this repository
+### 1. Design Method
 
-Last updated: 2026-09-02
+- Clarify functional and non-functional requirements
+- Estimate scale, storage, throughput, and latency
+- Identify constraints and define measurable success
+- Compare alternatives through explicit trade-offs
+
+### 2. Distributed-System Foundations
+
+- Processes, networks, partial failure, clocks, and coordination
+- Availability, consistency, partition tolerance, and replication
+- Stateless services, horizontal scaling, load balancing, and service discovery
+- Synchronous versus asynchronous communication
+
+### 3. Data and Scale
+
+- Partitioning, replication, read/write paths, and hot partitions
+- Distributed caching, CDN, queues, streams, and search
+- Consistency models, eventual consistency, and conflict handling
+- Reliability patterns and observability
+
+### 4. Design Practice
+
+- Reusable system-design building blocks
+- High-level design case studies
+- Low-level design and component boundaries
+- Architecture Decision Records (ADRs)
+- Communicating trade-offs in Tech Lead interviews
+
+**Phase output:** multiple timed design exercises plus an architecture evolution of the capstone.
+
+## Phase 3 — DevOps, Cloud, and Production (Weeks 25–32)
+
+- Linux processes, signals, filesystems, and production debugging
+- Networking, DNS, TLS, reverse proxies, ingress, and service communication
+- Docker images, layers, multi-stage builds, supply-chain security, and runtime limits
+- CI/CD pipelines, quality gates, artifacts, release controls, and rollback
+- Kubernetes workloads, services, probes, resources, configuration, secrets, autoscaling, and disruption
+- GCP as the primary cloud, with Azure service mapping where useful
+- IAM, workload identity, networking, storage, managed databases, messaging, and secrets
+- Terraform, Helm, environment promotion, and configuration strategy
+- Metrics, logs, traces, SLOs, alerts, incident response, and postmortems
+- Rolling, blue-green, and canary deployments
+
+**Phase output:** containerized capstone deployed through CI/CD with infrastructure as code, observability, security controls, and a rollback strategy.
+
+## Phase 4 — Leadership and Interview Synthesis (Weeks 33–36)
+
+- Converting technical work into clear STAR and engineering-leadership stories
+- Architecture reviews and decision facilitation
+- Estimation, prioritization, risk management, and technical debt
+- Mentoring, delegation, code-review standards, and conflict handling
+- Incident ownership and blameless postmortems
+- Senior/Tech Lead backend interviews
+- High-level and low-level system-design interviews
+- Production, cloud, and troubleshooting interviews
+- Behavioral and leadership mock interviews
+
+**Phase output:** an interview story bank, architecture walkthrough, resume-aligned project narrative, and mock-interview feedback loop.
+
+## Deliverable Rules
+
+### Tier A — Real gap
+
+```text
+Topic/
+├── Notes.md
+├── Interview.md          # Q&A plus Common Mistakes section
+└── Hands_On/
+    ├── README.md
+    └── ... code
+```
+
+### Tier B — Rusty
+
+```text
+Topic/
+├── CheatSheet.md
+└── Common_Mistakes.md
+```
+
+### Tier C — Already solid
+
+- One checklist tick in `Skills_Audit.md`
+- No formal topic document
+- Revisit only during interview review or when practice exposes a gap
+
+## Weekly Operating Rhythm
+
+| Activity | Weekly time |
+|---|---:|
+| Core roadmap learning | 3–4.5 hours |
+| Capstone implementation | 1–1.5 hours |
+| Coding practice | 30–45 minutes |
+| Leadership journal | 20–30 minutes |
+| Review and planning | 10–45 minutes |
+| **Total** | **Approximately 5–8 hours** |
+
+Last updated: 2026-09-03
