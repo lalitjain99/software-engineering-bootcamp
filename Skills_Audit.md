@@ -29,13 +29,13 @@ For every topic, test four dimensions:
 | Classes and exception handling | Familiar | Candidate Tier B/C |
 | Modules and packages | Familiar | Candidate Tier B/C |
 | API development | Practical experience | Candidate Tier B |
-| FastAPI | Enterprise application experience | Audit for Lead-level depth |
-| Backend design decisions | Development goal | Candidate Tier A |
+| FastAPI | Enterprise application experience | Tier A for architecture depth |
+| Backend design decisions | Development goal | Tier A |
 | System design | Development goal | Candidate Tier A |
 | Production deployment and cloud decisions | Some practical exposure; depth required | Audit by capability |
 | Technical leadership and interview narrative | Target capability | Candidate Tier A |
 
-These are provisional. A topic becomes Tier C only after it passes the explain/decide/build/operate test.
+A topic becomes Tier C only after it passes the explain/decide/build/operate test.
 
 ## Detailed Audit
 
@@ -44,14 +44,14 @@ These are provisional. A topic becomes Tier C only after it passes the explain/d
 | Python object/runtime model | ⬜ | ⬜ | ⬜ | ⬜ | — | |
 | Typing and interface contracts | ⬜ | ⬜ | ⬜ | ⬜ | — | |
 | Packaging and dependency management | ⬜ | ⬜ | ⬜ | ⬜ | — | |
-| Asyncio, threading, multiprocessing, GIL | 🟡 | ⬜ | 🟡 | ⬜ | A (provisional) | Has used async/await; event-loop internals and execution-model trade-offs are unclear |
-| HTTP and request lifecycle | ⬜ | ⬜ | ⬜ | ⬜ | — | |
+| Asyncio, threading, multiprocessing, GIL | ❌ | ❌ | 🟡 | ❌ | A | Has used async/await; execution internals and model-selection trade-offs are unclear |
+| HTTP and request lifecycle | ❌ | ❌ | 🟡 | ❌ | A | Can implement endpoints but is not yet sure how to divide synchronous request work and durable background work |
 | REST API design and evolution | ⬜ | ⬜ | ⬜ | ⬜ | — | |
-| FastAPI architecture and internals | ⬜ | ⬜ | 🟡 | ⬜ | A (provisional) | Can build APIs within an existing structure; architecture ownership not yet established |
+| FastAPI architecture and internals | ❌ | ❌ | 🟡 | ❌ | A | Can build APIs within an existing structure; needs architecture ownership and production reasoning |
 | Authentication and authorization | ⬜ | ⬜ | ⬜ | ⬜ | — | |
 | Clean/hexagonal/modular architecture | ⬜ | ⬜ | ⬜ | ⬜ | — | |
 | SOLID and design patterns | ⬜ | ⬜ | ⬜ | ⬜ | — | |
-| SQL modeling, transactions, and indexes | ⬜ | ⬜ | 🟡 | ⬜ | A (provisional) | Can use SQL/ORM; needs depth in diagnostics, indexes, and concurrent updates |
+| SQL modeling, transactions, and indexes | ❌ | ❌ | 🟡 | ❌ | A | Can use SQL/ORM; needs diagnostics, indexing, transactions, locking, and concurrent-update depth |
 | ORM, migrations, and connection pooling | ⬜ | ⬜ | ⬜ | ⬜ | — | |
 | Caching and Redis | ⬜ | ⬜ | ⬜ | ⬜ | — | |
 | Messaging and event-driven systems | ⬜ | ⬜ | ⬜ | ⬜ | — | |
@@ -80,11 +80,13 @@ These are provisional. A topic becomes Tier C only after it passes the explain/d
 
 ## Audit Log
 
-### 2026-09-03 — Backend Round 1
+### 2026-09-03 — Backend Round 1 Finalized
 
-- FastAPI architecture: provisional Tier A
-- Database performance and transactions: provisional Tier A
-- Concurrency and asyncio: provisional Tier A
-- Next: integrated production-scenario validation
+- FastAPI architecture: Tier A
+- Database performance and transactions: Tier A
+- Concurrency and asyncio: Tier A
+- HTTP request lifecycle and workload boundaries: Tier A
+- Validation result: unable to design the integrated production scenario yet
+- Decision: start with first-principles request lifecycle and architecture notes
 
 Last updated: 2026-09-03
