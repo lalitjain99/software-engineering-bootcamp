@@ -1,12 +1,28 @@
 # Changelog
 
-All meaningful changes to the Software Engineering Bootcamp roadmap will be recorded here.
+All meaningful changes to the Software Engineering Bootcamp roadmap are recorded here.
+
+## 2026-09-03
+
+### Changed
+
+- Personalized the roadmap for an engineer with close to 10 years of IT experience and 1–2 years of Python backend experience.
+- Reordered the journey: backend depth → system design → DevOps/cloud/production → leadership and interviews.
+- Replaced the uniform six-document topic structure with Tier A/B/C deliverables.
+- Merged lecture and revision content into `Notes.md`.
+- Folded common mistakes into `Interview.md` for Tier A topics.
+- Set the operating constraint to 5–8 hours per week with a 6–12 month interview-readiness target.
+
+### Added
+
+- Skills audit using explain, decide, build, and operate evidence.
+- Continuous leadership journal and light coding practice.
+- An evolving production-grade FastAPI capstone.
+- A 36-week default sequence and weekly time allocation.
 
 ## 2026-09-02
 
 ### Added
 
 - Initialized the public repository.
-- Added the project purpose and first-principles learning approach.
-- Added a draft master roadmap from engineering foundations through Staff Engineer preparation.
-- Added the progress tracker and changelog.
+- Added the initial project purpose, draft roadmap, progress tracker, and changelog.
