@@ -1,0 +1,14 @@
+# Python-generated files
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+
+# Tool caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Local environment variables
+.env

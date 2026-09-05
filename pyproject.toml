@@ -1,0 +1,9 @@
+[project]
+name = "software-engineering-bootcamp"
+version = "0.1.0"
+description = "Shared Python environment for Software Engineering Bootcamp exercises"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+]

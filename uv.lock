@@ -301,7 +301,7 @@ wheels = [
 ]
 
 [[package]]
-name = "request-lifecycle-exercise"
+name = "software-engineering-bootcamp"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

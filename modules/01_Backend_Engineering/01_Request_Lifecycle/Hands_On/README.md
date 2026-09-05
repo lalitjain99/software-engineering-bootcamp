@@ -17,15 +17,11 @@ Nothing beyond Topic 01 is required.
 
 ---
 
-## 1. Open the Exercise Directory
+## 1. Open the Repository Root
 
-From the repository root:
+All Python exercises share the root-level `pyproject.toml` and `uv.lock`. Run the remaining commands from the repository root.
 
-```bash
-cd modules/01_Backend_Engineering/01_Request_Lifecycle/Hands_On
-```
-
-## 2. Install the Dependencies
+## 2. Install the Shared Dependencies
 
 ```bash
 uv sync
@@ -34,7 +30,7 @@ uv sync
 ## 3. Start the Server
 
 ```bash
-uv run uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+uv run uvicorn app.main:app --app-dir modules/01_Backend_Engineering/01_Request_Lifecycle/Hands_On --reload --host 127.0.0.1 --port 8000
 ```
 
 Read the startup message and identify:
@@ -117,7 +113,7 @@ Notice the difference:
 Stop the server with `Ctrl+C`, then restart it on port `8001`:
 
 ```bash
-uv run uvicorn app.main:app --reload --host 127.0.0.1 --port 8001
+uv run uvicorn app.main:app --app-dir modules/01_Backend_Engineering/01_Request_Lifecycle/Hands_On --reload --host 127.0.0.1 --port 8001
 ```
 
 First try the old port:

@@ -74,6 +74,9 @@ See [MASTER_INDEX.md](MASTER_INDEX.md) for the detailed sequence.
 ```text
 software-engineering-bootcamp/
 ├── README.md
+├── pyproject.toml
+├── uv.lock
+├── .gitignore
 ├── MASTER_INDEX.md
 ├── Skills_Audit.md
 ├── Progress_Tracker.md
@@ -85,6 +88,16 @@ software-engineering-bootcamp/
 └── modules/
     └── ... topic folders created after tier assignment
 ```
+
+## 🛠️ Shared Python Environment
+
+Python hands-on exercises use one environment managed from the repository root.
+
+```bash
+uv sync
+```
+
+Run each exercise with `uv run` from the root, using the command documented in that exercise's `README.md`. Add dependencies to the root `pyproject.toml`; do not create a separate environment for every topic.
 
 ## 🚦 Current Status
 
