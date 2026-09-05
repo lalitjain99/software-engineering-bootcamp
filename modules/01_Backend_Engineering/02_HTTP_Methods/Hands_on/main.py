@@ -20,7 +20,7 @@ products = {
 
 """
 
-from fastapi import Body, FastAPI, HTTPException, status
+from fastapi import Body, FastAPI, HTTPException, status, Response
 
 
 app = FastAPI(title="Http method exercise")
@@ -118,7 +118,7 @@ def update_product(product_id: int,product: dict = Body(...)):
 
     return {
         "id": product_id,
-        **product[product_id],
+        **products[product_id],
     }
 
 
