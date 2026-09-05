@@ -99,22 +99,26 @@ def update_product(product_id: int,product: dict = Body(...)):
             status_code=404,
             detail="Product not found"
         )
-    
-    if "name" not in product or "price" not in product:
-            raise HTTPException(
-                status_code=400,
-                detail="product must include name and price"
-            )
-    
-    if "name" in product:
-        products[product_id]["name"] = product["name"]
-    elif "price in product":
-        products[product_id]["price"] = product["price"]
+
+    allowed_fields = {"name", "price"}
+    changes = {
+        key: value
+        for key, value in product.items()
+        if key in allowed_fields
+    }
+
+    if not changes:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Provide name or price to update",
+        )
+
+    products[product_id].update(changes)
 
 
     return {
         "id": product_id,
-        **product,
+        **product[product_id],
     }
 
 
@@ -129,10 +133,7 @@ def delete_product(product_id: int):
 
     del products[product_id]
 
-    return {
-        "info": f"product_id {product_id} is deleted"
-    }
-
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 
