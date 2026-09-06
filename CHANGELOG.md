@@ -8,6 +8,7 @@ All meaningful changes to the Software Engineering Bootcamp roadmap are recorded
 
 - Topic 02: HTTP methods, including notes, hands-on CRUD exercise, and interview material.
 - Topic 03 learning notes.
+- Topic 03 hands-on API input exercise.
 
 ### Added
 

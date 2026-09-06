@@ -29,7 +29,7 @@ Topics 01 and 02 are complete. Topic 03 explains how to place endpoint input in 
 |---|:---:|
 | `Notes.md` | 🟢 |
 | `Interview.md` | ⚪ |
-| `Hands_On/` | 🟡 |
+| `Hands_On/` | 🟢 |
 | Topic completion | 🟡 |
 
 ## Weekly Tracker
@@ -41,10 +41,9 @@ Topics 01 and 02 are complete. Topic 03 explains how to place endpoint input in 
 
 ## Current Next Actions
 
-1. Implement the three Topic 03 endpoints.
-2. Test valid path, query, and body inputs.
-3. Observe validation failures for each input location.
-4. Push `Hands_On/main.py` for review.
-5. Answer interview questions one at a time in chat before creating `Interview.md`.
+1. Answer Topic 03 interview questions one at a time in chat.
+2. Review and improve each answer before moving forward.
+3. Create `Interview.md` only after the chat interview is complete.
+4. Mark Topic 03 complete and begin HTTP headers.
 
 Last updated: 2026-09-06
