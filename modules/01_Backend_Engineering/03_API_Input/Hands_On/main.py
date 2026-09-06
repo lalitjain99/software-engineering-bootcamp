@@ -7,14 +7,14 @@ Create a product	POST /stores/{store_id}/products	Path + query + body
 '''
 
 
-from fastapi import FastAPI, status, HTTPException, Response
+from fastapi import FastAPI, status, HTTPException
 from pydantic import BaseModel
 
 
 
 app = FastAPI(title="API input exercise")
 
-class CreateProduct(BaseModel):
+class ProductCreate(BaseModel):
     name: str
     category: str
     price: float
@@ -64,7 +64,7 @@ def get_product(store_id:int,product_id:int):
 def list_product(
         store_id:int,
         category:str | None=None,
-        max_price:int | None=None,
+        max_price:float | None=None,
         limit: int = 10,
     ):
 
