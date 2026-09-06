@@ -38,10 +38,11 @@ The application grows step by step. Each topic starts from the previous design a
 1. 🟢 **[The simplest backend request](modules/01_Backend_Engineering/01_Request_Lifecycle/Notes.md)**
    - Client, server, host, port, request, route, Python function, and response
    - Notes, interview exercise, and hands-on exercise complete
-2. 🟡 **[HTTP methods and their meaning](modules/01_Backend_Engineering/02_HTTP_Methods/Notes.md)**
+2. 🟢 **[HTTP methods and their meaning](modules/01_Backend_Engineering/02_HTTP_Methods/Notes.md)**
    - `GET`, `POST`, `PUT`, `PATCH`, and `DELETE`
    - Safe operations, idempotent operations, and choosing the correct method
-3. ⚪ **Sending input to an API**
+   - Notes, interview exercise, and hands-on exercise complete
+3. 🟡 **[Sending input to an API](modules/01_Backend_Engineering/03_API_Input/Notes.md)**
    - Path parameters, query parameters, and request body
    - How to decide where each input belongs
 4. ⚪ **HTTP headers**
@@ -155,4 +156,4 @@ Topic/
 | Review and planning | 10–45 minutes |
 | **Total** | **Approximately 5–8 hours** |
 
-Last updated: 2026-09-03
+Last updated: 2026-09-06

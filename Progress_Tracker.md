@@ -2,9 +2,9 @@
 
 ## Overall Status
 
-🟡 Backend Engineering — Topic 02: HTTP Methods
+🟡 Backend Engineering — Topic 03: Sending Input to an API
 
-Topic 01 is complete. Topic 02 introduces how an HTTP method communicates the client's intended operation on a resource.
+Topics 01 and 02 are complete. Topic 03 explains how to place endpoint input in the path, query string, or request body according to its meaning.
 
 ## Goals
 
@@ -18,12 +18,12 @@ Topic 01 is complete. Topic 02 introduces how an HTTP method communicates the cl
 | Phase | Focus | Target weeks | Status | Completion |
 |---|---|---:|:---:|---:|
 | 0 | Skills audit and setup | 0–1 | 🟡 | 35% |
-| 1 | Backend engineering depth | 1–14 | 🟡 | 6% |
+| 1 | Backend engineering depth | 1–14 | 🟡 | 12% |
 | 2 | System design | 15–24 | ⚪ | 0% |
 | 3 | DevOps, cloud, and production | 25–32 | ⚪ | 0% |
 | 4 | Leadership and interview synthesis | 33–36 | ⚪ | 0% |
 
-## Topic 02 Progress
+## Topic 03 Progress
 
 | Deliverable | Status |
 |---|:---:|
@@ -36,13 +36,15 @@ Topic 01 is complete. Topic 02 introduces how an HTTP method communicates the cl
 
 | Week | Core topic | Tier | Capstone layer | Coding | Leadership journal | Hours |
 |---:|---|:---:|---|:---:|:---:|---:|
-| 1 | Topic 01 complete; [Topic 02 Notes](modules/01_Backend_Engineering/02_HTTP_Methods/Notes.md) started | A | Not started yet | 🟢 Topic 01 exercise | ⬜ | — |
+| 1 | Topics 01–02 completed | A | Not started yet | 🟢 Topic 01–02 exercises | ⬜ | — |
+| 2 | [Topic 03 Notes](modules/01_Backend_Engineering/03_API_Input/Notes.md) started | A | Not started yet | ⬜ | ⬜ | — |
 
 ## Current Next Actions
 
-1. Read Topic 02 notes through the five basic methods.
-2. Pause and clarify any method whose purpose is unclear.
-3. Continue to safe and idempotent semantics.
-4. Create the interview exercise only after the notes are comfortable.
+1. Read Topic 03 notes through the three input locations.
+2. Explain the identity/options/representation decision rule in your own words.
+3. Clarify any confusing example before beginning the hands-on exercise.
+4. Complete the hands-on exercise.
+5. Answer interview questions one at a time in chat before creating `Interview.md`.
 
-Last updated: 2026-09-03
+Last updated: 2026-09-06
