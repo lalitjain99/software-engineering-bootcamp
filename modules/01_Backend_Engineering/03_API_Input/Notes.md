@@ -2,40 +2,36 @@
 
 > **Single learning goal:** Put each input where its meaning is clearest: path, query string, or request body.
 
-## 🌱 The Next Problem Appears
+## 🌱 The Next Problem
 
-Our Product API now understands the client's intention through the HTTP method:
+HTTP methods tell the server what the client wants to do:
 
 ```http
-GET    /products/101
-POST   /products
-PATCH  /products/101
+GET   /products/101
+POST  /products
+PATCH /products/101
 ```
 
-But every operation also needs information:
+The operation also needs values:
 
-- Which product should be retrieved?
+- Which product?
 - Which products should be filtered?
-- What data describes a new product?
-- Which fields should be changed?
+- What describes the new product?
+- Which fields should change?
 
-The method tells us **what to do**. It does not carry all the values needed to do it.
-
-We therefore need to decide where each input belongs.
+The method communicates the **operation**. The path, query string, and body carry the **input**.
 
 ---
 
 ## 🧭 One Mental Model
 
-Use this starting rule:
-
 | Input meaning | Location | Example |
 |---|---|---|
-| Identifies the target resource | Path parameter | `/products/101` |
-| Filters or modifies how results are returned | Query parameter | `/products?category=keyboard` |
-| Describes structured data to create or change | Request body | `{"name": "Keyboard", "price": 2500}` |
+| Identifies the target | Path parameter | `/products/101` |
+| Filters or adjusts the result | Query parameter | `/products?category=keyboard` |
+| Describes structured data | Request body | `{"name": "Keyboard", "price": 2500}` |
 
-In short:
+Remember:
 
 ```text
 Path  = Which resource?
@@ -43,19 +39,15 @@ Query = Which view or options?
 Body  = What structured data?
 ```
 
-This rule is more useful than memorizing syntax because it helps you design new endpoints.
-
 ---
 
 ## 📍 Path Parameters — Identify the Target
 
-Consider:
+In this request, `101` identifies the product:
 
 ```http
 GET /products/101
 ```
-
-Here, `101` identifies the product being requested.
 
 FastAPI declares the changing part inside braces:
 
@@ -65,48 +57,28 @@ def get_product(product_id: int):
     return {"product_id": product_id}
 ```
 
-When the client calls `/products/101`:
+FastAPI extracts `101`, converts it to an integer, and passes `product_id=101` to the function. If conversion fails, the function does not run.
 
-1. FastAPI extracts `101` from the path.
-2. It converts the value to an integer.
-3. It passes `product_id=101` to the function.
-4. If conversion fails, the function does not run.
-
-### When a path parameter fits
-
-Use it when the value identifies a specific resource or a clear location in a resource hierarchy:
+Use path parameters for resource identity or a clear hierarchy:
 
 ```http
 GET /products/101
 GET /customers/42/orders/9001
 ```
 
-In the second example:
-
-- `42` identifies the customer.
-- `9001` identifies the order within that route.
-
-### Important property
-
-A path parameter is required because the route cannot be formed without it:
-
-```text
-/products/{product_id}
-```
-
-There is no meaningful way to omit `product_id` while still matching that route.
+A path parameter is required. Without `product_id`, the route `/products/{product_id}` cannot identify the requested product.
 
 ---
 
-## 🔎 Query Parameters — Filter or Adjust the Result
+## 🔎 Query Parameters — Filter or Adjust
 
-Now suppose the client wants a list of products, but only keyboards below a certain price:
+Suppose the client wants keyboards below a particular price:
 
 ```http
 GET /products?category=keyboard&max_price=5000
 ```
 
-The query string starts after `?`. Multiple parameters are separated by `&`:
+The query string begins after `?`. Multiple values are separated by `&`.
 
 ```text
 Path:  /products
@@ -125,9 +97,7 @@ def list_products(
     ...
 ```
 
-These values do not identify one product. They modify which products or how many products the server returns.
-
-### Common uses
+Common uses include:
 
 - Filtering: `?category=keyboard`
 - Searching: `?search=wireless`
@@ -137,33 +107,29 @@ These values do not identify one product. They modify which products or how many
 
 ### Optional versus required
 
-Query parameters are often optional, but they do not have to be.
+Query parameters are often optional, but not always.
 
-With a default value, the parameter is optional:
+A default value makes this parameter optional:
 
 ```python
 def list_products(limit: int = 20):
     ...
 ```
 
-Without a default value, it is required:
+No default makes this one required:
 
 ```python
 def search_products(search: str):
     ...
 ```
 
-Therefore:
-
-> “Path means required and query means optional” is not a reliable rule.
-
-Choose based on meaning first. Requiredness is a separate decision.
+Therefore, do not memorize “path means required and query means optional.” Choose the location based on meaning; decide requiredness separately.
 
 ---
 
 ## 📦 Request Body — Describe Structured Data
 
-To create a product, the client must send several related fields:
+Creating a product requires several related values:
 
 ```http
 POST /products
@@ -179,7 +145,7 @@ POST /products
 
 This structured representation belongs in the request body.
 
-Instead of accepting an unrestricted dictionary, FastAPI applications usually define the expected shape with a Pydantic model:
+FastAPI applications normally describe its expected shape with a Pydantic model:
 
 ```python
 from pydantic import BaseModel
@@ -196,23 +162,15 @@ def create_product(product: ProductCreate):
     return product
 ```
 
-FastAPI then:
+FastAPI reads the body, parses the JSON, validates it, and creates a `ProductCreate` object before running the function.
 
-1. Reads the incoming body.
-2. Parses the JSON.
-3. Validates it against `ProductCreate`.
-4. Creates a Python object.
-5. Calls the function only when validation succeeds.
-
-The model is an API contract: it declares which fields exist, their types, and which fields are required.
-
-We will study deeper validation rules later. For now, notice why a structured body is clearer than placing an entire product in the URL.
+The model is an API contract: it declares the fields, types, and defaults. Detailed validation will come later.
 
 ---
 
 ## 🧩 One Request Can Use All Three
 
-The three locations are not competing choices for the whole request. Each individual value should go where its meaning belongs.
+Each value should be placed according to its own meaning:
 
 ```http
 POST /stores/7/products?notify=true
@@ -237,60 +195,40 @@ def create_product(
     ...
 ```
 
-FastAPI interprets the inputs as follows:
-
-| Function parameter | Location | Why |
+| Parameter | Location | Reason |
 |---|---|---|
-| `store_id` | Path | Its name appears in `/stores/{store_id}/products` |
-| `notify` | Query | It is a simple value not declared in the path |
-| `product` | Body | It is a Pydantic model |
+| `store_id` | Path | Identifies the store |
+| `notify` | Query | Enables an optional behaviour |
+| `product` | Body | Describes the new product |
 
-The request therefore says:
+### How FastAPI decides
 
-> Create this product body inside store 7, and use the optional notification behaviour.
+For the cases in this lesson:
 
----
+1. A parameter named in the route comes from the **path**.
+2. A simple type such as `str`, `int`, `float`, or `bool` that is not in the path normally comes from the **query string**.
+3. A Pydantic model normally comes from the **request body**.
 
-## ⚙️ How FastAPI Decides
-
-For the cases covered in this lesson, FastAPI follows a useful pattern:
-
-1. A parameter whose name appears in the route path comes from the **path**.
-2. A simple typed parameter such as `str`, `int`, `float`, or `bool` that is not in the path normally comes from the **query string**.
-3. A parameter typed as a Pydantic model normally comes from the **request body**.
-
-Example:
-
-```python
-@app.post("/stores/{store_id}/products")
-def create_product(
-    store_id: int,
-    product: ProductCreate,
-    notify: bool = False,
-):
-    ...
-```
-
-The function signature is not only Python syntax. It helps define the HTTP contract and the generated API documentation.
+The function signature therefore helps define both the Python function and the HTTP contract.
 
 ---
 
-## 🤔 Path Parameter or Query Parameter?
+## 🤔 Path or Query?
 
-Both of these URLs can technically locate product 101:
+Both can technically locate product 101:
 
 ```http
 GET /products/101
 GET /products?id=101
 ```
 
-The first is normally clearer when product 101 is the primary resource being addressed:
+The path is usually clearer when product 101 is the primary resource:
 
 ```http
 GET /products/101
 ```
 
-A query parameter is clearer when selecting or filtering a collection:
+The query is clearer when selecting from a collection:
 
 ```http
 GET /products?category=keyboard
@@ -298,26 +236,26 @@ GET /products?category=keyboard
 
 Ask:
 
-> If I remove this value, am I still talking about the same endpoint and collection?
+> If I remove this value, am I still addressing the same collection or endpoint?
 
-- Without `101`, `/products/101` no longer identifies that product → path.
-- Without `category=keyboard`, `/products` still represents the product collection → query.
+- Without `101`, the request no longer identifies that product → path.
+- Without `category=keyboard`, `/products` still identifies the product collection → query.
 
-This is a design heuristic, not a law that replaces engineering judgment.
+This is a design heuristic, not an absolute rule.
 
 ---
 
-## 🚫 Should a GET Request Use a Body?
+## 🚫 Should GET Use a Body?
 
-A `GET` request can technically carry content, but its meaning is not generally defined and support across clients, proxies, caches, and documentation tools is unreliable.
+A `GET` request can technically carry content, but its meaning is not generally defined and support is unreliable.
 
-Prefer:
+Prefer query parameters for ordinary retrieval:
 
 ```http
 GET /products?category=keyboard&max_price=5000
 ```
 
-For an unusually complex search containing deeply structured criteria, an API may deliberately use:
+For unusually complex structured search criteria, an API may deliberately use:
 
 ```http
 POST /products/search
@@ -325,27 +263,25 @@ POST /products/search
 
 with a JSON body.
 
-The practical rule is:
+Practical rule:
 
 > Do not use a GET body as a normal replacement for query parameters.
 
 ---
 
-## 🔐 Do Not Confuse Location with Security
+## 🔐 Location Is Not Security
 
-Query parameters are visible in the URL and may appear in browser history, access logs, monitoring systems, or shared links.
+Query parameters appear in the URL and may be stored in browser history, logs, monitoring systems, or shared links. Do not put passwords or access tokens in them.
 
-Do not place passwords, access tokens, or other secrets in the query string.
-
-A request body is less visible in the URL, but it is not automatically secure. Transport security and authentication will be covered later.
+A request body is less visible in the URL, but it is not automatically secure. HTTPS and authentication will be covered later.
 
 ---
 
 ## 🧠 Decision Checklist
 
-For every input, ask in this order:
+For every input, ask:
 
-1. **Does it identify the resource or its location?**  
+1. **Does it identify the resource?**  
    Use a path parameter.
 
 2. **Does it filter, sort, paginate, search, or enable an option?**  
@@ -354,10 +290,8 @@ For every input, ask in this order:
 3. **Does it describe structured data being created or changed?**  
    Use a request body.
 
-4. **Is it metadata about the request rather than business data?**  
-   It may belong in a header—the next topic.
-
-### Examples
+4. **Is it metadata rather than business data?**  
+   It may belong in a header—the later headers topic.
 
 | Requirement | Design |
 |---|---|
@@ -365,33 +299,33 @@ For every input, ask in this order:
 | List pending orders | `GET /orders?status=pending` |
 | Return page 3 | `GET /orders?page=3` |
 | Create an order | `POST /orders` plus a body |
-| Change only an order address | `PATCH /orders/9001` plus a body |
+| Change an order address | `PATCH /orders/9001` plus a body |
 
 ---
 
 ## 🧠 Technical Lead Perspective
 
-Input placement is part of the public API contract. A Technical Lead checks:
+Input placement is part of the public API contract. Check that:
 
-- Does the path express stable resource identity?
-- Are filters and options represented consistently across endpoints?
-- Is the body a clear, validated model instead of an unrestricted dictionary?
-- Are optional and required inputs intentional?
-- Could sensitive information leak through a URL?
-- Will another engineer understand the contract without reading the function implementation?
+- Paths express stable resource identity.
+- Filters and options are consistent across endpoints.
+- Bodies use clear models instead of unrestricted dictionaries.
+- Required and optional inputs are intentional.
+- Sensitive data cannot leak through URLs.
+- Another engineer can understand the contract without reading the implementation.
 
-Good API design makes the common request unsurprising.
+Good API design makes common requests unsurprising.
 
 ---
 
 ## ✅ Check Your Understanding
 
-1. In `GET /products/101`, why is `101` a path parameter?
+1. Why is `101` a path parameter in `GET /products/101`?
 2. Where should `category=keyboard` go when listing products?
-3. Why is a product's complete creation data better suited to a body?
+3. Why does complete product data belong in a body?
 4. Can a query parameter be required?
-5. How does FastAPI decide that a Pydantic model comes from the body?
-6. Where would each input belong in this request?
+5. How does FastAPI identify a body model?
+6. Design this request using all necessary input locations:
 
 ```text
 Create a product in store 7, optionally send a notification,
@@ -404,19 +338,17 @@ and provide its name and price.
 
 This lesson does not yet cover:
 
-- Detailed Pydantic validation and constraints
-- Multiple or nested body models
-- Form data and file uploads
-- URL encoding details
-- Request and response headers
-- Authentication or transport security
+- Detailed Pydantic constraints
+- Nested body models
+- Forms and file uploads
+- URL encoding
+- HTTP headers
+- Authentication
 - Detailed status-code selection
-
-Those concepts will be introduced when the application needs them.
 
 ## ➡️ Next Step
 
-Build one FastAPI endpoint that combines a path parameter, query parameter, and validated request body. After the hands-on exercise, the interview questions will be asked one at a time in chat before `Interview.md` is created.
+Build one FastAPI endpoint combining a path parameter, query parameter, and validated request body. After the hands-on exercise, interview questions will be asked one at a time in chat before `Interview.md` is created.
 
 ## 📚 References
 
