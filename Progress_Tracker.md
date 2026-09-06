@@ -27,9 +27,9 @@ Topics 01 and 02 are complete. Topic 03 explains how to place endpoint input in 
 
 | Deliverable | Status |
 |---|:---:|
-| `Notes.md` | 🟡 |
+| `Notes.md` | 🟢 |
 | `Interview.md` | ⚪ |
-| `Hands_On/` | ⚪ |
+| `Hands_On/` | 🟡 |
 | Topic completion | 🟡 |
 
 ## Weekly Tracker
@@ -37,14 +37,14 @@ Topics 01 and 02 are complete. Topic 03 explains how to place endpoint input in 
 | Week | Core topic | Tier | Capstone layer | Coding | Leadership journal | Hours |
 |---:|---|:---:|---|:---:|:---:|---:|
 | 1 | Topics 01–02 completed | A | Not started yet | 🟢 Topic 01–02 exercises | ⬜ | — |
-| 2 | [Topic 03 Notes](modules/01_Backend_Engineering/03_API_Input/Notes.md) started | A | Not started yet | ⬜ | ⬜ | — |
+| 2 | [Topic 03 hands-on](modules/01_Backend_Engineering/03_API_Input/Hands_On/README.md) started | A | Not started yet | 🟡 | ⬜ | — |
 
 ## Current Next Actions
 
-1. Read Topic 03 notes through the three input locations.
-2. Explain the identity/options/representation decision rule in your own words.
-3. Clarify any confusing example before beginning the hands-on exercise.
-4. Complete the hands-on exercise.
+1. Implement the three Topic 03 endpoints.
+2. Test valid path, query, and body inputs.
+3. Observe validation failures for each input location.
+4. Push `Hands_On/main.py` for review.
 5. Answer interview questions one at a time in chat before creating `Interview.md`.
 
 Last updated: 2026-09-06

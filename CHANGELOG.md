@@ -7,10 +7,12 @@ All meaningful changes to the Software Engineering Bootcamp roadmap are recorded
 ### Completed
 
 - Topic 02: HTTP methods, including notes, hands-on CRUD exercise, and interview material.
+- Topic 03 learning notes.
 
 ### Added
 
 - Topic 03 notes on path parameters, query parameters, request bodies, FastAPI input inference, and input-placement decisions.
+- Topic 03 hands-on exercise combining path, query, and validated body inputs.
 - Chat-first interview workflow: answer and review each question before creating the final interview document.
 
 ## 2026-09-03
