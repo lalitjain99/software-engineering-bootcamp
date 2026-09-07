@@ -301,6 +301,15 @@ For every input, ask:
 | Create an order | `POST /orders` plus a body |
 | Change an order address | `PATCH /orders/9001` plus a body |
 
+**Q1: Would this value be persisted as part of the resource in the database?** 
+    If yes → it's an attribute → body.
+
+**Q2: Does this value identify which resource/collection we're operating on?**
+    If yes → it's identity → path.
+    
+**Q3: Does this value change how the request is processed, without itself being stored data?** 
+    If yes → it's a control/behavior flag → query param.
+
 ---
 
 ## 🧠 Technical Lead Perspective
@@ -317,6 +326,7 @@ Input placement is part of the public API contract. Check that:
 Good API design makes common requests unsurprising.
 
 ---
+
 
 ## ✅ Check Your Understanding
 
