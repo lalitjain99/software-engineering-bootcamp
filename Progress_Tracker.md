@@ -2,9 +2,9 @@
 
 ## Overall Status
 
-🟡 Backend Engineering — Topic 03: Sending Input to an API
+🟢 Backend Engineering — Topic 03 complete
 
-Topics 01 and 02 are complete. Topic 03 explains how to place endpoint input in the path, query string, or request body according to its meaning.
+Topics 01–03 are complete. The next topic is HTTP headers: metadata carried alongside request and response content.
 
 ## Goals
 
@@ -18,7 +18,7 @@ Topics 01 and 02 are complete. Topic 03 explains how to place endpoint input in 
 | Phase | Focus | Target weeks | Status | Completion |
 |---|---|---:|:---:|---:|
 | 0 | Skills audit and setup | 0–1 | 🟡 | 35% |
-| 1 | Backend engineering depth | 1–14 | 🟡 | 12% |
+| 1 | Backend engineering depth | 1–14 | 🟡 | 18% |
 | 2 | System design | 15–24 | ⚪ | 0% |
 | 3 | DevOps, cloud, and production | 25–32 | ⚪ | 0% |
 | 4 | Leadership and interview synthesis | 33–36 | ⚪ | 0% |
@@ -28,22 +28,22 @@ Topics 01 and 02 are complete. Topic 03 explains how to place endpoint input in 
 | Deliverable | Status |
 |---|:---:|
 | `Notes.md` | 🟢 |
-| `Interview.md` | ⚪ |
+| `Interview.md` | 🟢 |
 | `Hands_On/` | 🟢 |
-| Topic completion | 🟡 |
+| Topic completion | 🟢 |
 
 ## Weekly Tracker
 
 | Week | Core topic | Tier | Capstone layer | Coding | Leadership journal | Hours |
 |---:|---|:---:|---|:---:|:---:|---:|
 | 1 | Topics 01–02 completed | A | Not started yet | 🟢 Topic 01–02 exercises | ⬜ | — |
-| 2 | [Topic 03 hands-on](modules/01_Backend_Engineering/03_API_Input/Hands_On/README.md) started | A | Not started yet | 🟡 | ⬜ | — |
+| 2 | Topic 03 completed | A | Not started yet | 🟢 Topic 03 exercise | ⬜ | — |
 
 ## Current Next Actions
 
-1. Answer Topic 03 interview questions one at a time in chat.
-2. Review and improve each answer before moving forward.
-3. Create `Interview.md` only after the chat interview is complete.
-4. Mark Topic 03 complete and begin HTTP headers.
+1. Begin Topic 04: HTTP headers.
+2. Connect headers already observed in Postman to their purpose.
+3. Complete a focused hands-on exercise.
+4. Answer interview questions one at a time in chat before creating `Interview.md`.
 
-Last updated: 2026-09-06
+Last updated: 2026-09-07

@@ -42,9 +42,10 @@ The application grows step by step. Each topic starts from the previous design a
    - `GET`, `POST`, `PUT`, `PATCH`, and `DELETE`
    - Safe operations, idempotent operations, and choosing the correct method
    - Notes, interview exercise, and hands-on exercise complete
-3. 🟡 **[Sending input to an API](modules/01_Backend_Engineering/03_API_Input/Notes.md)**
+3. 🟢 **[Sending input to an API](modules/01_Backend_Engineering/03_API_Input/Notes.md)**
    - Path parameters, query parameters, and request body
    - How to decide where each input belongs
+   - Notes, chat interview, and hands-on exercise complete
 4. ⚪ **HTTP headers**
    - Request versus response headers
    - `Content-Type`, `Accept`, `Authorization`, correlation IDs, and custom headers
@@ -156,4 +157,4 @@ Topic/
 | Review and planning | 10–45 minutes |
 | **Total** | **Approximately 5–8 hours** |
 
-Last updated: 2026-09-06
+Last updated: 2026-09-07

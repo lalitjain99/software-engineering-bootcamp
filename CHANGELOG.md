@@ -2,6 +2,17 @@
 
 All meaningful changes to the Software Engineering Bootcamp roadmap are recorded here.
 
+## 2026-09-07
+
+### Completed
+
+- Topic 03: sending input to an API, including notes, hands-on implementation, code review, and chat interview.
+
+### Added
+
+- Topic 03 `Interview.md`, built from the learner's answers and review feedback.
+- Common mistakes covering input location, requiredness, validation, security, GET bodies, and optional path parameters.
+
 ## 2026-09-06
 
 ### Completed
