@@ -7,7 +7,7 @@ app = FastAPI(title="Exercise on API Headers")
 
 
 @app.get("/inspect-headers",status_code=status.HTTP_200_OK)
-def get_products(
+def inspect_headers(
     response: Response,
     accept: str | None = Header(default=None),
     authorization: str | None = Header(default=None),
@@ -17,7 +17,7 @@ def get_products(
     correlation_id = x_correlation_id or str(uuid.uuid4())
     response.headers["X-Correlation-ID"] = correlation_id
     response.headers["X-API-Version"] = "1"
-    authorization_scheme = authorization.split(maxsplit=1)[0] if authorization else None
+    authorization_scheme = authorization.split(maxsplit=1)[0] if authorization and authorization.strip() else None
 
     return {
         "accept": accept,
