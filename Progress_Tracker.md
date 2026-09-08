@@ -27,9 +27,9 @@ Topics 01–03 are complete. Topic 04 introduces metadata carried alongside HTTP
 
 | Deliverable | Status |
 |---|:---:|
-| `Notes.md` | 🟡 |
+| `Notes.md` | 🟢 |
 | `Interview.md` | ⚪ |
-| `Hands_On/` | ⚪ |
+| `Hands_On/` | 🟡 |
 | Topic completion | 🟡 |
 
 ## Weekly Tracker
@@ -38,14 +38,14 @@ Topics 01–03 are complete. Topic 04 introduces metadata carried alongside HTTP
 |---:|---|:---:|---|:---:|:---:|---:|
 | 1 | Topics 01–02 completed | A | Not started yet | 🟢 Topic 01–02 exercises | ⬜ | — |
 | 2 | Topic 03 completed | A | Not started yet | 🟢 Topic 03 exercise | ⬜ | — |
-| 3 | [Topic 04 Notes](modules/01_Backend_Engineering/04_HTTP_Headers/Notes.md) started | A | Not started yet | ⬜ | ⬜ | — |
+| 3 | [Topic 04 hands-on](modules/01_Backend_Engineering/04_HTTP_Headers/Hands_On/README.md) started | A | Not started yet | 🟡 | ⬜ | — |
 
 ## Current Next Actions
 
-1. Read Topic 04 notes and inspect the raw request-response examples.
-2. Explain `Content-Type` versus `Accept` in your own words.
-3. Connect headers already observed in Postman to their purpose.
-4. Complete the focused hands-on exercise.
+1. Implement the two Topic 04 endpoints.
+2. Inspect request and response headers in Postman or curl.
+3. Test correlation-ID propagation, generation, and header case-insensitivity.
+4. Push `Hands_On/main.py` for review.
 5. Answer interview questions one at a time in chat before creating `Interview.md`.
 
 Last updated: 2026-09-08
