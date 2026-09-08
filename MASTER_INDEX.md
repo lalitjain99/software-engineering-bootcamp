@@ -46,7 +46,7 @@ The application grows step by step. Each topic starts from the previous design a
    - Path parameters, query parameters, and request body
    - How to decide where each input belongs
    - Notes, chat interview, and hands-on exercise complete
-4. ⚪ **HTTP headers**
+4. 🟡 **[HTTP headers](modules/01_Backend_Engineering/04_HTTP_Headers/Notes.md)**
    - Request versus response headers
    - `Content-Type`, `Accept`, `Authorization`, correlation IDs, and custom headers
 5. ⚪ **Status codes and error responses**
@@ -157,4 +157,4 @@ Topic/
 | Review and planning | 10–45 minutes |
 | **Total** | **Approximately 5–8 hours** |
 
-Last updated: 2026-09-07
+Last updated: 2026-09-08

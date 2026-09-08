@@ -2,6 +2,14 @@
 
 All meaningful changes to the Software Engineering Bootcamp roadmap are recorded here.
 
+## 2026-09-08
+
+### Added
+
+- Topic 04 notes on request and response headers.
+- First-principles explanations of `Content-Type`, `Accept`, `Authorization`, correlation IDs, and custom headers.
+- FastAPI examples for reading request headers and setting response headers.
+
 ## 2026-09-07
 
 ### Completed
