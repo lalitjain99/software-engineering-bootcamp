@@ -2,9 +2,9 @@
 
 ## Overall Status
 
-🟡 Backend Engineering — Topic 04: HTTP Headers
+🟢 Backend Engineering — Topic 04: HTTP Headers complete
 
-Topics 01–03 are complete. Topic 04 introduces metadata carried alongside HTTP request and response content.
+Topics 01–04 are complete. Topic 05, status codes and error responses, is ready to begin.
 
 ## Goals
 
@@ -18,7 +18,7 @@ Topics 01–03 are complete. Topic 04 introduces metadata carried alongside HTTP
 | Phase | Focus | Target weeks | Status | Completion |
 |---|---|---:|:---:|---:|
 | 0 | Skills audit and setup | 0–1 | 🟡 | 35% |
-| 1 | Backend engineering depth | 1–14 | 🟡 | 18% |
+| 1 | Backend engineering depth | 1–14 | 🟡 | 24% |
 | 2 | System design | 15–24 | ⚪ | 0% |
 | 3 | DevOps, cloud, and production | 25–32 | ⚪ | 0% |
 | 4 | Leadership and interview synthesis | 33–36 | ⚪ | 0% |
@@ -28,9 +28,9 @@ Topics 01–03 are complete. Topic 04 introduces metadata carried alongside HTTP
 | Deliverable | Status |
 |---|:---:|
 | `Notes.md` | 🟢 |
-| `Interview.md` | ⚪ |
-| `Hands_On/` | 🟡 |
-| Topic completion | 🟡 |
+| `Interview.md` | 🟢 |
+| `Hands_On/` | 🟢 |
+| Topic completion | 🟢 |
 
 ## Weekly Tracker
 
@@ -38,14 +38,13 @@ Topics 01–03 are complete. Topic 04 introduces metadata carried alongside HTTP
 |---:|---|:---:|---|:---:|:---:|---:|
 | 1 | Topics 01–02 completed | A | Not started yet | 🟢 Topic 01–02 exercises | ⬜ | — |
 | 2 | Topic 03 completed | A | Not started yet | 🟢 Topic 03 exercise | ⬜ | — |
-| 3 | [Topic 04 hands-on](modules/01_Backend_Engineering/04_HTTP_Headers/Hands_On/README.md) started | A | Not started yet | 🟡 | ⬜ | — |
+| 3 | [Topic 04 completed](modules/01_Backend_Engineering/04_HTTP_Headers/Notes.md) | A | Not started yet | 🟢 Topic 04 exercise | ⬜ | — |
 
 ## Current Next Actions
 
-1. Implement the two Topic 04 endpoints.
-2. Inspect request and response headers in Postman or curl.
-3. Test correlation-ID propagation, generation, and header case-insensitivity.
-4. Push `Hands_On/main.py` for review.
-5. Answer interview questions one at a time in chat before creating `Interview.md`.
+1. Begin Topic 05: status codes and error responses.
+2. Understand success, client-error, and server-error status families.
+3. Design one consistent API error response.
+4. Continue light coding practice and the leadership journal.
 
-Last updated: 2026-09-08
+Last updated: 2026-09-09
