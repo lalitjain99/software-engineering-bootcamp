@@ -46,9 +46,10 @@ The application grows step by step. Each topic starts from the previous design a
    - Path parameters, query parameters, and request body
    - How to decide where each input belongs
    - Notes, chat interview, and hands-on exercise complete
-4. 🟡 **[HTTP headers](modules/01_Backend_Engineering/04_HTTP_Headers/Notes.md)**
+4. 🟢 **[HTTP headers](modules/01_Backend_Engineering/04_HTTP_Headers/Notes.md)**
    - Request versus response headers
    - `Content-Type`, `Accept`, `Authorization`, correlation IDs, and custom headers
+   - [Notes](modules/01_Backend_Engineering/04_HTTP_Headers/Notes.md), [interview guide](modules/01_Backend_Engineering/04_HTTP_Headers/Interview.md), and [hands-on exercise](modules/01_Backend_Engineering/04_HTTP_Headers/Hands_On/README.md) complete
 5. ⚪ **Status codes and error responses**
    - Success, client-error, and server-error families
    - Designing consistent error contracts
@@ -157,4 +158,4 @@ Topic/
 | Review and planning | 10–45 minutes |
 | **Total** | **Approximately 5–8 hours** |
 
-Last updated: 2026-09-08
+Last updated: 2026-09-09
