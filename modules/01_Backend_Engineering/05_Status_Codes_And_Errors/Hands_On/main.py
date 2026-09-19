@@ -68,7 +68,7 @@ def product(category:str| None = None):
       if details["category"] == category:
         products_list.append(details)
 
-  return products_list if products_list else {}
+  return products_list
 
     
 @app.post("/products",status_code=status.HTTP_201_CREATED)
@@ -88,6 +88,7 @@ def create_product(product:ProductCreate,response:Response):
     "product_id": product_id,
     **product.model_dump(),
   }
+  products[product_id] = created_product
   response.headers["Location"] = f"/products/{product_id}"
 
   return created_product
