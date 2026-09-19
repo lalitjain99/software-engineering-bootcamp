@@ -53,7 +53,7 @@ The application grows step by step. Each topic starts from the previous design a
 5. 🟡 **[Status codes and error responses](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Notes.md)**
    - Success, client-error, and server-error families
    - Designing consistent error contracts
-   - Notes ready; [hands-on exercise](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Hands_On/README.md) started; chat interview pending
+   - Notes and [hands-on exercise](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Hands_On/README.md) complete; chat interview pending
 6. ⚪ **HTTP, HTTPS, and protocol foundations**
    - The roles of IP, TCP, TLS, HTTP, and HTTPS
    - Why encryption changes HTTP into HTTPS
@@ -159,4 +159,4 @@ Topic/
 | Review and planning | 10–45 minutes |
 | **Total** | **Approximately 5–8 hours** |
 
-Last updated: 2026-09-16
+Last updated: 2026-09-19
