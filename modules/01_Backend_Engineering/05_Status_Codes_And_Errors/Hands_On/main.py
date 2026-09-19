@@ -52,7 +52,7 @@ def get_product(product_id:int):
       status_code=status.HTTP_404_NOT_FOUND,
       code="PRODUCT_NOT_FOUND",
       message=f"Product {product_id} does not exists",
-      details={"product_id":f"{product_id}"}
+      details={"product_id": product_id}
     )
   return product
 
@@ -70,30 +70,13 @@ def product(category:str| None = None):
 
   return products_list if products_list else {}
 
-
-# 6. Create a Product
-# Implement:
-
-# POST /products
-
-# Successful creation
-# When the SKU is new:
-
-# Generate a new product ID.
-# Store the product.
-# Return the created representation.
-# Return 201 Created.
-# Add a Location response header containing the new resource path:
-# Location: /products/<new-product-id>
     
 @app.post("/products",status_code=status.HTTP_201_CREATED)
 def create_product(product:ProductCreate,response:Response):
   #create product
-  # print(f'"input product": {product}')
-  print("products",products)
   for id,details in products.items():
     if details['sku'] == product.sku:
-      raise raise_app_error(
+      raise_app_error(
         status_code=status.HTTP_409_CONFLICT,
         code="PRODUCT_SKU_CONFLICT",
         message=f"{product.sku} already exists",
@@ -101,36 +84,25 @@ def create_product(product:ProductCreate,response:Response):
                  "sku":details["sku"]}
       )
   product_id = max(products, default=100) + 1
-  create_product = product.model_dump()
-  products[product_id] = create_product
-  response.headers["Location"] = f"/product/{product_id}"
-
-  return {
-      "id": product_id,
-      "product":product,
+  created_product = {
+    "product_id": product_id,
+    **product.model_dump(),
   }
+  response.headers["Location"] = f"/products/{product_id}"
 
-# 7. Delete a Product
-# Implement:
-
-# DELETE /products/{product_id}
-
-# Behaviour:
-
-# If the product exists, remove it and return 204 No Content.
-# The successful 204 response must have no response body.
-# If the product does not exist, return 404 Not Found using the same PRODUCT_NOT_FOUND error structure as the GET endpoint.
+  return created_product
 
 
 @app.delete("/products/{product_id}",status_code=status.HTTP_204_NO_CONTENT)
 def delete_product(product_id:int):
   if product_id in products:
     del products[product_id]
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
   else:
     raise_app_error(
       status_code=status.HTTP_404_NOT_FOUND,
       code="PRODUCT_NOT_FOUND",
       message=f"{product_id} does not exist",
-      details={}
+      details={"product_id": product_id}
     )
   
