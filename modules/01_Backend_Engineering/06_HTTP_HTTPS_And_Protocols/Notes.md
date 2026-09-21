@@ -366,13 +366,273 @@ def get_product(product_id: int):
 Uvicorn and the operating system handle the socket and connection work before FastAPI executes this function.
 
 This abstraction is valuable: backend engineers normally work at the HTTP and application layers, but understanding the hidden connection layer helps diagnose refused connections, timeouts, exhausted connection pools, and unexpectedly high latency.
+
 ---
 
-## 🔓 Plain HTTP — Meaning Without Protection
+## 🌐 HTTP — The Language of the Web
 
-With plain HTTP, the HTTP message is not protected by TLS while travelling across the network.
+**HTTP** stands for **Hypertext Transfer Protocol**.
 
-Conceptually, an observer able to inspect the traffic could see or alter information such as:
+Let us break down the name:
+
+| Word | Meaning |
+|---|---|
+| Hypertext | Originally, documents containing links to other documents |
+| Transfer | Information is exchanged between applications |
+| Protocol | An agreed set of rules for how messages are structured and understood |
+
+HTTP was originally created for retrieving linked web documents. Today it is used for much more, including:
+
+- HTML pages
+- Images and videos
+- JSON APIs
+- File downloads
+- Requests between microservices
+
+Therefore, HTTP is not limited to transferring text. The name reflects its origin on the web.
+
+### What problem does HTTP solve?
+
+Suppose a client wants product `101` from a server.
+
+TCP can reliably carry bytes between them, but TCP does not know whether those bytes mean:
+
+- Retrieve a product
+- Create an order
+- Report an error
+- Return JSON
+- Return an image
+
+HTTP provides the shared message format and meaning.
+
+It allows the client to express:
+
+> “Please retrieve product 101. I can accept JSON.”
+
+It allows the server to respond:
+
+> “The request succeeded. Here is the product in JSON format.”
+
+HTTP is therefore an **application-layer request–response protocol**:
+
+1. A client sends an HTTP request.
+2. A server interprets it and performs some work.
+3. The server sends an HTTP response.
+
+The client could be a browser, Postman, a mobile app, or another backend service. The server could be Uvicorn/FastAPI, another web server, an API gateway, or a load balancer acting on behalf of an application.
+
+---
+
+### The components of an HTTP request
+
+Here is a complete simplified request:
+
+```http
+GET /products/101 HTTP/1.1
+Host: api.example.com
+Accept: application/json
+X-Correlation-ID: req-123
+```
+
+An HTTP request has these parts:
+
+#### 1. Request line
+
+```http
+GET /products/101 HTTP/1.1
+```
+
+| Part | Meaning |
+|---|---|
+| `GET` | Method: the action the client wants to perform |
+| `/products/101` | Request target: the resource path being requested |
+| `HTTP/1.1` | HTTP version used to represent this message |
+
+The URL may also contain a query string:
+
+```http
+GET /products?category=electronics&limit=10 HTTP/1.1
+```
+
+Here, `/products` is the path and the values after `?` are query parameters.
+
+#### 2. Request headers
+
+```http
+Host: api.example.com
+Accept: application/json
+X-Correlation-ID: req-123
+```
+
+Headers carry metadata about the request.
+
+In this example:
+
+- `Host` identifies the target hostname.
+- `Accept` says the client can process a JSON response.
+- `X-Correlation-ID` helps trace the request across services.
+
+#### 3. Blank line
+
+A blank line separates the headers from the optional body.
+
+#### 4. Request body
+
+A body carries data when the request needs one. For example:
+
+```http
+POST /products HTTP/1.1
+Host: api.example.com
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Keyboard",
+  "price": 2500
+}
+```
+
+Here:
+
+- The method is `POST`.
+- The target is `/products`.
+- `Content-Type` says the request body contains JSON.
+- The JSON document is the request body.
+
+Not every request has a body. A typical `GET` request usually sends its inputs through the path, query parameters, and headers.
+
+---
+
+### The components of an HTTP response
+
+The server might answer the earlier `GET /products/101` request with:
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 46
+X-Correlation-ID: req-123
+
+{
+  "id": 101,
+  "name": "Keyboard"
+}
+```
+
+An HTTP response has these parts:
+
+#### 1. Status line
+
+```http
+HTTP/1.1 200 OK
+```
+
+| Part | Meaning |
+|---|---|
+| `HTTP/1.1` | HTTP version used for the response |
+| `200` | Machine-readable status code |
+| `OK` | Human-readable reason phrase |
+
+The status code tells the client the outcome at the HTTP level. Examples include:
+
+- `200 OK` — the request succeeded.
+- `201 Created` — a resource was created.
+- `404 Not Found` — the requested resource was not found.
+- `422 Unprocessable Content` — the input could not be processed.
+- `500 Internal Server Error` — the server encountered an unexpected failure.
+
+#### 2. Response headers
+
+```http
+Content-Type: application/json
+Content-Length: 46
+X-Correlation-ID: req-123
+```
+
+These describe the response:
+
+- `Content-Type` says the response body is JSON.
+- `Content-Length` gives the body size in bytes in this example.
+- `X-Correlation-ID` returns the request-tracing identifier.
+
+#### 3. Blank line
+
+A blank line separates the response headers from the response body.
+
+#### 4. Response body
+
+```json
+{
+  "id": 101,
+  "name": "Keyboard"
+}
+```
+
+The body contains the returned representation of the product.
+
+A response does not always contain a body. For example, a successful `204 No Content` response must not include response content.
+
+---
+
+### One complete HTTP conversation
+
+```text
+Client
+  │
+  │  GET /products/101
+  │  Accept: application/json
+  ▼
+Server
+  │
+  │  200 OK
+  │  Content-Type: application/json
+  │  {"id": 101, "name": "Keyboard"}
+  ▼
+Client
+```
+
+HTTP defines what these messages mean. TCP carries the bytes reliably for HTTP/1.1 and HTTP/2, while IP helps route them to the correct machine.
+
+### HTTP does not do every networking job
+
+HTTP does not itself:
+
+- Convert a hostname into an IP address—that is DNS.
+- Choose the application on a machine—that involves a port and socket.
+- Guarantee ordered byte delivery—that is TCP for HTTP/1.1 and HTTP/2.
+- Encrypt the conversation—that is TLS when HTTPS is used.
+
+This separation explains why an HTTP request can be perfectly valid but still fail before reaching FastAPI because DNS resolution, connection establishment, or TLS setup failed.
+
+### Is HTTP stateless?
+
+HTTP is described as **stateless** because each request is an independent message. HTTP does not require the server to remember earlier requests to understand the current one.
+
+Applications can still create stateful user experiences by building mechanisms on top of HTTP, such as:
+
+- Cookies
+- Session identifiers
+- Access tokens
+- Database records
+
+For example, the browser may send a session cookie with every request. The application uses that value to find stored session state, but the HTTP request itself remains a separate request.
+
+---
+
+## 🔓 Plain HTTP — HTTP Without TLS
+
+When people say **plain HTTP**, they mean that HTTP messages are being exchanged without TLS protection.
+
+For example:
+
+```text
+http://api.example.com/products/101
+└── http scheme: no TLS protection
+```
+
+The HTTP message still has its normal method, path, headers, body, status code, and response. The problem is that the message is not encrypted or protected against modification while travelling across the network.
+
+Conceptually, an observer able to inspect plain HTTP traffic could see or alter information such as:
 
 - Request path and query string
 - Headers
@@ -383,7 +643,6 @@ Conceptually, an observer able to inspect the traffic could see or alter informa
 Putting a token in the `Authorization` header gives it the correct HTTP location; it does not encrypt it.
 
 This is why sensitive APIs require HTTPS.
-
 ---
 
 ## 🔐 TLS — Protect the Conversation
