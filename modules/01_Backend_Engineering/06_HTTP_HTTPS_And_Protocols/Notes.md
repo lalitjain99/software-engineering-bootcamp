@@ -510,13 +510,10 @@ The server might answer the earlier `GET /products/101` request with:
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 46
+Content-Length: 28
 X-Correlation-ID: req-123
 
-{
-  "id": 101,
-  "name": "Keyboard"
-}
+{"id":101,"name":"Keyboard"}
 ```
 
 An HTTP response has these parts:
@@ -545,7 +542,7 @@ The status code tells the client the outcome at the HTTP level. Examples include
 
 ```http
 Content-Type: application/json
-Content-Length: 46
+Content-Length: 28
 X-Correlation-ID: req-123
 ```
 
@@ -562,10 +559,7 @@ A blank line separates the response headers from the response body.
 #### 4. Response body
 
 ```json
-{
-  "id": 101,
-  "name": "Keyboard"
-}
+{"id":101,"name":"Keyboard"}
 ```
 
 The body contains the returned representation of the product.
@@ -871,15 +865,15 @@ The ability to name the failing layer prevents wasted debugging.
 
 ## ✅ Check Your Understanding
 
-1. Why can one IP address host several services?
-2. What role does a port play after the IP address is known?
-3. What does TCP provide that HTTP itself does not?
-4. Does placing a token in an HTTP header encrypt it?
-5. What three primary protections does TLS provide?
-6. Which parts of an HTTPS request are still likely visible as network metadata?
-7. Why can TLS termination at a load balancer matter to backend security?
-8. What changed from HTTP/1.1 to HTTP/2 and HTTP/3?
-9. Does HTTP/3 lose reliability because it uses UDP?
+1. What does each word in **Hypertext Transfer Protocol** mean?
+2. What are the four main parts of an HTTP request?
+3. What are the four main parts of an HTTP response?
+4. What does HTTP provide that TCP does not, and what does TCP provide that HTTP does not?
+5. Why can one IP address host several services, and what role does a port play?
+6. Does placing a token in an HTTP header encrypt it?
+7. What three primary protections does TLS provide?
+8. Why can TLS termination at a load balancer matter to backend security?
+9. What changed from HTTP/1.1 to HTTP/2 and HTTP/3?
 10. If a connection is refused before FastAPI logs anything, which layers would you inspect first?
 
 ---
