@@ -50,10 +50,10 @@ The application grows step by step. Each topic starts from the previous design a
    - Request versus response headers
    - `Content-Type`, `Accept`, `Authorization`, correlation IDs, and custom headers
    - [Notes](modules/01_Backend_Engineering/04_HTTP_Headers/Notes.md), [interview guide](modules/01_Backend_Engineering/04_HTTP_Headers/Interview.md), and [hands-on exercise](modules/01_Backend_Engineering/04_HTTP_Headers/Hands_On/README.md) complete
-5. 🟡 **[Status codes and error responses](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Notes.md)**
+5. 🟢 **[Status codes and error responses](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Notes.md)**
    - Success, client-error, and server-error families
    - Designing consistent error contracts
-   - Notes and [hands-on exercise](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Hands_On/README.md) complete; chat interview pending
+   - [Notes](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Notes.md), [interview guide](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Interview.md), and [hands-on exercise](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Hands_On/README.md) complete
 6. ⚪ **HTTP, HTTPS, and protocol foundations**
    - The roles of IP, TCP, TLS, HTTP, and HTTPS
    - Why encryption changes HTTP into HTTPS
@@ -159,4 +159,4 @@ Topic/
 | Review and planning | 10–45 minutes |
 | **Total** | **Approximately 5–8 hours** |
 
-Last updated: 2026-09-19
+Last updated: 2026-09-21
