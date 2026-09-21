@@ -118,13 +118,82 @@ A port number does not make traffic secure. Security depends on the protocol use
 
 HTTP/1.1 and HTTP/2 commonly use TCP.
 
-TCP provides an ordered, reliable byte stream between two endpoints. At a high level, it:
+Think of TCP as a **reliable courier for bytes**. If a courier must deliver a ten-page document:
+
+- The pages are numbered.
+- The receiver confirms what arrived.
+- A missing page is sent again.
+- Pages that arrive out of order are rearranged.
+- The complete document is delivered in the correct order.
+
+TCP provides the same general behaviour for application data.
+
+### Example: calling the local FastAPI server
+
+When you request:
+
+```text
+http://127.0.0.1:8000/products/101
+```
+
+a simplified connection looks like:
+
+```text
+Client                              FastAPI server
+127.0.0.1:53000                     127.0.0.1:8000
+        │                                    │
+        ├── Establish TCP connection ───────►│
+        ├── Send HTTP request bytes ────────►│
+        │◄── Send HTTP response bytes ───────┤
+        └── Close or reuse connection ───────┘
+```
+
+Port `53000` represents an example temporary client port selected by the operating system. Uvicorn is listening on server port `8000`.
+
+TCP provides an ordered, reliable byte stream between these endpoints. At a high level, it:
 
 1. Establishes a connection.
-2. Numbers and orders transmitted data.
+2. Tracks the position of transmitted bytes.
 3. Detects missing data.
 4. Retransmits lost data.
 5. Delivers bytes to the application in order.
+
+### How TCP preserves order
+
+Suppose the application sends:
+
+```text
+ABCDEFGHI
+```
+
+TCP might carry it in segments whose bytes begin at different sequence positions:
+
+```text
+ABC → starts at sequence position 1
+DEF → starts at sequence position 4
+GHI → starts at sequence position 7
+```
+
+The network might deliver them in this order:
+
+```text
+ABC → GHI → DEF
+```
+
+The receiving TCP:
+
+1. Accepts `ABC` and expects the byte at position 4 next.
+2. Receives `GHI`, recognizes that earlier bytes are missing, and keeps it in a receive buffer.
+3. Uses acknowledgements to report which bytes have arrived and which position is expected next.
+4. Receives—or requests retransmission of—the missing `DEF`.
+5. Reconstructs `ABCDEFGHI`.
+6. Delivers the ordered byte stream to the HTTP layer.
+
+Sequence numbers identify byte positions, the receive buffer holds out-of-order data, acknowledgements report progress, and retransmission recovers missing data.
+
+Reliability does not mean the API operation succeeds. TCP can deliver a request perfectly while FastAPI returns `404`, `422`, or `500`. Those are HTTP or application outcomes.
+
+### HTTP gives the delivered bytes meaning
 
 TCP does **not** understand:
 
@@ -134,16 +203,40 @@ TCP does **not** understand:
 - JSON
 - Status codes
 
-It only carries bytes reliably. HTTP gives those bytes application meaning.
-
-A useful separation is:
+It only transports bytes. HTTP defines how two applications express and interpret requests and responses.
 
 ```text
-TCP: “I will deliver these bytes reliably and in order.”
-HTTP: “These bytes represent GET /products/101.”
+Client application
+        ↓ creates an HTTP request
+HTTP
+        ↓ represents the message as bytes
+TCP
+        ↓ transports the bytes reliably and in order
+IP
+        ↓ routes them to the destination machine
+TCP
+        ↓ reconstructs the ordered byte stream
+HTTP
+        ↓ interprets the method, path, headers, and body
+Server application
 ```
 
-Reliability has a trade-off. If TCP data is lost, later bytes wait for the missing bytes to be recovered so the ordered stream can continue.
+A useful analogy is:
+
+```text
+HTTP = language and letter format
+TCP  = reliable courier
+IP   = destination address
+Port = receiving department
+```
+
+TCP is not a separate middleman application. It is a transport protocol implemented by the networking systems at both endpoints.
+
+### The trade-off: waiting for missing data
+
+If a TCP segment is missing, later bytes may already have arrived, but TCP cannot give the application an incomplete ordered stream. It waits for the missing bytes to be recovered.
+
+This is called **head-of-line blocking**. It becomes important when comparing HTTP/2 over TCP with HTTP/3 over QUIC.
 
 ---
 
