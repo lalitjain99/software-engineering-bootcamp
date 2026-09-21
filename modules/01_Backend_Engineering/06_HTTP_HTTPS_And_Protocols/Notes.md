@@ -238,6 +238,134 @@ If a TCP segment is missing, later bytes may already have arrived, but TCP canno
 
 This is called **head-of-line blocking**. It becomes important when comparing HTTP/2 over TCP with HTTP/3 over QUIC.
 
+
+---
+
+## 🔌 Socket — The Application's Network Endpoint
+
+A **socket** is an operating-system-managed communication endpoint. An application uses it to send and receive bytes over a network connection.
+
+A port and a socket are related, but they are not the same:
+
+| Concept | Meaning |
+|---|---|
+| Port | A number used to locate a network service on a machine |
+| Socket | The operating-system object an application uses to communicate |
+| TCP connection | The communication relationship between a client socket and a server socket |
+
+A useful analogy is:
+
+```text
+IP address = building address
+Port       = department number
+Socket     = telephone used by that department
+TCP        = reliable telephone service
+HTTP       = language and conversation rules
+```
+
+### Listening socket and connected sockets
+
+When Uvicorn starts on `127.0.0.1:8000`, it asks the operating system to create a **listening socket** for that address and port. Its job is to wait for new connection attempts.
+
+Suppose two clients connect:
+
+```text
+Client A: 127.0.0.1:53000 ──┐
+                             ├── Server: 127.0.0.1:8000
+Client B: 127.0.0.1:53001 ──┘
+```
+
+The server keeps its listening socket and the operating system creates a separate **connected socket** for each accepted client connection. The server port can remain `8000` for both because each TCP connection is identified by the combination of:
+
+- Client IP address
+- Client port
+- Server IP address
+- Server port
+
+The client ports above are temporary example ports selected by the operating system.
+
+At a low level, socket operations resemble:
+
+```text
+connect → send → receive → close
+```
+
+Most application code does not call these operations directly.
+
+### Does a TCP connection exist when no request is being sent?
+
+There are two different situations:
+
+1. **No connection has been initiated:** no TCP connection exists merely because two applications are running.
+2. **A request already used a connection:** the connection may remain open but idle so another request can reuse it.
+
+An idle connection still consumes some resources at both endpoints. Clients, servers, load balancers, and proxies therefore use timeout and connection-limit policies. Eventually, either side may close it.
+
+This is different from **TCP keepalive**, which is an optional operating-system mechanism for detecting connections whose peer is no longer reachable. HTTP connection reuse and TCP keepalive solve different problems.
+
+### Can every request create its own TCP connection?
+
+Yes. A client can create a connection, send one request, receive one response, and close the connection.
+
+However, repeating that for every request adds work:
+
+- A TCP connection must be established.
+- HTTPS also requires TLS setup.
+- Both endpoints allocate socket, buffer, and connection state.
+- The extra round trips increase latency.
+
+For repeated requests, clients usually keep a **connection pool** and reuse suitable idle connections.
+
+```text
+Request 1 ─┐
+Request 2 ─┼── HTTP client connection pool ── existing TCP connection
+Request 3 ─┘
+```
+
+With HTTP/1.1, a client may keep several reusable connections for parallel work. With HTTP/2, multiple HTTP streams can share one TCP connection.
+
+Connection reuse is an optimization, not a guarantee. A new connection may still be required when:
+
+- No reusable connection exists.
+- The previous connection was closed.
+- An idle timeout expired.
+- The destination or connection settings differ.
+- The pool's available connections are busy.
+
+### Why did we not write TCP connection code?
+
+The networking work is divided across layers:
+
+| Component | Main responsibility |
+|---|---|
+| Browser, Postman, or HTTP library | Builds HTTP messages and manages connections or a connection pool |
+| Operating system TCP stack | Creates sockets; performs the TCP handshake; tracks sequence numbers, acknowledgements, retransmission, and buffers |
+| Uvicorn | Opens the listening socket, accepts connections, and parses HTTP messages |
+| FastAPI | Matches routes, validates API inputs, runs endpoint logic, and creates application responses |
+
+For example:
+
+```python
+import httpx
+
+with httpx.Client(base_url="http://127.0.0.1:8000") as client:
+    first_response = client.get("/products/101")
+    second_response = client.get("/products/102")
+```
+
+You write HTTP-level code. HTTPX and the operating system handle the sockets and TCP details. Keeping one client open also gives HTTPX an opportunity to reuse its connection pool.
+
+On the server side, you write:
+
+```python
+@app.get("/products/{product_id}")
+def get_product(product_id: int):
+    ...
+```
+
+Uvicorn and the operating system handle the socket and connection work before FastAPI executes this function.
+
+This abstraction is valuable: backend engineers normally work at the HTTP and application layers, but understanding the hidden connection layer helps diagnose refused connections, timeouts, exhausted connection pools, and unexpectedly high latency.
 ---
 
 ## 🔓 Plain HTTP — Meaning Without Protection
