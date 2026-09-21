@@ -2,9 +2,9 @@
 
 ## Overall Status
 
-🟡 Backend Engineering — Topic 05: Status Codes and Error Responses
+🟢 Backend Engineering — Topic 05: Status Codes and Error Responses complete
 
-Topics 01–04 are complete. Topic 05 introduces how an API communicates success and failure consistently.
+Topics 01–05 are complete. Topic 06, HTTP, HTTPS, and protocol foundations, is ready to begin.
 
 ## Goals
 
@@ -18,7 +18,7 @@ Topics 01–04 are complete. Topic 05 introduces how an API communicates success
 | Phase | Focus | Target weeks | Status | Completion |
 |---|---|---:|:---:|---:|
 | 0 | Skills audit and setup | 0–1 | 🟡 | 35% |
-| 1 | Backend engineering depth | 1–14 | 🟡 | 24% |
+| 1 | Backend engineering depth | 1–14 | 🟡 | 30% |
 | 2 | System design | 15–24 | ⚪ | 0% |
 | 3 | DevOps, cloud, and production | 25–32 | ⚪ | 0% |
 | 4 | Leadership and interview synthesis | 33–36 | ⚪ | 0% |
@@ -28,9 +28,9 @@ Topics 01–04 are complete. Topic 05 introduces how an API communicates success
 | Deliverable | Status |
 |---|:---:|
 | `Notes.md` | 🟢 |
-| `Interview.md` | ⚪ |
+| `Interview.md` | 🟢 |
 | `Hands_On/` | 🟢 |
-| Topic completion | 🟡 |
+| Topic completion | 🟢 |
 
 ## Weekly Tracker
 
@@ -39,13 +39,13 @@ Topics 01–04 are complete. Topic 05 introduces how an API communicates success
 | 1 | Topics 01–02 completed | A | Not started yet | 🟢 Topic 01–02 exercises | ⬜ | — |
 | 2 | Topic 03 completed | A | Not started yet | 🟢 Topic 03 exercise | ⬜ | — |
 | 3 | [Topic 04 completed](modules/01_Backend_Engineering/04_HTTP_Headers/Notes.md) | A | Not started yet | 🟢 Topic 04 exercise | ⬜ | — |
-| 4 | [Topic 05 hands-on](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Hands_On/README.md) | A | Not started yet | 🟢 | ⬜ | — |
+| 4 | [Topic 05 completed](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Notes.md) | A | Not started yet | 🟢 Topic 05 exercise | ⬜ | — |
 
 ## Current Next Actions
 
-1. Answer Topic 05 interview questions one at a time in chat.
-2. Review the distinction between missing resources and empty collections.
-3. Review success, conflict, validation, and temporary-failure outcomes.
-4. Create `Interview.md` after the answers are reviewed.
+1. Begin Topic 06: HTTP, HTTPS, and protocol foundations.
+2. Build the request journey from IP and TCP through TLS and HTTP.
+3. Understand what HTTPS protects and what it does not.
+4. Continue light coding practice and the leadership journal.
 
-Last updated: 2026-09-19
+Last updated: 2026-09-21
