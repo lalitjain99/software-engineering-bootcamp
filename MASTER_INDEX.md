@@ -58,7 +58,7 @@ The application grows step by step. Each topic starts from the previous design a
    - The roles of IP, TCP, TLS, HTTP, and HTTPS
    - Why encryption changes HTTP into HTTPS
    - A gradual introduction to HTTP/1.1, HTTP/2, and HTTP/3
-   - [Notes](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Notes.md) ready; [hands-on exercise](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Hands_On/README.md) ready to run; chat interview pending
+   - [Notes](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Notes.md) and [hands-on exercise](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Hands_On/README.md) complete; [observations](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Hands_On/observations.md) reviewed; chat interview pending
 7. ⚪ **API styles and communication mechanisms**
    - REST, GraphQL, gRPC, WebSocket, Server-Sent Events, and webhooks
    - These are not all the same kind of protocol; compare the problems they solve
