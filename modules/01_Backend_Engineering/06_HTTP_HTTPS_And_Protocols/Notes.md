@@ -998,3 +998,6 @@ Observe DNS resolution, TCP connection details, TLS certificate verification, an
 - [RFC 9113 — HTTP/2](https://www.rfc-editor.org/rfc/rfc9113.html)
 - [RFC 9114 — HTTP/3](https://www.rfc-editor.org/rfc/rfc9114.html)
 - [RFC 9000 — QUIC](https://www.rfc-editor.org/rfc/rfc9000.html)
+- [Uvicorn Settings — proxy headers and keep-alive timeout](https://www.uvicorn.org/settings/)
+- [NGINX Proxy Module — upstream connection and read timeouts](https://nginx.org/en/docs/http/ngx_http_proxy_module.html)
+- [OWASP Logging Cheat Sheet — protecting sensitive data in logs](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)
