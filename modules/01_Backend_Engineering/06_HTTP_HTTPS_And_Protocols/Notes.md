@@ -846,21 +846,114 @@ This separation is useful during diagnosis:
 
 ---
 
-## 🧠 Technical Lead Perspective
+## 🧠 Technical Lead Perspective — One Production Example
 
-When reviewing a production API, ask:
+Imagine this setup for our product API:
 
-- Where does TLS terminate?
-- Is traffic protected on every required hop?
-- Who owns certificate issuance and renewal?
-- Which HTTP versions are supported by the load balancer and clients?
-- Are sensitive headers and URLs redacted from logs?
-- Does the application trust forwarded headers only from known proxies?
-- Are connection, request, and upstream timeouts defined?
-- Can failures be located at DNS, connection, TLS, HTTP, or application level?
+```text
+Client ── HTTPS ──► Load balancer ── HTTPS ──► Uvicorn/FastAPI
+```
 
-The ability to name the failing layer prevents wasted debugging.
+There are **two separate connections**: client to load balancer, and load balancer to backend. The load balancer reads the incoming request, then sends it onward. Let us answer the review questions using this example.
 
+### 1. Where does TLS terminate?
+
+TLS *terminates* wherever an HTTPS connection is decrypted. In this example, the client’s TLS connection ends at the load balancer. The load balancer starts a **new** TLS connection to the backend, which ends at Uvicorn or another backend proxy.
+
+Some deployments use HTTP for that second hop; others use HTTPS. The public URL saying `https://` tells us about the client-facing connection, **not automatically the backend hop**.
+
+**What to check:** At which component is each TLS certificate configured? What protocol is used from the load balancer to the service?
+
+### 2. Is traffic protected on every required hop?
+
+For the example above, both hops use HTTPS, so both are protected in transit. With this alternative:
+
+```text
+Client ── HTTPS ──► Load balancer ── HTTP ──► Uvicorn/FastAPI
+```
+
+the first hop is protected; the second is not protected by TLS. Whether that meets requirements depends on the network and security policy. Do not infer end-to-end protection from the browser’s padlock alone.
+
+**What to check:** List each hop and record whether it uses HTTP or HTTPS, including hops between internal services if any.
+
+### 3. Who owns certificate issuance and renewal?
+
+A certificate lets the client verify the name it connected to, such as `api.example.com`. It has an expiry date. The team responsible for the component **terminating TLS** needs a way to issue, install, monitor, and renew its certificate.
+
+For example, a cloud platform team might manage the load balancer certificate, while an application or platform team manages certificates on the backend hop. The owner is an **operational decision**, not something HTTP or FastAPI decides automatically.
+
+**What to check:** Who is responsible for each certificate, when does it expire, how is renewal performed, and who is alerted if renewal fails?
+
+### 4. Which HTTP versions do the load balancer and clients support?
+
+The HTTP version can differ across the two connections. For example, a client might use HTTP/2 with the load balancer while the load balancer uses HTTP/1.1 with Uvicorn. The load balancer translates between them while forwarding the request.
+
+HTTP/3 requires support on the **client-facing side** to be used there. Supporting HTTP/3 at the edge does not mean the backend also speaks HTTP/3.
+
+**What to check:** Which versions are enabled on the client-to-load-balancer hop and on the load-balancer-to-backend hop? Verify actual traffic rather than assuming both match.
+
+### 5. Are sensitive headers and URLs redacted from logs?
+
+Consider this request:
+
+```http
+GET /products?access_token=secret123 HTTP/1.1
+Authorization: Bearer secret456
+```
+
+The request may be encrypted while travelling over HTTPS, but a load balancer or application can still write the decrypted **URL or headers into its logs**. Access tokens, passwords, session cookies, and sensitive query parameters should not be recorded in full.
+
+Prefer sending tokens through the appropriate authentication mechanism, keep secrets out of URLs, and configure logging at **each component** to omit or redact sensitive values. Keep safe information such as the path template, status, duration, and correlation ID when useful.
+
+**What to check:** Inspect sample load balancer, proxy, application, and tracing logs for exposed credentials or personal data.
+
+### 6. Does the application trust forwarded headers only from known proxies?
+
+After TLS ends at the load balancer, it may tell Uvicorn about the original request using headers such as:
+
+```http
+X-Forwarded-Proto: https
+X-Forwarded-For: 203.0.113.10
+```
+
+These report the original scheme and client address. But a client can also **send a header with the same name**. If the backend trusts it from anyone, a client may falsely claim an HTTPS request or a different source IP.
+
+Configure the server to accept proxy headers **only from trusted proxy addresses**, and make sure the network path and proxy handling support that trust boundary. Uvicorn exposes settings such as `--proxy-headers` and `--forwarded-allow-ips`.
+
+**What to check:** Which proxies are trusted, can clients reach the backend directly, and does the proxy replace or sanitize incoming forwarded headers?
+
+### 7. Are connection, request, and upstream timeouts defined?
+
+These clocks measure **different waits**:
+
+| Timeout | What it limits | Example |
+|---|---|---|
+| Connection timeout | Time spent establishing a connection to another component | Load balancer cannot connect to the backend |
+| Idle connection timeout | Time an unused connection stays open for another request | Uvicorn’s keep-alive timeout between requests defaults to 5 seconds |
+| Request/response deadline | How long a client or gateway is willing to wait for the operation or response | Client gives up while an endpoint is still working |
+| Upstream response/read timeout | How long a proxy waits to receive data from its backend | Backend stops sending data and proxy times out |
+
+These settings can exist on the client, load balancer, reverse proxy, and backend. A short gateway timeout can make a client see an error even while the FastAPI function continues running. The precise meaning of each setting depends on the component, so read that component’s documentation.
+
+**What to check:** Draw the request path and record each component’s relevant timeout. Check that the chosen values fit the expected operation.
+
+### 8. Can we locate the layer where a failure occurred?
+
+Look for the **first step that did not succeed**:
+
+| Observation | First place to investigate |
+|---|---|
+| Hostname does not resolve | DNS/name configuration |
+| Connection refused or cannot connect | IP, port, firewall, listening server, or network path |
+| Certificate validation fails | TLS certificate, hostname, trust, or expiry |
+| Request gets an HTTP `404` | Routing/path or missing resource |
+| FastAPI responds with `422` | Input validation |
+| Request reaches the app and ends in `500` | Application code or a dependency used by it |
+| Gateway times out before a backend response | Gateway timeout, backend availability, or slow work |
+
+An HTTP `404` or `422` proves an HTTP response was received. A DNS failure or refused connection happens before FastAPI can return an HTTP status. Logs at each hop plus a correlation ID help connect observations to one request.
+
+**At this stage:** Be able to describe the two connections, identify who handles each responsibility, and choose the first layer to inspect. We will practice configuring certificates, proxies, and timeouts in the production phase.
 ---
 
 ## ✅ Check Your Understanding
