@@ -29,7 +29,7 @@ Topics 01–05 are complete. Topic 06 follows an API request through networking,
 |---|:---:|
 | `Notes.md` | 🟢 |
 | `Interview.md` | ⚪ |
-| `Hands_On/README.md` | 🟢 Ready; observations pending |
+| `Hands_On/README.md` and `observations.md` | 🟢 Complete and reviewed |
 | Topic completion | 🟡 |
 
 ## Weekly Tracker
@@ -40,14 +40,11 @@ Topics 01–05 are complete. Topic 06 follows an API request through networking,
 | 2 | Topic 03 completed | A | Not started yet | 🟢 Topic 03 exercise | ⬜ | — |
 | 3 | [Topic 04 completed](modules/01_Backend_Engineering/04_HTTP_Headers/Notes.md) | A | Not started yet | 🟢 Topic 04 exercise | ⬜ | — |
 | 4 | [Topic 05 completed](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Notes.md) | A | Not started yet | 🟢 Topic 05 exercise | ⬜ | — |
-| 5 | [Topic 06 started](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Notes.md) | A | Not started yet | ⚪ | ⬜ | — |
+| 5 | [Topic 06 in progress](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Notes.md) | A | Not started yet | 🟢 Observation lab reviewed | ⬜ | — |
 
 ## Current Next Actions
 
-1. Read Topic 06 `Notes.md`.
-2. Trace one HTTPS request from hostname resolution to FastAPI.
-3. Explain what TLS protects and what remains visible.
-4. Compare HTTP/1.1, HTTP/2, and HTTP/3.
-5. Complete the [Topic 06 hands-on exercise](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Hands_On/README.md) and record observations.
+1. Answer Topic 06 interview questions one at a time in chat.
+2. Create `Interview.md` after reviewing the answers.
 
 Last updated: 2026-09-22
