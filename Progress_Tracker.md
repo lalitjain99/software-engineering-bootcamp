@@ -29,7 +29,7 @@ Topics 01–05 are complete. Topic 06 follows an API request through networking,
 |---|:---:|
 | `Notes.md` | 🟢 |
 | `Interview.md` | ⚪ |
-| `Hands_On/` | ⚪ |
+| `Hands_On/README.md` | 🟢 Ready; observations pending |
 | Topic completion | 🟡 |
 
 ## Weekly Tracker
@@ -48,6 +48,6 @@ Topics 01–05 are complete. Topic 06 follows an API request through networking,
 2. Trace one HTTPS request from hostname resolution to FastAPI.
 3. Explain what TLS protects and what remains visible.
 4. Compare HTTP/1.1, HTTP/2, and HTTP/3.
-5. Build the Topic 06 hands-on exercise after reviewing the notes.
+5. Complete the [Topic 06 hands-on exercise](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Hands_On/README.md) and record observations.
 
-Last updated: 2026-09-21
+Last updated: 2026-09-22
