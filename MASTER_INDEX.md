@@ -64,7 +64,8 @@ The application grows step by step. Each topic starts from the previous design a
    - These are not all the same kind of protocol; compare the problems they solve
    - Choosing based on communication direction, latency, compatibility, and contract needs
    - Implementation-first sequence: webhook → SSE → WebSocket → GraphQL → gRPC
-   - [Webhook micro-lab](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Hands_On/01_Webhook/README.md) ready; remaining labs and chat interview pending
+   - [Webhook micro-lab](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Hands_On/01_Webhook/README.md) complete
+   - [SSE micro-lab](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Hands_On/02_SSE/README.md) ready; remaining labs and chat interview pending
 
 **Checkpoint:** trace an API request, explain its complete HTTP contract, and choose an appropriate communication mechanism without discussing internal application architecture yet.
 
