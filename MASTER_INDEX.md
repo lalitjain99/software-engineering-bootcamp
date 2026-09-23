@@ -54,11 +54,11 @@ The application grows step by step. Each topic starts from the previous design a
    - Success, client-error, and server-error families
    - Designing consistent error contracts
    - [Notes](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Notes.md), [interview guide](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Interview.md), and [hands-on exercise](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Hands_On/README.md) complete
-6. 🟡 **[HTTP, HTTPS, and protocol foundations](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Notes.md)**
+6. 🟢 **[HTTP, HTTPS, and protocol foundations](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Notes.md)**
    - The roles of IP, TCP, TLS, HTTP, and HTTPS
    - Why encryption changes HTTP into HTTPS
    - A gradual introduction to HTTP/1.1, HTTP/2, and HTTP/3
-   - [Notes](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Notes.md) and [hands-on exercise](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Hands_On/README.md) complete; [observations](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Hands_On/observations.md) reviewed; chat interview pending
+   - [Notes](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Notes.md), [hands-on exercise](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Hands_On/README.md), [observations](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Hands_On/observations.md), and [interview guide](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Interview.md) complete
 7. ⚪ **API styles and communication mechanisms**
    - REST, GraphQL, gRPC, WebSocket, Server-Sent Events, and webhooks
    - These are not all the same kind of protocol; compare the problems they solve
@@ -160,4 +160,4 @@ Topic/
 | Review and planning | 10–45 minutes |
 | **Total** | **Approximately 5–8 hours** |
 
-Last updated: 2026-09-22
+Last updated: 2026-09-23
