@@ -2,9 +2,9 @@
 
 ## Overall Status
 
-🟡 Backend Engineering — Topic 07 next: API Styles and Communication Mechanisms
+🟡 Backend Engineering — Topic 07: API Styles and Communication Mechanisms
 
-Topics 01–06 are complete. Topic 07 will compare REST, GraphQL, gRPC, WebSocket, Server-Sent Events, and webhooks.
+Topics 01–06 are complete. Topic 07 compares REST, GraphQL, gRPC, WebSocket, Server-Sent Events, and webhooks by the interaction problems they solve.
 
 ## Goals
 
@@ -18,19 +18,19 @@ Topics 01–06 are complete. Topic 07 will compare REST, GraphQL, gRPC, WebSocke
 | Phase | Focus | Target weeks | Status | Completion |
 |---|---|---:|:---:|---:|
 | 0 | Skills audit and setup | 0–1 | 🟡 | 35% |
-| 1 | Backend engineering depth | 1–14 | 🟡 | 30% |
+| 1 | Backend engineering depth | 1–14 | 🟡 | 35% |
 | 2 | System design | 15–24 | ⚪ | 0% |
 | 3 | DevOps, cloud, and production | 25–32 | ⚪ | 0% |
 | 4 | Leadership and interview synthesis | 33–36 | ⚪ | 0% |
 
-## Topic 06 Progress
+## Topic 07 Progress
 
 | Deliverable | Status |
 |---|:---:|
-| `Notes.md` | 🟢 |
-| `Interview.md` | 🟢 Complete |
-| `Hands_On/README.md` and `observations.md` | 🟢 Complete and reviewed |
-| Topic completion | 🟢 Complete |
+| `Notes.md` | 🟢 Ready to review |
+| `Interview.md` | ⚪ |
+| `Hands_On/` | ⚪ |
+| Topic completion | 🟡 In progress |
 
 ## Weekly Tracker
 
@@ -41,10 +41,12 @@ Topics 01–06 are complete. Topic 07 will compare REST, GraphQL, gRPC, WebSocke
 | 3 | [Topic 04 completed](modules/01_Backend_Engineering/04_HTTP_Headers/Notes.md) | A | Not started yet | 🟢 Topic 04 exercise | ⬜ | — |
 | 4 | [Topic 05 completed](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Notes.md) | A | Not started yet | 🟢 Topic 05 exercise | ⬜ | — |
 | 5 | [Topic 06 completed](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Notes.md) | A | Not started yet | 🟢 Lab and interview complete | ⬜ | — |
+| 6 | [Topic 07 started](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Notes.md) | A | Not started yet | ⚪ | ⬜ | — |
 
 ## Current Next Actions
 
-1. Begin Topic 07: API Styles and Communication Mechanisms.
-2. Compare the problems solved by REST, GraphQL, gRPC, WebSocket, Server-Sent Events, and webhooks.
+1. Read [Topic 07 Notes](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Notes.md).
+2. For each scenario, identify the communication direction and connection lifetime.
+3. Complete the Topic 07 hands-on exercise after reviewing the notes.
 
 Last updated: 2026-09-23
