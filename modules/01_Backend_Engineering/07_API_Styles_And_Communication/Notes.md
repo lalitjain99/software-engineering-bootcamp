@@ -582,9 +582,11 @@ Those details will be introduced through hands-on work or later architecture, se
 
 ## ➡️ Next Step
 
-Complete the focused [Webhook micro-lab](Hands_On/01_Webhook/README.md). It uses two small FastAPI applications so you can watch one server become an HTTP client and notify another server.
+The [Webhook micro-lab](Hands_On/01_Webhook/README.md) is complete.
 
-Do not study SSE, WebSocket, GraphQL, or gRPC yet. After the webhook implementation is clear, we will build the SSE micro-lab and continue one mechanism at a time.
+Now complete the focused [SSE micro-lab](Hands_On/02_SSE/README.md). Observe how one client-initiated HTTP request remains open while the server sends several events through its response.
+
+Do not study WebSocket, GraphQL, or gRPC yet. After the SSE implementation is clear, we will compare it with WebSocket.
 
 After all focused labs, answer interview questions one at a time in chat. We will create `Interview.md` only after reviewing the answers.
 
