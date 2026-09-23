@@ -29,7 +29,7 @@ Topics 01–06 are complete. Topic 07 compares REST, GraphQL, gRPC, WebSocket, S
 |---|:---:|
 | `Notes.md` | 🟢 Reference notes ready |
 | `Interview.md` | ⚪ |
-| `Hands_On/` | 🟡 Webhook micro-lab ready |
+| `Hands_On/` | 🟡 Webhook complete; SSE micro-lab ready |
 | Topic completion | 🟡 In progress |
 
 ## Weekly Tracker
@@ -41,12 +41,12 @@ Topics 01–06 are complete. Topic 07 compares REST, GraphQL, gRPC, WebSocket, S
 | 3 | [Topic 04 completed](modules/01_Backend_Engineering/04_HTTP_Headers/Notes.md) | A | Not started yet | 🟢 Topic 04 exercise | ⬜ | — |
 | 4 | [Topic 05 completed](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Notes.md) | A | Not started yet | 🟢 Topic 05 exercise | ⬜ | — |
 | 5 | [Topic 06 completed](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Notes.md) | A | Not started yet | 🟢 Lab and interview complete | ⬜ | — |
-| 6 | [Topic 07 started](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Notes.md) | A | Not started yet | 🟡 Webhook lab ready | ⬜ | — |
+| 6 | [Topic 07 started](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Notes.md) | A | Not started yet | 🟡 Webhook complete; SSE lab ready | ⬜ | — |
 
 ## Current Next Actions
 
-1. Complete the [Webhook micro-lab](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Hands_On/01_Webhook/README.md).
-2. Write the observed request flow in `observations.md`.
-3. Review the webhook observations before starting the SSE micro-lab.
+1. Complete the [SSE micro-lab](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Hands_On/02_SSE/README.md).
+2. Observe the same open response receiving multiple events.
+3. Write the answers in the SSE `observations.md` before starting WebSocket.
 
 Last updated: 2026-09-23
