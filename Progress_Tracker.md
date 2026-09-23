@@ -2,9 +2,9 @@
 
 ## Overall Status
 
-🟡 Backend Engineering — Topic 06: HTTP, HTTPS, and Protocol Foundations
+🟡 Backend Engineering — Topic 07 next: API Styles and Communication Mechanisms
 
-Topics 01–05 are complete. Topic 06 follows an API request through networking, secure transport, and HTTP.
+Topics 01–06 are complete. Topic 07 will compare REST, GraphQL, gRPC, WebSocket, Server-Sent Events, and webhooks.
 
 ## Goals
 
@@ -28,9 +28,9 @@ Topics 01–05 are complete. Topic 06 follows an API request through networking,
 | Deliverable | Status |
 |---|:---:|
 | `Notes.md` | 🟢 |
-| `Interview.md` | ⚪ |
+| `Interview.md` | 🟢 Complete |
 | `Hands_On/README.md` and `observations.md` | 🟢 Complete and reviewed |
-| Topic completion | 🟡 |
+| Topic completion | 🟢 Complete |
 
 ## Weekly Tracker
 
@@ -40,11 +40,11 @@ Topics 01–05 are complete. Topic 06 follows an API request through networking,
 | 2 | Topic 03 completed | A | Not started yet | 🟢 Topic 03 exercise | ⬜ | — |
 | 3 | [Topic 04 completed](modules/01_Backend_Engineering/04_HTTP_Headers/Notes.md) | A | Not started yet | 🟢 Topic 04 exercise | ⬜ | — |
 | 4 | [Topic 05 completed](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Notes.md) | A | Not started yet | 🟢 Topic 05 exercise | ⬜ | — |
-| 5 | [Topic 06 in progress](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Notes.md) | A | Not started yet | 🟢 Observation lab reviewed | ⬜ | — |
+| 5 | [Topic 06 completed](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Notes.md) | A | Not started yet | 🟢 Lab and interview complete | ⬜ | — |
 
 ## Current Next Actions
 
-1. Answer Topic 06 interview questions one at a time in chat.
-2. Create `Interview.md` after reviewing the answers.
+1. Begin Topic 07: API Styles and Communication Mechanisms.
+2. Compare the problems solved by REST, GraphQL, gRPC, WebSocket, Server-Sent Events, and webhooks.
 
-Last updated: 2026-09-22
+Last updated: 2026-09-23
