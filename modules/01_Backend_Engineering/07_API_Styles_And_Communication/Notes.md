@@ -2,6 +2,31 @@
 
 > **Single learning goal:** Choose a communication approach by first identifying who initiates communication, who must send data, and how long the interaction lasts.
 
+## 🪜 How to Study This Topic
+
+Do **not** try to learn all six mechanisms from this comparison document in one pass. REST is our known baseline; the others will be learned through small implementations, one at a time.
+
+Use this sequence:
+
+1. **REST baseline** — recall the request-response model you already know.
+2. **Webhook** — ordinary HTTP, but one server becomes the client of another server.
+3. **Server-Sent Events (SSE)** — keep one HTTP response open so the server can send a stream of updates.
+4. **WebSocket** — keep a connection open so either side can send messages.
+5. **GraphQL** — change how the client asks for and shapes data.
+6. **gRPC** — call strongly defined service methods using a generated contract.
+
+For each mechanism:
+
+1. Read only its short section in this document.
+2. Run its focused micro-lab.
+3. Draw or explain who initiates communication, which direction data travels, and when the connection closes.
+4. Compare it with the REST request-response flow.
+5. Answer interview questions only after the implementation makes sense.
+
+The rest of this file is a **reference**, not a lecture that must be memorized before touching code.
+
+---
+
 ## 🌱 One Product System, Different Communication Problems
 
 Our Product API currently uses operations such as:
@@ -557,9 +582,11 @@ Those details will be introduced through hands-on work or later architecture, se
 
 ## ➡️ Next Step
 
-Build a small FastAPI exercise that exposes the **same product event** through ordinary HTTP, Server-Sent Events, and WebSocket, then compare their interaction direction and connection lifetime. Webhook delivery will be represented separately as an outbound server-to-server callback.
+Complete the focused [Webhook micro-lab](Hands_On/01_Webhook/README.md). It uses two small FastAPI applications so you can watch one server become an HTTP client and notify another server.
 
-After the hands-on exercise, answer interview questions one at a time in chat. We will create `Interview.md` only after reviewing the answers.
+Do not study SSE, WebSocket, GraphQL, or gRPC yet. After the webhook implementation is clear, we will build the SSE micro-lab and continue one mechanism at a time.
+
+After all focused labs, answer interview questions one at a time in chat. We will create `Interview.md` only after reviewing the answers.
 
 ## 📚 References
 
