@@ -582,11 +582,11 @@ Those details will be introduced through hands-on work or later architecture, se
 
 ## ➡️ Next Step
 
-The [Webhook micro-lab](Hands_On/01_Webhook/README.md) is complete.
+The [Webhook micro-lab](Hands_On/01_Webhook/README.md) and [SSE micro-lab](Hands_On/02_SSE/README.md) are complete.
 
-Now complete the focused [SSE micro-lab](Hands_On/02_SSE/README.md). Observe how one client-initiated HTTP request remains open while the server sends several events through its response.
+Now complete the focused [WebSocket micro-lab](Hands_On/03_WebSocket/README.md). Observe how the browser and server send messages in both directions through the same persistent connection.
 
-Do not study WebSocket, GraphQL, or gRPC yet. After the SSE implementation is clear, we will compare it with WebSocket.
+Do not study GraphQL or gRPC yet. After the WebSocket implementation is clear, we will move from communication direction to GraphQL's client-selected data shape.
 
 After all focused labs, answer interview questions one at a time in chat. We will create `Interview.md` only after reviewing the answers.
 
