@@ -1,19 +1,44 @@
+# Webhook Micro-lab Observations
+
 ## 1. Who initiated the original product-creation request?
 
-Ans: Using curl user initiated the product creation request to the server hosted at 8000 port
+The user initiated the product-creation request using `curl`. In this request, `curl` was the HTTP client and the Product Service running on port `8000` was the HTTP server.
 
 ## 2. During webhook delivery, which application became the HTTP client?
-Ans During the webhook delivery product_service became the http client
+
+During webhook delivery, the Product Service became the HTTP client. It sent an HTTP `POST` request to the Supplier Service running on port `8001`.
 
 ## 3. Why is this different from the Supplier Service polling `GET /products` repeatedly?
-Ans: in polling mechanism a service continously poll at particular endpoint or service whether it send a event or not while in this case the service it self notifying the supplier service the a product create event has occured
+
+With polling, the Supplier Service would repeatedly ask the Product Service whether any product data had changed, including times when there was nothing new.
+
+With a webhook, the Product Service sends a notification to the Supplier Service only after the `product.created` event occurs.
+
 ## 4. What happened when the Supplier Service was unavailable?
-Ans: Product service will execute its product create logic and product will be created but webhook delivery will fail.
+
+The Product Service still executed its product-creation logic, so the product was created. The webhook delivery failed because the Supplier Service was unavailable.
+
+This behaviour is specific to our implementation: product creation and webhook delivery were treated as separate outcomes.
 
 ## 5. Why might production webhook delivery need retries?
-Ans: It need retries as webhook delivery server might be temporarily not working.
+
+The receiver may be temporarily unavailable because of a network failure, timeout, deployment, overload, or other temporary server problem. Retrying later gives the event another opportunity to reach the receiver.
+
+A production system should define which failures are retryable, how often to retry, and when to stop.
 
 ## 6. If a retry delivers the same event twice, what problem could that create?
-Ans: It may take the same action twice. for example in food delivery app if a customer click order button and subsequent service was not available and on retry same order can be placed twice
+
+The receiver might perform the same business action twice.
+
+For example, the Supplier Service could successfully process a product-created event, but its acknowledgement might be lost. The Product Service could then retry the same event, causing inventory to be updated or a notification to be sent twice.
+
+The receiver should therefore process events idempotently. It can use the `event_id` to recognize an event it has already processed.
+
 ## 7. Why would the Supplier Service need to verify a signature before trusting the event?
-Ans: It has to now the it has come from the right source like in HTTP API calls. Server needs to first confirm the valid client similarly here supplier service need to know that it had come from the right product service
+
+The Supplier Service needs to confirm that:
+
+- The event came from the expected Product Service (**authenticity**).
+- The event payload was not changed after it was sent (**integrity**).
+
+A valid webhook signature helps provide these checks. It does not encrypt the payload; HTTPS protects the payload while it travels across the network.
