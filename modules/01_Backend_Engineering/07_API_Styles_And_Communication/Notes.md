@@ -318,6 +318,120 @@ Warehouse client ◄────────────► Inventory server
 
 The communication begins with an HTTP-based handshake. After the WebSocket connection is established, both sides exchange WebSocket messages over the persistent connection rather than creating a normal HTTP request for every message.
 
+### Is WebSocket another communication language like HTTP?
+
+Broadly, yes. HTTP and WebSocket are both **application-layer protocols**: agreed rulebooks that applications follow when exchanging data.
+
+Using the letter-and-conversation analogy:
+
+- **HTTP** defines a formal request-and-response letter format.
+- **WebSocket** defines an ongoing two-way conversation format.
+
+HTTP defines request methods, paths, headers, bodies, status codes, and responses:
+
+```http
+POST /products HTTP/1.1
+Content-Type: application/json
+
+{"name": "Keyboard"}
+```
+
+After a WebSocket connection is established, applications no longer create a new HTTP request for every message. They exchange **WebSocket frames**:
+
+```text
+Browser → {"type": "scan", "quantity": 2}
+
+Server  → {"type": "scan_acknowledged", "available": 18}
+
+Server  → {"type": "stock_snapshot", "available": 18}
+```
+
+The WebSocket protocol defines transport-level messaging rules such as:
+
+- Where a message begins and ends
+- Whether a message contains text or binary data
+- Ping and pong control messages
+- How either side closes the connection
+- How both sides can send messages over the persistent connection
+
+WebSocket does **not** define the business meaning of this message:
+
+```json
+{
+  "type": "scan",
+  "product_id": 101,
+  "quantity": 2
+}
+```
+
+Our application defines what `scan`, `product_id`, and `quantity` mean. Therefore, a WebSocket application has two related contracts:
+
+| Contract | Responsibility |
+|---|---|
+| WebSocket protocol | Transports and separates text or binary messages |
+| Application message contract | Defines message types, fields, validation, and business meaning |
+
+### How HTTP changes into WebSocket
+
+The browser first sends an HTTP upgrade request:
+
+```http
+GET /ws/inventory HTTP/1.1
+Connection: Upgrade
+Upgrade: websocket
+```
+
+The server accepts it:
+
+```http
+HTTP/1.1 101 Switching Protocols
+Connection: Upgrade
+Upgrade: websocket
+```
+
+The same underlying TCP connection remains open, but communication switches from HTTP request-response messages to WebSocket frames:
+
+```text
+HTTP handshake
+      ↓
+101 Switching Protocols
+      ↓
+Same TCP connection
+      ↓
+WebSocket messages in both directions
+```
+
+For the local lab, the layers are:
+
+```text
+JSON application message
+        ↓
+WebSocket frame
+        ↓
+TCP bytes
+        ↓
+IP network
+```
+
+A secure WebSocket connection adds TLS:
+
+```text
+JSON application message
+        ↓
+WebSocket frame
+        ↓
+TLS encryption
+        ↓
+TCP bytes
+        ↓
+IP network
+```
+
+The URL scheme shows whether TLS is used:
+
+- `ws://` — WebSocket without TLS
+- `wss://` — WebSocket protected by TLS
+
 ### Strengths
 
 - Two-way, low-latency message exchange
