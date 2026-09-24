@@ -482,6 +482,120 @@ Each blank line ends an event.
 
 In a browser, `EventSource` provides an API for receiving the stream and includes reconnection behaviour. If the client must send a command, it uses a separate HTTP request.
 
+### How can we identify SSE versus a normal HTTP response?
+
+SSE is itself an HTTP response. The difference is that it uses a specific content type and event format, and the response normally remains open so more events can arrive.
+
+#### 1. Check the response `Content-Type`
+
+The clearest signal is:
+
+```http
+Content-Type: text/event-stream
+```
+
+This tells the client to interpret the response body using the Server-Sent Events format.
+
+A normal JSON API response commonly uses:
+
+```http
+Content-Type: application/json
+```
+
+The request may contain:
+
+```http
+Accept: text/event-stream
+```
+
+but `Accept` only describes what the client wants. The server's response `Content-Type` identifies what it actually sent.
+
+#### 2. Inspect the response body format
+
+An SSE body follows a line-based format:
+
+```text
+id: 842
+event: stock_changed
+data: {"product_id":101,"available":18}
+
+id: 843
+event: stock_changed
+data: {"product_id":101,"available":17}
+
+```
+
+Common SSE fields include:
+
+- `event:` — the event type
+- `id:` — the event identifier
+- `data:` — the event payload
+- A blank line — the end of one event
+
+The `data:` value may contain JSON text, but the complete response body is not one JSON document.
+
+A normal JSON response usually arrives as one complete value:
+
+```json
+{
+  "product_id": 101,
+  "available": 18
+}
+```
+
+#### 3. Observe the response lifetime
+
+With a normal API response:
+
+1. The server sends the status line, headers, and complete body.
+2. The response finishes.
+3. The TCP connection may close or remain idle for reuse.
+
+With SSE:
+
+1. The server sends the status line and headers.
+2. It sends one event as part of the response body.
+3. It keeps the response unfinished.
+4. It sends more events through the same response later.
+
+For example:
+
+```cmd
+curl.exe -N -i http://127.0.0.1:8000/inventory/events
+```
+
+The `-N` option only disables curl's output buffering. The server keeps the stream open by not completing the response.
+
+#### 4. Inspect it in browser developer tools
+
+In the Network tab, the SSE request normally:
+
+- Has `Content-Type: text/event-stream`
+- Remains open or pending
+- Receives additional event data over time
+- Does not create a new request for each event
+
+A browser `EventSource` object is another strong indication that the client expects SSE.
+
+#### Signals that do not prove it is SSE
+
+| Observation | Why it is not sufficient |
+|---|---|
+| `Connection: keep-alive` | Normal HTTP connections can also remain available for reuse |
+| No `Content-Length` | Other streaming or dynamically generated responses may also omit it |
+| `Transfer-Encoding: chunked` | HTTP/1.1 can use chunking for many kinds of streaming responses; HTTP/2 does not use this header |
+| The endpoint uses `StreamingResponse` | A generic stream becomes SSE only when it uses `text/event-stream` and valid SSE event formatting |
+
+The most reliable identification is therefore:
+
+```text
+Content-Type: text/event-stream
+          +
+SSE-formatted event lines
+          +
+An HTTP response that stays open for additional events
+```
+
 ### Strengths
 
 - Simple server-to-client streaming over HTTP
