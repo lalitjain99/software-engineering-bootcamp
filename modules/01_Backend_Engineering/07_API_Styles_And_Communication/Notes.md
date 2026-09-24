@@ -218,6 +218,146 @@ GraphQL is not a database. The server decides how each field is resolved. Data m
 
 GraphQL is commonly served through an HTTP endpoint such as `POST /graphql`, but GraphQL and HTTP are separate layers.
 
+### How can GraphQL be served through HTTP?
+
+GraphQL does not replace HTTP in this setup. A GraphQL operation is placed **inside** a valid HTTP request.
+
+A useful analogy is:
+
+```text
+HTTP    = envelope and delivery rules
+GraphQL = instructions written inside the envelope
+JSON    = representation carrying those instructions
+```
+
+When GraphiQL executes:
+
+```graphql
+query {
+  product(id: 101) {
+    name
+    price
+  }
+}
+```
+
+the browser sends an HTTP request conceptually like:
+
+```http
+POST /graphql HTTP/1.1
+Host: 127.0.0.1:8000
+Content-Type: application/json
+Accept: application/json
+
+{
+  "query": "query { product(id: 101) { name price } }"
+}
+```
+
+All normal HTTP components are present:
+
+| HTTP component | Value |
+|---|---|
+| Method | `POST` |
+| Path | `/graphql` |
+| Headers | `Content-Type`, `Accept`, authorization and other metadata |
+| Body | JSON containing the GraphQL operation |
+
+The server returns a normal HTTP response:
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "data": {
+    "product": {
+      "name": "Keyboard",
+      "price": 2500
+    }
+  }
+}
+```
+
+HTTP provides the method, URL, headers, request-body transport, status code, and response delivery. GraphQL defines the schema, operation types, field selection, validation, and execution rules inside that exchange.
+
+#### HTTP method versus GraphQL operation type
+
+These terms belong to different layers:
+
+| HTTP layer | GraphQL layer |
+|---|---|
+| `POST /graphql` | `query` |
+| `POST /graphql` | `mutation` |
+
+For example, a GraphQL mutation can still be transported inside an HTTP `POST`:
+
+```http
+POST /graphql HTTP/1.1
+Content-Type: application/json
+
+{
+  "query": "mutation { createProduct(name: "Mouse", price: 1200) { id name } }"
+}
+```
+
+Here:
+
+- `POST` tells the HTTP server how the request is transported.
+- `mutation` tells the GraphQL engine that the operation may change server-side data.
+
+#### What happens inside our FastAPI service?
+
+```text
+1. Uvicorn receives an HTTP request
+              ↓
+2. FastAPI matches /graphql
+              ↓
+3. GraphQLRouter reads the HTTP body
+              ↓
+4. Strawberry parses the GraphQL operation
+              ↓
+5. GraphQL validates it against the schema
+              ↓
+6. Resolvers obtain or modify the data
+              ↓
+7. The GraphQL result is placed in an HTTP response
+```
+
+FastAPI and Uvicorn still handle HTTP. Strawberry understands and executes the GraphQL document carried inside the request.
+
+Using HTTP lets GraphQL reuse existing infrastructure such as:
+
+- DNS, IP, TCP, and TLS
+- Authentication and tracing headers
+- Load balancers and API gateways
+- Proxies, logs, monitoring, and browser clients
+
+GraphQL can be mapped to other transports for particular needs, but queries and mutations are commonly served over HTTP.
+
+#### How to verify it in the lab
+
+In the browser developer tools:
+
+1. Open the **Network** tab.
+2. Execute a query in GraphiQL.
+3. Select the `/graphql` request.
+4. Inspect **Headers** and **Payload**.
+
+You should find an HTTP method, URL, and headers, followed by a JSON payload containing fields such as:
+
+```json
+{
+  "query": "...",
+  "variables": {},
+  "operationName": null
+}
+```
+
+The precise mental model is:
+
+> GraphQL defines what data operations mean and which fields the client selects. HTTP transports that GraphQL operation and its result between the client and server.
+
 ### Strengths
 
 - Clients can request a precise, nested data shape.
