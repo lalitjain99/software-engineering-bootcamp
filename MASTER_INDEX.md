@@ -67,7 +67,8 @@ The application grows step by step. Each topic starts from the previous design a
    - [Webhook micro-lab](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Hands_On/01_Webhook/README.md) complete
    - [SSE micro-lab](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Hands_On/02_SSE/README.md) complete
    - [WebSocket micro-lab](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Hands_On/03_WebSocket/README.md) complete
-   - [GraphQL micro-lab](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Hands_On/04_GraphQL/README.md) ready; gRPC lab and chat interview pending
+   - [GraphQL micro-lab](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Hands_On/04_GraphQL/README.md) complete
+   - [gRPC micro-lab](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Hands_On/05_gRPC/README.md) ready; chat interview pending
 
 **Checkpoint:** trace an API request, explain its complete HTTP contract, and choose an appropriate communication mechanism without discussing internal application architecture yet.
 
@@ -165,4 +166,4 @@ Topic/
 | Review and planning | 10–45 minutes |
 | **Total** | **Approximately 5–8 hours** |
 
-Last updated: 2026-09-24
+Last updated: 2026-09-25
