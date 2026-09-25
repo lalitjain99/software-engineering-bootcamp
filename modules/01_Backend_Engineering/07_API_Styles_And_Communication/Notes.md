@@ -377,21 +377,111 @@ Choose GraphQL because clients genuinely need flexible, connected data. Do not c
 
 ---
 
-## 3. gRPC — Call a Strongly Defined Remote Service Method
+## 3. gRPC — Ask Another Application to Run a Method
 
-### The problem
+### Begin with the problem, not the technology
 
-An internal Order Service needs the Inventory Service to reserve stock. The interaction is naturally expressed as a service operation:
+Imagine that we have two separate applications:
 
-```text
-ReserveStock(product_id=101, quantity=2)
-```
+- **Order Service** — creates customer orders
+- **Inventory Service** — owns the current stock quantity
 
-With gRPC, the contract is commonly defined in a `.proto` file:
+When an order contains two keyboards, the Order Service must ask the Inventory Service:
 
-```proto
+> Can you reserve two units of product 101?
+
+Because these are separate applications, the Order Service cannot directly run a Python function inside the Inventory Service's process. It must send a message across the network and wait for a response.
+
+We already know one way to design this with a REST-style API:
+
+~~~http
+POST /products/101/reservations HTTP/1.1
+Content-Type: application/json
+
+{
+  "quantity": 2
+}
+~~~
+
+The Inventory Service might respond with JSON:
+
+~~~json
+{
+  "reserved": true,
+  "remaining_quantity": 8
+}
+~~~
+
+This is a perfectly valid design. gRPC gives us a different model for the same service-to-service communication problem.
+
+### First principle: what does RPC mean?
+
+**RPC** stands for **Remote Procedure Call**.
+
+Break the name into three parts:
+
+| Word | Meaning |
+|---|---|
+| Remote | The code runs in another process, usually on another machine or container |
+| Procedure | A named operation or method, such as <code>ReserveStock</code> |
+| Call | The client asks the remote application to run that operation |
+
+With gRPC, the Order Service thinks in terms of calling a service method:
+
+~~~text
+InventoryService.ReserveStock(
+    product_id=101,
+    quantity=2
+)
+~~~
+
+The method may look similar to an ordinary Python method call, but it is not local:
+
+~~~python
+response = stub.ReserveStock(request, timeout=3)
+~~~
+
+The real method runs inside the Inventory Service. The generated <code>stub</code> performs the network work needed to reach it.
+
+A useful first mental model is:
+
+~~~text
+Normal Python call:
+My code → function in the same Python process
+
+gRPC call:
+My code → generated client code → network → another application → remote method
+~~~
+
+### Why not simply send JSON ourselves?
+
+We can. That is what we commonly do with REST-style HTTP APIs.
+
+However, when many internal services communicate, every team must agree on details such as:
+
+- The service method or endpoint
+- The request fields and their data types
+- The response fields and their data types
+- Which fields are required
+- How client code serializes and sends the request
+- How server code receives and validates it
+- How errors are represented
+
+If these details exist only in documentation, the documentation and implementation can drift apart.
+
+gRPC starts with a machine-readable **contract**. Tools use that contract to generate part of the client and server code.
+
+### The contract: <code>inventory.proto</code>
+
+In our lab, the contract is written in a Protocol Buffers file:
+
+~~~proto
+syntax = "proto3";
+
+package inventory;
+
 service InventoryService {
-  rpc ReserveStock (ReserveStockRequest) returns (ReserveStockResponse);
+  rpc ReserveStock(ReserveStockRequest) returns (ReserveStockResponse);
 }
 
 message ReserveStockRequest {
@@ -401,39 +491,430 @@ message ReserveStockRequest {
 
 message ReserveStockResponse {
   bool reserved = 1;
+  int32 remaining_quantity = 2;
+  string message = 3;
 }
-```
+~~~
 
-Tools generate client and server code from this contract. Client code calls a generated stub that looks similar to a local method, while the framework performs the network exchange.
+Read it as plain English:
 
-### What gRPC provides
+> There is a service named InventoryService. It provides a remote method named ReserveStock. The method accepts one ReserveStockRequest and returns one ReserveStockResponse.
 
-gRPC is an RPC framework. It commonly uses:
+The request contains:
 
-- Protocol Buffers for the service definition and binary message format
-- Generated client and server code
-- HTTP/2 as its transport
-- Unary calls and several streaming patterns
+| Field | Type | Meaning |
+|---|---|---|
+| <code>product_id</code> | 64-bit integer | Product whose stock should be reserved |
+| <code>quantity</code> | 32-bit integer | Number of units requested |
 
-A **unary call** has one request and one response. gRPC also supports server streaming, client streaming, and bidirectional streaming.
+The response contains:
 
-### Strengths
+| Field | Type | Meaning |
+|---|---|---|
+| <code>reserved</code> | Boolean | Whether the reservation succeeded |
+| <code>remaining_quantity</code> | 32-bit integer | Stock left after the attempt |
+| <code>message</code> | String | Explanation of the outcome |
 
-- Strong, language-neutral service contracts
-- Generated clients reduce manual serialization code
-- Compact binary messages
-- Efficient HTTP/2 connections and streaming support
-- Useful for controlled service-to-service environments
+This contract is not Python-specific. A Python Order Service could call an Inventory Service written in Java, Go, or another supported language, as long as both sides use compatible code generated from the same contract.
 
-### Costs and design risks
+### What do <code>= 1</code>, <code>= 2</code>, and <code>= 3</code> mean?
 
-- Payloads are less convenient for humans to read directly.
-- Browsers generally need gRPC-Web and supporting infrastructure rather than using native gRPC directly.
-- Schema evolution requires Protocol Buffer compatibility discipline.
-- Debugging and gateway support require appropriate tooling.
-- Treating remote calls like local methods can hide network latency, failure, and retry consequences.
+Consider:
 
-gRPC is often a good internal-service choice when teams control both ends and value generated contracts and streaming. It is not automatically faster or better for every API.
+~~~proto
+message ReserveStockRequest {
+  int64 product_id = 1;
+  int32 quantity = 2;
+}
+~~~
+
+The numbers are **field identifiers in the Protocol Buffer binary message**.
+
+They are not:
+
+- Default values
+- Array positions
+- Validation limits
+- The values that will be sent
+
+For example, this Python request:
+
+~~~python
+ReserveStockRequest(product_id=101, quantity=2)
+~~~
+
+contains the values <code>101</code> and <code>2</code>. The field numbers tell the receiver which encoded value belongs to <code>product_id</code> and which belongs to <code>quantity</code>.
+
+Once a field number is used in a published contract, it should not later be reused for a different meaning. Contract compatibility will be explored in a later topic.
+
+### What is Protocol Buffers?
+
+Protocol Buffers, often shortened to **Protobuf**, provides:
+
+1. A language for defining structured messages and services in a <code>.proto</code> file
+2. Tools that generate code for supported programming languages
+3. A compact binary format for encoding the messages sent across the network
+
+In our earlier REST labs, we could read the JSON body directly:
+
+~~~json
+{
+  "product_id": 101,
+  "quantity": 2
+}
+~~~
+
+A normal gRPC call commonly sends the corresponding Protobuf message in binary form. The values are still present, but the network payload is designed for programs rather than for people reading it manually.
+
+This is why ordinary curl or a browser Network panel is less convenient for inspecting native gRPC calls. Tools such as grpcurl, Postman with gRPC support, or gRPC-aware observability tools are more appropriate.
+
+### Why do we generate Python files?
+
+Our applications cannot directly import a <code>.proto</code> file as normal Python classes. We run the Protocol Buffer compiler with the gRPC plugin:
+
+~~~cmd
+uv run python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. inventory.proto
+~~~
+
+It generates two files for this lab:
+
+| Generated file | What it gives us |
+|---|---|
+| <code>inventory_pb2.py</code> | Python message classes such as <code>ReserveStockRequest</code> and <code>ReserveStockResponse</code> |
+| <code>inventory_pb2_grpc.py</code> | Client stub, server base class, and server registration function |
+
+Think of generation as building a typed adapter from the shared contract:
+
+~~~text
+inventory.proto
+      ↓ code generation
+Python message classes + client stub + server interface
+~~~
+
+Generated files should not be edited manually. If the contract changes, regenerate them. Manual edits would be overwritten and could make the generated code disagree with the contract.
+
+### What is a client stub?
+
+A **stub** is a generated client-side object that represents the remote service.
+
+Our client creates it like this:
+
+~~~python
+channel = grpc.insecure_channel("127.0.0.1:50051")
+stub = inventory_pb2_grpc.InventoryServiceStub(channel)
+~~~
+
+Then the client creates a typed request:
+
+~~~python
+request = inventory_pb2.ReserveStockRequest(
+    product_id=101,
+    quantity=2,
+)
+~~~
+
+Finally, it calls:
+
+~~~python
+response = stub.ReserveStock(request, timeout=3)
+~~~
+
+The stub hides repetitive networking work. Conceptually, it:
+
+1. Checks that it received the expected generated message type.
+2. Converts the request object into Protobuf bytes.
+3. Builds the gRPC request.
+4. Sends it through the channel to the remote server.
+5. Waits for a response or deadline.
+6. Converts the response bytes into <code>ReserveStockResponse</code>.
+7. Returns that response object to our Python code.
+
+The stub does not make the call local. It only makes a remote call easier to write.
+
+### What is a gRPC channel?
+
+The channel represents the client's communication route to a gRPC server:
+
+~~~python
+grpc.insecure_channel("127.0.0.1:50051")
+~~~
+
+Here:
+
+- <code>127.0.0.1</code> identifies the machine.
+- <code>50051</code> identifies the listening gRPC server application.
+- <code>insecure</code> means this local lab does not use TLS.
+
+The channel is a higher-level gRPC abstraction, not merely a raw socket. The gRPC library manages connection-related work beneath it and can reuse an underlying HTTP/2 connection for multiple calls.
+
+In production, an appropriately secured channel would normally be used rather than <code>insecure_channel</code>.
+
+### What happens on the server?
+
+The generated server code defines the interface that our implementation must follow:
+
+~~~python
+class InventoryService(
+    inventory_pb2_grpc.InventoryServiceServicer
+):
+    def ReserveStock(self, request, context):
+        ...
+~~~
+
+Our code supplies the business logic:
+
+1. Validate the quantity.
+2. Check whether the product exists.
+3. Check available stock.
+4. Reserve the stock if possible.
+5. Return a generated <code>ReserveStockResponse</code>.
+
+The implementation is registered with the gRPC server:
+
+~~~python
+inventory_pb2_grpc.add_InventoryServiceServicer_to_server(
+    InventoryService(),
+    server,
+)
+~~~
+
+This registration tells the gRPC server:
+
+> When a client calls InventoryService.ReserveStock, dispatch the request to the ReserveStock method in this implementation.
+
+### The complete journey of our lab call
+
+Suppose the client runs:
+
+~~~cmd
+uv run python client.py 101 2
+~~~
+
+The complete journey is:
+
+1. <code>client.py</code> creates <code>ReserveStockRequest(product_id=101, quantity=2)</code>.
+2. The generated <code>InventoryServiceStub</code> serializes it into Protobuf binary bytes.
+3. gRPC frames the call and sends it through an HTTP/2 connection to <code>127.0.0.1:50051</code>.
+4. The operating system delivers the bytes to the server listening on port <code>50051</code>.
+5. The gRPC server identifies the service and method.
+6. Generated server code deserializes the bytes into a Python request object.
+7. It calls our <code>InventoryService.ReserveStock</code> implementation.
+8. Our business logic updates the in-memory stock and creates a response object.
+9. Generated code serializes the response into Protobuf bytes.
+10. gRPC sends the response through the network connection.
+11. The client stub deserializes it into a Python response object.
+12. <code>client.py</code> reads <code>response.reserved</code>, <code>response.remaining_quantity</code>, and <code>response.message</code>.
+
+The layers are:
+
+~~~text
+Python request object
+        ↓
+Generated gRPC client stub
+        ↓
+Protocol Buffer binary message
+        ↓
+gRPC messages carried by HTTP/2
+        ↓
+TCP connection
+        ↓
+IP network
+        ↓
+gRPC server and generated dispatcher
+        ↓
+Our ReserveStock business method
+~~~
+
+TLS would protect the network transport in a secured production setup. The local lab deliberately leaves it out so we can focus on the RPC flow first.
+
+### Is gRPC replacing HTTP?
+
+Not exactly.
+
+Native gRPC commonly uses **HTTP/2 as its transport**. HTTP/2 carries the gRPC messages between client and server.
+
+However, application developers usually do not manually design HTTP paths, JSON bodies, or HTTP status handling for each gRPC method. The gRPC framework and generated code handle those transport details according to the gRPC protocol.
+
+Compare the two mental models:
+
+~~~text
+REST-style code:
+POST /products/101/reservations
+JSON request
+HTTP status + JSON response
+
+gRPC code:
+InventoryService.ReserveStock(request)
+Protobuf request
+gRPC status + Protobuf response
+~~~
+
+HTTP/2 is still underneath gRPC, just as TCP is underneath HTTP/2. The abstraction presented to our application is a remote service method rather than a resource-oriented HTTP endpoint.
+
+### Why HTTP/2?
+
+HTTP/2 provides capabilities useful to gRPC, including:
+
+- Multiple concurrent streams over one connection
+- Efficient binary framing
+- Header compression
+- Long-lived streaming
+
+You do not need to understand HTTP/2 frames to complete this first gRPC lab. For now, remember:
+
+> Protobuf defines the structured messages, generated code helps both applications use the contract, and gRPC transports those messages using HTTP/2.
+
+### One request and one response: unary RPC
+
+Our <code>ReserveStock</code> method is a **unary RPC**:
+
+~~~text
+Client ── one request ──► Server
+Client ◄── one response ── Server
+~~~
+
+gRPC also supports streaming forms:
+
+| Form | Request and response shape | Example |
+|---|---|---|
+| Unary | One request, one response | Reserve stock |
+| Server streaming | One request, many responses | Stream a large report |
+| Client streaming | Many requests, one response | Upload readings in batches |
+| Bidirectional streaming | Both sides send a stream | Live coordination between services |
+
+We will not implement streaming yet. The first goal is to understand one remote method call clearly.
+
+### Three different outcomes in the lab
+
+A Technical Lead must distinguish a normal business outcome from an RPC failure.
+
+#### 1. Successful reservation
+
+~~~text
+reserved: True
+remaining_quantity: 8
+message: Stock reserved
+~~~
+
+The remote call worked and the business action succeeded.
+
+#### 2. Valid call but insufficient stock
+
+~~~text
+reserved: False
+remaining_quantity: 10
+message: Insufficient stock
+~~~
+
+The remote call also worked. The server understood and processed it, but the business answer was “no.”
+
+This is similar to a function returning a valid result that represents rejection.
+
+#### 3. gRPC status error
+
+Examples from the lab include:
+
+- <code>INVALID_ARGUMENT</code> — quantity is zero or negative
+- <code>NOT_FOUND</code> — the product does not exist
+- <code>UNAVAILABLE</code> — the client cannot reach the running service
+
+In these cases, the client receives a gRPC error status rather than a normal <code>ReserveStockResponse</code>.
+
+gRPC has its own status model. The application sees statuses such as <code>NOT_FOUND</code> instead of directly receiving an HTTP <code>404</code> as it would from a REST-style endpoint.
+
+### Why does the client use a timeout?
+
+Our client calls:
+
+~~~python
+response = stub.ReserveStock(request, timeout=3)
+~~~
+
+A remote service could be slow, unreachable, overloaded, or waiting on another dependency. Without a deadline, the caller might wait much longer than its own request can tolerate.
+
+The three-second timeout means:
+
+> If the operation cannot complete within this caller's allowed time, stop waiting and report a deadline-related failure.
+
+The correct duration depends on the complete request path and business requirement. Three seconds is only a lab value.
+
+### Why a gRPC method must not be treated like a local method
+
+This call:
+
+~~~python
+response = stub.ReserveStock(request, timeout=3)
+~~~
+
+looks deceptively simple. Unlike an ordinary local function, it can fail because of:
+
+- DNS failure
+- No server listening
+- Network interruption
+- TLS or authentication failure
+- Load balancer failure
+- Server overload
+- Deadline expiry
+- Server restart
+- Invalid or incompatible contract
+- Remote application error
+
+It also has network latency, even when it succeeds.
+
+Retries require care. If the caller times out after the server has already reserved stock, retrying blindly could reserve the stock twice. The operation's idempotency and request identity must be considered before enabling retries.
+
+### REST-style HTTP versus gRPC
+
+| Question | REST-style HTTP | gRPC |
+|---|---|---|
+| Main API model | Resources | Services and remote methods |
+| Example | <code>POST /products/101/reservations</code> | <code>InventoryService.ReserveStock(...)</code> |
+| Common contract | OpenAPI plus request/response schemas | <code>.proto</code> service and message definitions |
+| Common payload | Human-readable JSON | Compact Protobuf binary |
+| Client code | HTTP client or generated SDK | Generated stub |
+| Application result errors | HTTP status codes plus response body | gRPC status codes plus details |
+| Browser friendliness | Native and straightforward | Usually needs gRPC-Web or a gateway |
+| Common fit | Public APIs and resource operations | Controlled internal service-to-service communication |
+
+REST is not inferior to gRPC, and gRPC is not automatically the correct internal choice. They offer different programming and operational models.
+
+### When gRPC is a reasonable choice
+
+Consider gRPC when:
+
+- Services communicate frequently inside a controlled environment.
+- Teams want one strongly typed contract shared across languages.
+- Generated clients reduce repetitive integration code.
+- Efficient binary messages matter.
+- Streaming is a real requirement.
+- The platform, gateways, observability tools, and developers can support it.
+
+REST-style HTTP may remain simpler when:
+
+- The API is public or used directly by browsers.
+- Easy inspection with curl and ordinary HTTP tools matters.
+- Resource semantics and HTTP caching are useful.
+- Consumers cannot easily use generated gRPC clients.
+- The team does not need gRPC's contract or streaming model.
+
+A system can use both—for example, REST for public clients and gRPC between internal services.
+
+### First-pass summary
+
+Do not try to memorize every implementation detail yet. Keep this sequence in mind:
+
+1. Two separate applications need to communicate.
+2. gRPC models the interaction as a call to a named remote service method.
+3. A <code>.proto</code> file defines the method and message types.
+4. Tools generate Python messages, a client stub, and server interfaces.
+5. The client calls the stub with a generated request object.
+6. The stub serializes it into Protobuf binary data.
+7. gRPC carries it over HTTP/2 to the remote server.
+8. The server dispatches it to our business method.
+9. The response makes the reverse journey.
+10. Although it looks like a local call, it is a network operation with latency and failure modes.
+
+Now use the [gRPC micro-lab](Hands_On/05_gRPC/README.md) to observe each step rather than trying to remember it only from the notes.
 
 ---
 
