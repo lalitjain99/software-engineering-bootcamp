@@ -950,13 +950,11 @@ Those details will be introduced through hands-on work or later architecture, se
 
 ## ➡️ Next Step
 
-The [Webhook micro-lab](Hands_On/01_Webhook/README.md), [SSE micro-lab](Hands_On/02_SSE/README.md), and [WebSocket micro-lab](Hands_On/03_WebSocket/README.md) are complete.
+The webhook, SSE, WebSocket, and [GraphQL micro-labs](Hands_On/04_GraphQL/README.md) are complete.
 
-Now complete the focused [GraphQL micro-lab](Hands_On/04_GraphQL/README.md). Observe how different client selection sets change the response shape while every operation continues to use the same GraphQL endpoint.
+Now complete the focused [gRPC micro-lab](Hands_On/05_gRPC/README.md). Observe how a `.proto` contract generates Python interfaces and how a stub method call crosses the network.
 
-Do not study gRPC yet. After the GraphQL implementation is clear, we will build the final gRPC micro-lab.
-
-After all focused labs, answer interview questions one at a time in chat. We will create `Interview.md` only after reviewing the answers.
+After the gRPC observations are reviewed, answer Topic 07 interview questions one at a time in chat. We will create `Interview.md` only after reviewing those answers.
 
 ## 📚 References
 
