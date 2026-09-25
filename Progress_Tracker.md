@@ -29,7 +29,7 @@ Topics 01–06 are complete. Topic 07 compares REST, GraphQL, gRPC, WebSocket, S
 |---|:---:|
 | `Notes.md` | 🟢 Reference notes ready |
 | `Interview.md` | ⚪ |
-| `Hands_On/` | 🟡 Webhook, SSE, WebSocket and GraphQL complete; gRPC micro-lab ready |
+| `Hands_On/` | 🟢 Webhook, SSE, WebSocket, GraphQL, and gRPC micro-labs complete |
 | Topic completion | 🟡 In progress |
 
 ## Weekly Tracker
@@ -41,12 +41,12 @@ Topics 01–06 are complete. Topic 07 compares REST, GraphQL, gRPC, WebSocket, S
 | 3 | [Topic 04 completed](modules/01_Backend_Engineering/04_HTTP_Headers/Notes.md) | A | Not started yet | 🟢 Topic 04 exercise | ⬜ | — |
 | 4 | [Topic 05 completed](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Notes.md) | A | Not started yet | 🟢 Topic 05 exercise | ⬜ | — |
 | 5 | [Topic 06 completed](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Notes.md) | A | Not started yet | 🟢 Lab and interview complete | ⬜ | — |
-| 6 | [Topic 07 started](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Notes.md) | A | Not started yet | 🟡 Webhook, SSE, WebSocket and GraphQL complete; gRPC lab ready | ⬜ | — |
+| 6 | [Topic 07 in progress](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Notes.md) | A | Not started yet | 🟢 All five micro-labs complete; chat interview pending | ⬜ | — |
 
 ## Current Next Actions
 
-1. Run `uv sync` to install the root gRPC dependencies.
-2. Complete the [gRPC micro-lab](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Hands_On/05_gRPC/README.md).
-3. Push the gRPC `observations.md` and locally refreshed `uv.lock` before the Topic 07 chat interview.
+1. Complete the Topic 07 interview exercise one question at a time in chat.
+2. Create `Interview.md` after all answers have been reviewed.
+3. Complete Topic 07 and begin Topic 08: separating routing, business logic, and data access.
 
 Last updated: 2026-09-25
