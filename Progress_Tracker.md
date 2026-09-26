@@ -2,9 +2,9 @@
 
 ## Overall Status
 
-🟡 Backend Engineering — Topic 07: API Styles and Communication Mechanisms
+🟡 Backend Engineering — Topic 08: When One Endpoint Becomes Too Large
 
-Topics 01–06 are complete. Topic 07 compares REST, GraphQL, gRPC, WebSocket, Server-Sent Events, and webhooks by the interaction problems they solve.
+Topics 01–07 are complete. Topic 08 will introduce separation between routing, business logic, and data access.
 
 ## Goals
 
@@ -23,14 +23,14 @@ Topics 01–06 are complete. Topic 07 compares REST, GraphQL, gRPC, WebSocket, S
 | 3 | DevOps, cloud, and production | 25–32 | ⚪ | 0% |
 | 4 | Leadership and interview synthesis | 33–36 | ⚪ | 0% |
 
-## Topic 07 Progress
+## Topic 07 Completion
 
 | Deliverable | Status |
 |---|:---:|
 | `Notes.md` | 🟢 Reference notes ready |
-| `Interview.md` | ⚪ |
+| `Interview.md` | 🟢 Chat answers reviewed and guide created |
 | `Hands_On/` | 🟢 Webhook, SSE, WebSocket, GraphQL, and gRPC micro-labs complete |
-| Topic completion | 🟡 In progress |
+| Topic completion | 🟢 Complete |
 
 ## Weekly Tracker
 
@@ -41,12 +41,12 @@ Topics 01–06 are complete. Topic 07 compares REST, GraphQL, gRPC, WebSocket, S
 | 3 | [Topic 04 completed](modules/01_Backend_Engineering/04_HTTP_Headers/Notes.md) | A | Not started yet | 🟢 Topic 04 exercise | ⬜ | — |
 | 4 | [Topic 05 completed](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Notes.md) | A | Not started yet | 🟢 Topic 05 exercise | ⬜ | — |
 | 5 | [Topic 06 completed](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Notes.md) | A | Not started yet | 🟢 Lab and interview complete | ⬜ | — |
-| 6 | [Topic 07 in progress](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Notes.md) | A | Not started yet | 🟢 All five micro-labs complete; chat interview pending | ⬜ | — |
+| 6 | [Topic 07 completed](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Notes.md) | A | Not started yet | 🟢 Notes, five micro-labs, observations, and interview complete | ⬜ | — |
 
 ## Current Next Actions
 
-1. Complete the Topic 07 interview exercise one question at a time in chat.
-2. Create `Interview.md` after all answers have been reviewed.
-3. Complete Topic 07 and begin Topic 08: separating routing, business logic, and data access.
+1. Begin Topic 08: understand why a growing endpoint should separate routing, business logic, and data access.
+2. Establish the first capstone baseline before adding persistence.
+3. Continue the weekly coding practice and leadership journal.
 
-Last updated: 2026-09-25
+Last updated: 2026-09-26
