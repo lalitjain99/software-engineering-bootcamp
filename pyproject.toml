@@ -11,3 +11,9 @@ dependencies = [
     "grpcio-tools",
     "uuid"
 ]
+
+[dependency-groups]
+dev = [
+    "httpx",
+    "pytest"
+]
