@@ -1,41 +1,10 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
-
+from app.schemas import ProductResponse,ProductCreate
+from app.repository import products
 
 app = FastAPI(title="Product Application Layering Lab")
 
 
-class ProductCreate(BaseModel):
-    name: str = Field(min_length=1)
-    sku: str = Field(min_length=1)
-    category: str = Field(min_length=1)
-    price: float = Field(gt=0)
-
-
-class ProductResponse(BaseModel):
-    id: int
-    name: str
-    sku: str
-    category: str
-    price: float
-
-
-products: dict[int, dict] = {
-    101: {
-        "id": 101,
-        "name": "Keyboard",
-        "sku": "KEY-101",
-        "category": "electronics",
-        "price": 2500.0,
-    },
-    102: {
-        "id": 102,
-        "name": "Desk",
-        "sku": "DESK-102",
-        "category": "furniture",
-        "price": 8000.0,
-    },
-}
 
 
 @app.post(
