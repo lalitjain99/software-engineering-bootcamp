@@ -75,8 +75,9 @@ The application grows step by step. Each topic starts from the previous design a
 
 ### Track 1B — Growing the Application
 
-8. ⚪ **When one endpoint becomes too large**
+8. 🟡 **[When one endpoint becomes too large](modules/01_Backend_Engineering/08_Application_Layers/Notes.md)**
    - Separate routing, business logic, and data access
+   - First-principles notes ready; hands-on refactoring exercise is next
 9. ⚪ **Persisting data**
    - Database connection, models, queries, and transaction basics
 10. ⚪ **When requests spend time waiting**
