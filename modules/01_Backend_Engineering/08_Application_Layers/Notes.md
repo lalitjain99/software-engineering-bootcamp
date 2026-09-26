@@ -747,4 +747,4 @@ Read this note with one question in mind:
 
 > Which responsibility is making the endpoint change?
 
-After that, the hands-on exercise will begin with one deliberately mixed FastAPI endpoint. We will first observe its problems and then refactor it into router, service, and repository code without changing its external API behaviour.
+Now complete the [hands-on refactoring exercise](Hands_On/README.md). It begins with one deliberately mixed FastAPI endpoint and regression tests. Refactor it into router, service, and repository code without changing its external API behaviour.
