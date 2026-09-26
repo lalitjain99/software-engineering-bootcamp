@@ -59,7 +59,7 @@ The application grows step by step. Each topic starts from the previous design a
    - Why encryption changes HTTP into HTTPS
    - A gradual introduction to HTTP/1.1, HTTP/2, and HTTP/3
    - [Notes](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Notes.md), [hands-on exercise](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Hands_On/README.md), [observations](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Hands_On/observations.md), and [interview guide](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Interview.md) complete
-7. 🟡 **[API styles and communication mechanisms](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Notes.md)**
+7. 🟢 **[API styles and communication mechanisms](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Notes.md)**
    - REST, GraphQL, gRPC, WebSocket, Server-Sent Events, and webhooks
    - These are not all the same kind of protocol; compare the problems they solve
    - Choosing based on communication direction, latency, compatibility, and contract needs
@@ -68,7 +68,8 @@ The application grows step by step. Each topic starts from the previous design a
    - [SSE micro-lab](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Hands_On/02_SSE/README.md) complete
    - [WebSocket micro-lab](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Hands_On/03_WebSocket/README.md) complete
    - [GraphQL micro-lab](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Hands_On/04_GraphQL/README.md) complete
-   - [gRPC micro-lab](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Hands_On/05_gRPC/README.md) complete; chat interview pending
+   - [gRPC micro-lab](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Hands_On/05_gRPC/README.md) complete
+   - [Interview guide](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Interview.md) complete
 
 **Checkpoint:** trace an API request, explain its complete HTTP contract, and choose an appropriate communication mechanism without discussing internal application architecture yet.
 
@@ -166,4 +167,4 @@ Topic/
 | Review and planning | 10–45 minutes |
 | **Total** | **Approximately 5–8 hours** |
 
-Last updated: 2026-09-25
+Last updated: 2026-09-26
