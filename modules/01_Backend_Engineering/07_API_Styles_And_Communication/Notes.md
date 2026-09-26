@@ -1431,11 +1431,9 @@ Those details will be introduced through hands-on work or later architecture, se
 
 ## ➡️ Next Step
 
-The webhook, SSE, WebSocket, and [GraphQL micro-labs](Hands_On/04_GraphQL/README.md) are complete.
+Topic 07 is complete: reference notes, all five micro-labs, observations, and the [interview guide](Interview.md) have been reviewed.
 
-Now complete the focused [gRPC micro-lab](Hands_On/05_gRPC/README.md). Observe how a `.proto` contract generates Python interfaces and how a stub method call crosses the network.
-
-After the gRPC observations are reviewed, answer Topic 07 interview questions one at a time in chat. We will create `Interview.md` only after reviewing those answers.
+Next, begin Topic 08: understand why a growing endpoint should separate HTTP routing, business logic, and data access before persistence is introduced.
 
 ## 📚 References
 
