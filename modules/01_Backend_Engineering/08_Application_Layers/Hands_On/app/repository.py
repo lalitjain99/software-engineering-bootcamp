@@ -1,4 +1,9 @@
-products: dict[int, dict] = {
+from typing import TypeAlias
+
+Product: TypeAlias = dict[str, int | str | float]
+
+
+products: dict[int, Product] = {
     101: {
         "id": 101,
         "name": "Keyboard",
@@ -17,36 +22,39 @@ products: dict[int, dict] = {
 
 
 class ProductRepository:
-    def __init__(self,products):
-        self.products: list[dict] = products
-        self.next_id = 103
+    def __init__(self, initial_products: dict[int, Product] | None = None) -> None:
+        self.products = initial_products if initial_products is not None else {
+            product_id: product.copy()
+            for product_id, product in products.items()
+        }
+        self.next_id = max(self.products, default=100) + 1
 
-    def get_product(self,product_id:int):
-        if product_id not in product_id:
-            return
-        return self.products[product_id]
+    def get_product(self, product_id: int) -> Product | None:
+        return self.products.get(product_id)
 
-    def find_product_by_sku(self,sku:str):
-        for product_id,details in self.products:
-            if details["sku"] == sku:
-                return self.products[product_id]
-            
-    def list_product(self):
-        return self.products
+    def find_product_by_sku(self, sku: str) -> Product | None:
+        return next(
+            (product for product in self.products.values() if product["sku"] == sku),
+            None,
+        )
+
+    def list_products(self) -> list[Product]:
+        return list(self.products.values())
 
     def add_product(
         self,
         name: str,
         sku: str,
+        category: str,
         price: float,
-    ) -> dict:
-        product = {
+    ) -> Product:
+        product: Product = {
             "id": self.next_id,
             "name": name,
             "sku": sku,
+            "category": category,
             "price": price,
         }
-
+        self.products[self.next_id] = product
         self.next_id += 1
-        self.products.append(product)
         return product

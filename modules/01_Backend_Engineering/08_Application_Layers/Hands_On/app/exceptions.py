@@ -2,5 +2,6 @@
 class DuplicateSkuError(Exception):
     pass
 
-class ProductNotFound(Exception):
+
+class ProductNotFoundError(Exception):
     pass
