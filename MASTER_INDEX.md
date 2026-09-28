@@ -78,7 +78,8 @@ The application grows step by step. Each topic starts from the previous design a
 8. 🟡 **[When one endpoint becomes too large](modules/01_Backend_Engineering/08_Application_Layers/Notes.md)**
    - Separate routing, business logic, and data access
    - First-principles notes ready
-   - [Behaviour-preserving refactoring lab](modules/01_Backend_Engineering/08_Application_Layers/Hands_On/README.md) ready
+   - [Behaviour-preserving refactoring lab](modules/01_Backend_Engineering/08_Application_Layers/Hands_On/README.md) and [observations](modules/01_Backend_Engineering/08_Application_Layers/Hands_On/observations.md) complete
+   - Chat interview pending
 9. ⚪ **Persisting data**
    - Database connection, models, queries, and transaction basics
 10. ⚪ **When requests spend time waiting**
@@ -169,4 +170,4 @@ Topic/
 | Review and planning | 10–45 minutes |
 | **Total** | **Approximately 5–8 hours** |
 
-Last updated: 2026-09-26
+Last updated: 2026-09-29
