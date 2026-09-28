@@ -1,41 +1,53 @@
-Which responsibilities were mixed in the original main.py?
+# Topic 08 Hands-On Observations
 
-Ans: The original file mixed HTTP handling, schemas, business rules, error translation, and storage.
+## 1. Which responsibilities were mixed in the original <code>main.py</code>?
 
-What remained in main.py after the refactor?
+The original file mixed HTTP handling, request and response schemas, business rules, error translation, and data storage.
 
-Ans: main.py now creates FastAPI and includes the router.
+## 2. What remained in <code>main.py</code> after the refactor?
 
-Which HTTP details remained in the router?
+<code>main.py</code> now creates the FastAPI application and includes the product router.
 
-Ans: Router only now only handles the URL Paths, HTTP methods Path, query, header, and body inputs ,request and response schemas and HTTP status codes.
+## 3. Which HTTP details remained in the router?
 
-Which rules moved into the service?
+The router handles URL paths, HTTP methods, path and query inputs, request and response schemas, HTTP status codes, and the translation of application exceptions into HTTP responses.
 
-Ans: The service now handles normalization, duplicate-SKU checking, missing-product decisions, and category filtering.
+It no longer accesses product storage or implements product business rules directly.
 
-Which operations moved into the repository?
+## 4. Which rules moved into the service?
 
-Ans: Repository handle the data related operations like querying the data, adding new product etc.
+The service handles name, SKU, and category normalization; duplicate-SKU checking; missing-product decisions; and optional category filtering.
 
+It performs these operations without deciding which HTTP status code should represent the outcome.
 
-Why does the service raise application exceptions instead of HTTPException?
+## 5. Which operations moved into the repository?
 
-Ans: Application exceptions keep the service independent of HTTP, allowing use from REST, GraphQL, workers, CLI code, or direct tests.
+The repository handles data-related operations such as retrieving products, finding a product by SKU, listing products, assigning the next product ID, and adding a new product.
 
+## 6. Why does the service raise application exceptions instead of <code>HTTPException</code>?
 
-Where is a duplicate SKU converted into 409 Conflict?
-Ans: The router catches DuplicateSkuError and converts it into 409 Conflict
+Application exceptions keep the service independent of HTTP. This allows the same service logic to be called from REST, GraphQL, background workers, command-line code, or direct tests.
 
-Why can the service be tested without starting Uvicorn?
+The HTTP router decides how an application outcome should be represented to an HTTP client.
 
-Ans: It help the developer test the behaviour of the application without hosting or executing endpoints
+## 7. Where is a duplicate SKU converted into <code>409 Conflict</code>?
 
-What would need to change when the in-memory repository is replaced with a database repository?
+The service raises <code>DuplicateSkuError</code>. The router catches that application exception and translates it into an HTTP <code>409 Conflict</code> response.
 
-Ans: Replacing memory with a database requires repository query implementations, database connections/sessions, constraints, transactions, and database-error handling. The router and most service logic should remain unchanged.
+## 8. Why can the service be tested without starting Uvicorn?
 
+The service is an ordinary Python class. A test can construct it with a repository and call its methods directly.
 
-Did any URL, request body, response body, or status code change during the refactor? Why is that important?
+It does not require an HTTP request, FastAPI routing, the ASGI protocol, or a running Uvicorn server to execute its business rules.
 
-Ans: No , none of these changes as refactor is only about seperating out responsibilities for easy maintaince and scalability of the application. It does not mean to bring any behavioral change in the application
+## 9. What would change when the in-memory repository is replaced with a database repository?
+
+The repository would need database query implementations, database connections or sessions, database constraints, transaction handling, and translation of database failures.
+
+If the repository continues to provide the operations required by the service, the router and most service logic should remain unchanged.
+
+## 10. Did any external API behaviour change during the refactor?
+
+No URL, request body, response body, or status code changed.
+
+This is important because refactoring improves the internal code structure without breaking existing clients. The regression tests protect that external contract while the implementation is reorganized.
