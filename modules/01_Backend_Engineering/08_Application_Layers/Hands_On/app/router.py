@@ -1,9 +1,13 @@
 from fastapi import APIRouter, HTTPException
 from app.schemas import ProductResponse, ProductCreate
-from app.repository import products
+from app.repository import ProductRepository
+from app.service import ProductService
+from app.exceptions import DuplicateSkuError, ProductNotFoundError
 
 router = APIRouter()
 
+product_repository = ProductRepository()
+product_service = ProductService(product_repository)
 
 @router.post(
     "/products",
@@ -11,27 +15,19 @@ router = APIRouter()
     status_code=201,
 )
 def create_product(product: ProductCreate) -> dict:
-    normalized_sku = product.sku.strip().upper()
-
-    for existing_product in products.values():
-        if existing_product["sku"] == normalized_sku:
-            raise HTTPException(
-                status_code=409,
-                detail=f"Product with SKU {normalized_sku} already exists",
+    try:
+        return product_service.create_product(
+            name=product.name,
+            sku=product.sku,
+            category=product.category,
+            price=product.price,
             )
-
-    product_id = max(products, default=100) + 1
-
-    created_product = {
-        "id": product_id,
-        "name": product.name.strip(),
-        "sku": normalized_sku,
-        "category": product.category.strip().lower(),
-        "price": product.price,
-    }
-
-    products[product_id] = created_product
-    return created_product
+    except DuplicateSkuError as e:
+        raise HTTPException(
+            status_code= 409,
+            detail= str(e)
+        ) from e
+    
 
 
 @router.get(
@@ -39,15 +35,15 @@ def create_product(product: ProductCreate) -> dict:
     response_model=ProductResponse,
 )
 def get_product(product_id: int) -> dict:
-    product = products.get(product_id)
-
-    if product is None:
+    try:
+        product = product_service.get_product(product_id)
+        return product
+    except ProductNotFoundError  as e:
         raise HTTPException(
-            status_code=404,
-            detail=f"Product {product_id} was not found",
-        )
-
-    return product
+            status_code= 404,
+            detail= str(e)
+        ) from e
+    
 
 
 @router.get(
@@ -57,15 +53,12 @@ def get_product(product_id: int) -> dict:
 def list_products(
     category: str | None = None,
 ) -> list[dict]:
-    stored_products = list(products.values())
-
-    if category is None:
+    try: 
+        stored_products = product_service.list_products(category=category)
         return stored_products
+    except Exception as e:
+        raise HTTPException(
+            status_code=404,
+            detail= e
+        )
 
-    normalized_category = category.strip().lower()
-
-    return [
-        product
-        for product in stored_products
-        if product["category"] == normalized_category
-    ]
