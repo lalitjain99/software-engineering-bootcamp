@@ -22,11 +22,11 @@ def create_product(product: ProductCreate) -> dict:
             category=product.category,
             price=product.price,
             )
-    except DuplicateSkuError as e:
+    except DuplicateSkuError as error:
         raise HTTPException(
-            status_code= 409,
-            detail= str(e)
-        ) from e
+            status_code=409,
+            detail=str(error),
+        ) from error
     
 
 
@@ -38,11 +38,11 @@ def get_product(product_id: int) -> dict:
     try:
         product = product_service.get_product(product_id)
         return product
-    except ProductNotFoundError  as e:
+    except ProductNotFoundError as error:
         raise HTTPException(
             status_code= 404,
-            detail= str(e)
-        ) from e
+            detail= str(error)
+        ) from error
     
 
 
@@ -53,12 +53,5 @@ def get_product(product_id: int) -> dict:
 def list_products(
     category: str | None = None,
 ) -> list[dict]:
-    try: 
-        stored_products = product_service.list_products(category=category)
-        return stored_products
-    except Exception as e:
-        raise HTTPException(
-            status_code=404,
-            detail= e
-        )
+    return product_service.list_products(category=category)
 
