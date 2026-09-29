@@ -2,9 +2,9 @@
 
 ## Overall Status
 
-🟡 Backend Engineering — Topic 08: When One Endpoint Becomes Too Large
+🟡 Backend Engineering — Topic 09: Persisting Data
 
-Topics 01–07 are complete. Topic 08 will introduce separation between routing, business logic, and data access.
+Topics 01–08 are complete. Topic 09 will introduce database persistence, models, queries, constraints, and transaction basics.
 
 ## Goals
 
@@ -33,14 +33,14 @@ Topics 01–07 are complete. Topic 08 will introduce separation between routing,
 | Topic completion | 🟢 Complete |
 
 
-## Topic 08 Progress
+## Topic 08 Completion
 
 | Deliverable | Status |
 |---|:---:|
 | <code>Notes.md</code> | 🟢 First-principles notes ready |
-| <code>Interview.md</code> | ⚪ |
+| <code>Interview.md</code> | 🟢 Chat answers reviewed and guide created |
 | <code>Hands_On/</code> | 🟢 Refactoring and observations complete |
-| Topic completion | 🟡 In progress |
+| Topic completion | 🟢 Complete |
 
 ## Weekly Tracker
 
@@ -52,12 +52,12 @@ Topics 01–07 are complete. Topic 08 will introduce separation between routing,
 | 4 | [Topic 05 completed](modules/01_Backend_Engineering/05_Status_Codes_And_Errors/Notes.md) | A | Not started yet | 🟢 Topic 05 exercise | ⬜ | — |
 | 5 | [Topic 06 completed](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Notes.md) | A | Not started yet | 🟢 Lab and interview complete | ⬜ | — |
 | 6 | [Topic 07 completed](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Notes.md) | A | Not started yet | 🟢 Notes, five micro-labs, observations, and interview complete | ⬜ | — |
-| 7 | [Topic 08 in progress](modules/01_Backend_Engineering/08_Application_Layers/Notes.md) | A | Product application structure | 🟢 Refactoring lab complete; interview pending | ⬜ | — |
+| 7 | [Topic 08 completed](modules/01_Backend_Engineering/08_Application_Layers/Notes.md) | A | Product application structure | 🟢 Notes, refactoring lab, observations, and interview complete | ⬜ | — |
 
 ## Current Next Actions
 
-1. Complete the Topic 08 interview exercise one question at a time in chat.
-2. Create `Interview.md` after all answers have been reviewed.
-3. Complete Topic 08 and begin Topic 09: persisting data.
+1. Begin Topic 09 from first principles: why in-memory data disappears and what persistence must guarantee.
+2. Introduce database tables, models, queries, constraints, and transactions gradually.
+3. Evolve the Topic 08 repository without changing the API contract.
 
 Last updated: 2026-09-29
