@@ -12,6 +12,7 @@
 - Each lesson introduces one primary mental model
 - Advanced terms are introduced only after the problem that requires them
 - A topic is not automatically one week; Tier B refreshers may take only one short session
+- Closed-book revision runs weekly, with a consolidation checkpoint after approximately three or four substantial topics
 
 ## Status Legend
 
@@ -80,7 +81,10 @@ The application grows step by step. Each topic starts from the previous design a
    - First-principles notes ready
    - [Behaviour-preserving refactoring lab](modules/01_Backend_Engineering/08_Application_Layers/Hands_On/README.md) and [observations](modules/01_Backend_Engineering/08_Application_Layers/Hands_On/observations.md) complete
    - [Interview guide](modules/01_Backend_Engineering/08_Application_Layers/Interview.md) complete
-9. 🟡 **Persisting data**
+
+**[Revision Checkpoint 01 — Topics 01–08](REVISION_AND_CONTINUOUS_PRACTICE.md)** is active before continuing.
+
+9. ⚪ **Persisting data**
    - Database connection, models, queries, and transaction basics
 10. ⚪ **When requests spend time waiting**
     - Blocking, synchronous execution, and the motivation for asynchronous I/O
@@ -163,11 +167,19 @@ Topic/
 
 | Activity | Weekly time |
 |---|---:|
-| Core roadmap learning | 3–4.5 hours |
-| Capstone implementation | 1–1.5 hours |
-| Coding practice | 30–45 minutes |
+| Current core topic | 2.5–3.5 hours |
+| Hands-on work or capstone evolution | 1–1.5 hours |
+| Closed-book revision | 30–45 minutes |
+| Light coding practice | 30–45 minutes |
 | Leadership journal | 20–30 minutes |
-| Review and planning | 10–45 minutes |
-| **Total** | **Approximately 5–8 hours** |
+| Planning and progress update | 10–20 minutes |
+| **Total** | **Approximately 5–7.5 hours** |
+
+## Revision Cadence
+
+- Weekly: two closed-book explanations and one weak-area revisit
+- After three or four substantial topics: one consolidation checkpoint
+- End of each phase: mixed mock interview and capstone architecture review
+- Current plan: [Revision and Continuous Practice](REVISION_AND_CONTINUOUS_PRACTICE.md)
 
 Last updated: 2026-09-29
