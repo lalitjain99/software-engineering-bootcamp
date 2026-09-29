@@ -2,9 +2,9 @@
 
 ## Overall Status
 
-🟡 Backend Engineering — Topic 09: Persisting Data
+🔁 Consolidation Checkpoint 01 — Topics 01–08
 
-Topics 01–08 are complete. Topic 09 will introduce database persistence, models, queries, constraints, and transaction basics.
+Topics 01–08 are complete. Revision Checkpoint 01 is active before Topic 09 begins.
 
 ## Goals
 
@@ -42,6 +42,17 @@ Topics 01–08 are complete. Topic 09 will introduce database persistence, model
 | <code>Hands_On/</code> | 🟢 Refactoring and observations complete |
 | Topic completion | 🟢 Complete |
 
+## Continuous Threads
+
+| Thread | Status | Current action |
+|---|:---:|---|
+| Revision | 🔁 | Consolidation Checkpoint 01 active |
+| Capstone | 🟡 | Topic 08 layered Product API selected as baseline |
+| Light coding | 🟡 | Begin one 30–45 minute topic-linked exercise per week |
+| Leadership journal | 🟡 | Begin one private, anonymized entry per week |
+
+See [Revision and Continuous Practice Plan](REVISION_AND_CONTINUOUS_PRACTICE.md).
+
 ## Weekly Tracker
 
 | Week | Core topic | Tier | Capstone layer | Coding | Leadership journal | Hours |
@@ -53,11 +64,14 @@ Topics 01–08 are complete. Topic 09 will introduce database persistence, model
 | 5 | [Topic 06 completed](modules/01_Backend_Engineering/06_HTTP_HTTPS_And_Protocols/Notes.md) | A | Not started yet | 🟢 Lab and interview complete | ⬜ | — |
 | 6 | [Topic 07 completed](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Notes.md) | A | Not started yet | 🟢 Notes, five micro-labs, observations, and interview complete | ⬜ | — |
 | 7 | [Topic 08 completed](modules/01_Backend_Engineering/08_Application_Layers/Notes.md) | A | Product application structure | 🟢 Notes, refactoring lab, observations, and interview complete | ⬜ | — |
+| 8 | [Revision Checkpoint 01](REVISION_AND_CONTINUOUS_PRACTICE.md) | Review | Establish Topic 08 app as capstone baseline | 🔁 Topics 01–08 recall and integration | 🟡 First private entry | — |
 
 ## Current Next Actions
 
-1. Begin Topic 09 from first principles: why in-memory data disappears and what persistence must guarantee.
-2. Introduce database tables, models, queries, constraints, and transactions gradually.
-3. Evolve the Topic 08 repository without changing the API contract.
+1. Complete [Revision Checkpoint 01](REVISION_AND_CONTINUOUS_PRACTICE.md) one question at a time in chat.
+2. Record weak areas that require prompting and schedule a short revisit.
+3. Establish the Topic 08 Product API as the capstone baseline.
+4. Record one private, anonymized leadership-journal entry.
+5. Begin Topic 09 only after the checkpoint review.
 
 Last updated: 2026-09-29
