@@ -747,4 +747,6 @@ Read this note with one question in mind:
 
 > Which responsibility is making the endpoint change?
 
-The [hands-on refactoring exercise](Hands_On/README.md) and [observations](Hands_On/observations.md) are complete. Next, answer the Topic 08 interview questions one at a time in chat. We will create `Interview.md` only after the answers have been reviewed.
+Topic 08 is complete: the notes, [hands-on refactoring exercise](Hands_On/README.md), [observations](Hands_On/observations.md), and [interview guide](Interview.md) have been reviewed.
+
+Next, begin Topic 09: replace the in-memory repository with persistent storage while keeping the router and business use cases stable.
