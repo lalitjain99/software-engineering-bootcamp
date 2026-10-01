@@ -84,7 +84,7 @@ The application grows step by step. Each topic starts from the previous design a
 
 **[Revision Checkpoint 01 — Topics 01–08](REVISION_AND_CONTINUOUS_PRACTICE.md)** is active before continuing.
 
-9. 🟡 **[Persisting data](modules/01_Backend_Engineering/09_Persisting_Data/Notes.md)**
+9. 🟡 **[Persisting data](modules/01_Backend_Engineering/09_Persisting_Data/README.md)**
    - Why in-memory state is insufficient
    - Database persistence, repositories, constraints, and transaction basics
    - [Notes](modules/01_Backend_Engineering/09_Persisting_Data/Notes.md) started
