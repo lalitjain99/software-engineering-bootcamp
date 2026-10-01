@@ -84,8 +84,10 @@ The application grows step by step. Each topic starts from the previous design a
 
 **[Revision Checkpoint 01 — Topics 01–08](REVISION_AND_CONTINUOUS_PRACTICE.md)** is active before continuing.
 
-9. ⚪ **Persisting data**
-   - Database connection, models, queries, and transaction basics
+9. 🟡 **[Persisting data](modules/01_Backend_Engineering/09_Persisting_Data/Notes.md)**
+   - Why in-memory state is insufficient
+   - Database persistence, repositories, constraints, and transaction basics
+   - [Notes](modules/01_Backend_Engineering/09_Persisting_Data/Notes.md) started
 10. ⚪ **When requests spend time waiting**
     - Blocking, synchronous execution, and the motivation for asynchronous I/O
 11. ⚪ **Handling multiple tasks**
