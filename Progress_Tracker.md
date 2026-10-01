@@ -2,9 +2,9 @@
 
 ## Overall Status
 
-🔁 Consolidation Checkpoint 01 — Topics 01–08
+🟢 Revision Checkpoint 01 complete — Topics 01–08
 
-Topics 01–08 are complete. Revision Checkpoint 01 is active before Topic 09 begins.
+Topics 01–08 and Revision Checkpoint 01 are complete. Topic 09 is next; recorded weak areas will be revisited at the planned points.
 
 ## Goals
 
@@ -46,7 +46,7 @@ Topics 01–08 are complete. Revision Checkpoint 01 is active before Topic 09 be
 
 | Thread | Status | Current action |
 |---|:---:|---|
-| Revision | 🔁 | Consolidation Checkpoint 01 active |
+| Revision | 🟢 | Checkpoint 01 complete; weak areas recorded |
 | Capstone | 🟡 | Topic 08 layered Product API selected as baseline |
 | Light coding | 🟡 | Begin one 30–45 minute topic-linked exercise per week |
 | Leadership journal | 🟡 | Begin one private, anonymized entry per week |
@@ -68,10 +68,10 @@ See [Revision and Continuous Practice Plan](REVISION_AND_CONTINUOUS_PRACTICE.md)
 
 ## Current Next Actions
 
-1. Complete [Revision Checkpoint 01](REVISION_AND_CONTINUOUS_PRACTICE.md) one question at a time in chat.
-2. Record weak areas that require prompting and schedule a short revisit.
-3. Establish the Topic 08 Product API as the capstone baseline.
+1. Begin Topic 09: Persisting data.
+2. Revisit recorded weak areas at their planned roadmap points.
+3. Continue using the Topic 08 Product API as the capstone baseline.
 4. Record one private, anonymized leadership-journal entry.
-5. Begin Topic 09 only after the checkpoint review.
+5. Complete the weekly closed-book recall and light coding exercise.
 
 Last updated: 2026-09-29
