@@ -65,7 +65,7 @@ See [Revision and Continuous Practice Plan](REVISION_AND_CONTINUOUS_PRACTICE.md)
 | 6 | [Topic 07 completed](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Notes.md) | A | Not started yet | 🟢 Notes, five micro-labs, observations, and interview complete | ⬜ | — |
 | 7 | [Topic 08 completed](modules/01_Backend_Engineering/08_Application_Layers/Notes.md) | A | Product application structure | 🟢 Notes, refactoring lab, observations, and interview complete | ⬜ | — |
 | 8 | [Revision Checkpoint 01](REVISION_AND_CONTINUOUS_PRACTICE.md) | Review | Establish Topic 08 app as capstone baseline | 🔁 Topics 01–08 recall and integration | 🟡 First private entry | — |
-| 9 | [Topic 09 — Persisting Data](modules/01_Backend_Engineering/09_Persisting_Data/Notes.md) | A | Add durable storage to the capstone | 🟡 Persistence fundamentals | ⬜ | — |
+| 9 | [Topic 09 — Persisting Data](modules/01_Backend_Engineering/09_Persisting_Data/README.md) | A | Add durable storage to the capstone | 🟡 Persistence fundamentals | ⬜ | — |
 
 ## Current Next Actions
 
