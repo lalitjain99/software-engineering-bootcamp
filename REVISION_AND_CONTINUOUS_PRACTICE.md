@@ -115,6 +115,28 @@ After the checkpoint, record only items that needed help. Each weak area must ha
 - One example
 - A date for the next short review
 
+#### Checkpoint 01 outcome
+
+Retained with reasonable confidence:
+
+- DNS resolution versus TCP connection
+- Uvicorn HTTP parsing versus FastAPI validation
+- URL parameters versus JSON body parsing
+
+Deliberate weak areas to revisit:
+
+1. **Idempotency and safe retries**
+   - Current level: Good conceptual awareness, but not yet formally covered.
+   - Next review: Topic 13 — retries, idempotency, and safe state transitions.
+
+2. **Behaviour-focused testing versus implementation-coupled testing**
+   - Current level: Understands the distinction, but needs more practical examples.
+   - Next review: Testing strategy and code-quality section in the production-backend track.
+
+3. **Test isolation and shared mutable state**
+   - Current level: Recognized during the Topic 08 code review; needs hands-on practice with fixtures and fresh application state.
+   - Next review: Next testing-focused lab or when the capstone test suite is expanded.
+
 ## Capstone Thread
 
 The Topic 08 layered Product API becomes the baseline for one evolving capstone system.
