@@ -6,8 +6,8 @@
 
 | Status | Subtopic | Focus |
 |:---:|---|---|
-| 🟡 | [09.01 Database Fundamentals](01_Database_Fundamentals/Notes.md) | Persistence, relational concepts, repositories, constraints, and basic transactions |
-| ⚪ | 09.02 Data Modeling and SQL | Tables, keys, relationships, joins, inserts, updates, and queries |
+| 🟢 | [09.01 Database Fundamentals](01_Database_Fundamentals/Notes.md) | Persistence, relational concepts, repositories, constraints, and basic transactions |
+| 🟡 | [09.02 Data Modeling and SQL](02_Data_Modeling_And_SQL/Notes.md) | Tables, keys, relationships, joins, inserts, updates, and queries |
 | ⚪ | 09.03 Database Sessions and Connection Pools | Sessions, connections, pooling, lifecycle, and FastAPI integration |
 | ⚪ | 09.04 ORM and Migrations | Mapping Python models, migrations, schema evolution, and trade-offs |
 | ⚪ | 09.05 Transactions and Concurrent Updates | Atomicity, isolation, locking, race conditions, and safe updates |
