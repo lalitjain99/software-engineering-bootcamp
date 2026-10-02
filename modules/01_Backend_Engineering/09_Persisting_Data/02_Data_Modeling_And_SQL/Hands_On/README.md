@@ -12,7 +12,7 @@ Create a `main.py` file that:
 
 1. Opens a SQLite database.
 2. Enables foreign-key enforcement.
-3. Creates `stores` and `products) tables.
+3. Creates `stores` and `products` tables.
 4. Inserts two stores.
 5. Inserts products belonging to valid stores.
 6. Attempts to insert a product with a duplicate SKU.
