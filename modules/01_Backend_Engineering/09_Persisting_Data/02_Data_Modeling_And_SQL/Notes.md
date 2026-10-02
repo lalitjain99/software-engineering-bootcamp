@@ -139,27 +139,117 @@ WHERE id = 101;
 
 Deletion also requires an intentional condition. Production systems often use soft deletion when history or auditability matters.
 
-## 5. Query parameters safely
+## 5. SQL injection and parameterized queries
+
+### The unsafe pattern
 
 Never build SQL by concatenating user input:
 
 ```python
 # Unsafe
-query = f"SELECT * FROM products WHERE sku = '{sku}'"
+query = f"SELECT id, name, sku, price FROM products WHERE sku = '{sku}'"
 ```
 
-An attacker could change the meaning of the query through the input.
+If the client sends the ordinary value:
 
-Use parameterized queries:
+```text
+KEY-101
+```
+
+the application constructs:
+
+```sql
+SELECT id, name, sku, price
+FROM products
+WHERE sku = 'KEY-101';
+```
+
+The input is treated as a value inside the SQL string.
+
+### How the query meaning can change
+
+Suppose an attacker sends:
+
+```text
+' OR '1'='1
+```
+
+The unsafe application may construct:
+
+```sql
+SELECT id, name, sku, price
+FROM products
+WHERE sku = '' OR '1'='1';
+```
+
+The attacker has:
+
+1. Closed the original quoted SKU value with the first apostrophe.
+2. Added an `OR` condition.
+3. Added a condition that is always true.
+4. Changed the meaning of the `WHERE` clause.
+
+Instead of checking one SKU, the database may return every product. The exact result depends on the query and database, but the core problem is that untrusted input has become SQL syntax.
+
+Other injection attempts may try to:
+
+- Bypass an authorization condition
+- Read data from another table
+- Modify records
+- Delete records
+- Trigger database-specific operations
+
+The severity depends on the database permissions granted to the application account. The application should still assume that every client input is untrusted.
+
+### The safe pattern
+
+Use a parameterized query:
 
 ```python
-query = "SELECT * FROM products WHERE sku = %s"
+query = """
+    SELECT id, name, sku, price
+    FROM products
+    WHERE sku = %s
+"""
 cursor.execute(query, (sku,))
 ```
 
-The database driver sends the SQL structure and the value separately. This helps prevent SQL injection and handles escaping correctly.
+For SQLite, the placeholder is commonly `?`:
 
-The exact placeholder syntax depends on the database driver. The safety principle remains the same.
+```python
+connection.execute(
+    "SELECT id, name, sku, price FROM products WHERE sku = ?",
+    (sku,),
+)
+```
+
+The driver treats the SQL statement and the supplied value as separate inputs. If the value contains quote characters or SQL keywords, they remain part of the SKU value rather than becoming executable SQL syntax.
+
+### Why manual escaping is not enough
+
+Manually escaping quotes is not a reliable substitute because:
+
+- Escaping rules vary by database and context.
+- Different SQL expressions require different handling.
+- Developers may forget to escape one query path.
+- Escaping does not solve unsafe dynamic identifiers or query structure.
+- Parameter binding is the database driver's intended safety mechanism.
+
+Use parameter binding for values. If table names, column names, or sort directions must be dynamic, choose them from a server-controlled allowlist rather than inserting raw client input into SQL.
+
+### Additional protections
+
+Parameterized queries are essential, but production defence also includes:
+
+- Least-privilege database accounts
+- Restricted database network access
+- Input validation for business correctness
+- Safe error messages that do not reveal SQL details
+- Monitoring and alerting for suspicious query activity
+- Tests that verify user input is treated as data
+- Careful review of raw SQL and ORM-generated queries
+
+The goal is not merely to reject suspicious characters. The goal is to ensure that user input cannot change the structure of the SQL statement.
 
 ## 6. Query result versus application result
 
