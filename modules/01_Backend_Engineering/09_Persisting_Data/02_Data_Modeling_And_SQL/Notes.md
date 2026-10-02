@@ -209,7 +209,32 @@ CREATE TABLE product_suppliers (
 
 This keeps each fact in an appropriate place and avoids repeating groups of columns.
 
-## 8. The repository boundary
+## 8. What happens when a referenced row is deleted?
+
+Suppose a product must always belong to an existing store:
+
+```sql
+CREATE TABLE products (
+    id INTEGER PRIMARY KEY,
+    store_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    FOREIGN KEY (store_id)
+        REFERENCES stores(id)
+        ON DELETE RESTRICT
+);
+```
+
+With `ON DELETE RESTRICT`, the database rejects deletion of a store while products still reference it. This protects referential integrity.
+
+Other policies are possible:
+
+- **RESTRICT / NO ACTION** — reject the store deletion while dependent products exist.
+- **CASCADE** — delete the dependent products automatically. This can be dangerous because one delete may remove a large amount of data.
+- **SET NULL** — keep the products but remove their store reference. This requires `store_id` to allow `NULL` and only makes sense when an unassigned product is valid.
+
+The correct policy depends on the business meaning. For our current model, rejecting the deletion is appropriate because every product must belong to a store. A service-level check can provide a friendly error, but the foreign-key rule remains the final protection. Many production systems also use soft deletion, such as `is_active = false`, when historical data must be preserved.
+
+## 9. The repository boundary
 
 The service should ask for domain operations:
 
@@ -235,7 +260,7 @@ Application object
 
 The service should not contain SQL strings, and the router should not know table names.
 
-## 9. Common mistakes
+## 10. Common mistakes
 
 - Treating API models and database tables as the same contract
 - Relying only on Pydantic for uniqueness or referential integrity
