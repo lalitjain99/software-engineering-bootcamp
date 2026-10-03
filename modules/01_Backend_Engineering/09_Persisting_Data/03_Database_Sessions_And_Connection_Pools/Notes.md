@@ -17,6 +17,132 @@ The connection is not just a Python object. It represents a live client-server r
 FastAPI process ── database connection ──> Database server
 ~~~
 
+## 1.1 Is a database connection also TCP?
+
+When the database is on another machine, the database connection is usually a TCP connection to the database host and port. PostgreSQL commonly listens on port 5432.
+
+The flow is:
+
+~~~text
+FastAPI application
+    ↓
+Database driver
+    ↓
+TCP connection to database:5432
+    ↓
+PostgreSQL server
+~~~
+
+A local database may instead use a Unix domain socket, but TCP is the common choice for a remote database.
+
+A database connection does not use HTTP. It uses the database engine's own wire protocol.
+
+## 1.2 How does a SQL query travel?
+
+The application does not manually convert SQL into bytes. The database driver does this:
+
+~~~text
+SQL statement + parameter values
+    ↓
+Database wire-protocol messages
+    ↓
+Bytes
+    ↓
+TCP socket
+    ↓
+Database server
+~~~
+
+The database response follows the reverse path:
+
+~~~text
+Database result bytes
+    ↓
+Driver parses the response
+    ↓
+Python rows or objects
+~~~
+
+For a database connection without TLS, database-protocol bytes travel over TCP. With database TLS enabled:
+
+~~~text
+Database protocol message
+    ↓
+TLS encryption
+    ↓
+TCP carries encrypted TLS records
+~~~
+
+This is similar to HTTPS at the transport level, but the application protocol is different:
+
+~~~text
+HTTPS:   HTTP message → TLS → TCP
+Database: database protocol → optional TLS → TCP
+~~~
+
+## 1.3 How database authentication works
+
+A database does not use an HTTP Authorization header. The database driver authenticates when it creates a physical connection.
+
+A typical sequence is:
+
+1. TCP connection is established.
+2. Optional TLS negotiation occurs.
+3. The client sends startup information such as database name and username.
+4. The database requests authentication.
+5. The client proves its identity using a password, token, certificate, or another configured mechanism.
+6. The database creates an authenticated session.
+7. SQL operations can begin.
+
+Common mechanisms include:
+
+- Username and password
+- SCRAM or another password challenge mechanism
+- Client TLS certificates
+- Kerberos or enterprise identity
+- Cloud IAM tokens
+- Unix socket or peer authentication
+- A database proxy or connector
+
+Authentication and authorization are different:
+
+~~~text
+Authentication → Who is this client?
+Authorization  → What may this client do?
+~~~
+
+For example, a database role may be allowed to read and insert products but not drop tables.
+
+Credentials should come from secret management, environment configuration, or a cloud identity mechanism. They should not be placed in HTTP headers for database use or written to logs.
+
+## 1.4 What server-side resources does a connection use?
+
+A database connection is not only a Python object. The database server may allocate:
+
+- A backend process or worker
+- A connection slot counted against the database limit
+- Memory for connection and session state
+- A network socket and buffers
+- The authenticated role
+- Transaction state
+- Session settings
+- Temporary tables or prepared statements
+- Locks held by the session
+- Query execution memory while SQL is running
+
+Some resources are used even while the connection is idle.
+
+For example:
+
+~~~text
+5 application pods × 20 pool connections each
+≈ 100 database sessions
+~~~
+
+This is why pool sizes must be planned together with the database's maximum connection limit.
+
+Closing a connection releases connection-specific resources. Returning a connection to a pool keeps it reusable, but the connection must be cleaned so unfinished transactions, locks, or session settings do not affect the next request.
+
 ## 2. Why not create a new connection for every request?
 
 This approach is simple conceptually:
@@ -43,6 +169,41 @@ But under load it can cause:
 - Exhaustion of the database's maximum connection limit
 
 The application and database both have finite resources.
+
+## 2.1 Connection pooling versus HTTP connection reuse
+
+The concepts are related but belong to different protocols.
+
+Normal HTTP/1.1 connections are usually persistent and may be reused for multiple sequential requests. HTTP/2 can multiplex multiple requests over one TCP connection. SSE is different because one HTTP response remains open continuously.
+
+A database pool maintains several reusable database-protocol connections:
+
+~~~text
+Pool
+ ├── DB connection 1: idle
+ ├── DB connection 2: in use
+ └── DB connection 3: idle
+~~~
+
+For each database operation:
+
+~~~text
+Request arrives
+    ↓
+Borrow an idle database connection
+    ↓
+Send SQL over the existing connection
+    ↓
+Receive the database response
+    ↓
+Commit or roll back
+    ↓
+Return the connection to the pool
+~~~
+
+The connection is returned to the pool, not closed. If the pool has no available connection, the request waits or reaches the checkout timeout.
+
+The pool does not necessarily send a query continuously to keep every connection alive. It manages connection lifetime, health checks, keepalive probes, and replacement of broken or expired connections.
 
 ## 3. What is a connection pool?
 
