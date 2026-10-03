@@ -1,48 +1,114 @@
-What happens when the duplicate SKU is inserted?
+# Observations
 
-Ans: Query failed with error as Unique constraint failed
+## 1. Duplicate SKU
 
-What happens when the store_id does not exist?
+### Test
 
-Ans: Query failed with error as Foreign Key constraint failed
+A product was inserted with an SKU that already exists:
 
-What happens when a store with products is deleted?
+```text
+MS-901
+```
 
-Ans: Query failed with error as Foreign key constraint failed
+### Observation
 
-What does the JOIN return?
+SQLite rejected the operation with a unique-constraint error:
 
-Ans - Wireless Mouse (MS-901) is sold at Tech Superstore
-   - Mechanical Keyboard (KB-202) is sold at Tech Superstore
-   - Cotton T-Shirt (TS-505) is sold at Fashion Hub
-   - Denim Jeans (DJ-404) is sold at Fashion Hub
+```text
+UNIQUE constraint failed: products.sku
+```
 
-Which errors come from the database rather than from FastAPI or Pydantic?
+### Meaning
 
-Ans: Duplicate SKU → unique constraint violation
-Non-existent store_id during product insertion → foreign-key violation
-Deleting a store that still has products → foreign-key restriction violation
+The database prevented two products from using the same SKU. This is a database-level guarantee, independent of application-level checks.
 
-What changes when PRAGMA foreign_keys = ON is removed?
+## 2. Non-existent store ID
 
-Ans: SQLite parses and stores the foreign-key definition, but does not enforce it for that connection unless PRAGMA foreign_keys = ON is enabled.
+### Test
 
-Also, this setting is connection-specific. Every new SQLite connection must enable it.
-With enforcement disabled:
-- Invalid orphan products can be inserted.
+A product was inserted with a `store_id` that does not exist in the `stores` table:
+
+```text
+store_id = 999
+```
+
+### Observation
+
+SQLite rejected the operation with:
+
+```text
+FOREIGN KEY constraint failed
+```
+
+### Meaning
+
+The foreign-key constraint prevented an orphan product from being created.
+
+## 3. Deleting a store with products
+
+### Test
+
+A store with existing products was deleted.
+
+### Observation
+
+SQLite rejected the operation with:
+
+```text
+FOREIGN KEY constraint failed
+```
+
+### Meaning
+
+`ON DELETE RESTRICT` prevented deletion of the store while dependent products still existed.
+
+## 4. JOIN result
+
+The query joined products with their stores and returned:
+
+```text
+Wireless Mouse (MS-901) is sold at Tech Superstore
+Mechanical Keyboard (KB-202) is sold at Tech Superstore
+Cotton T-Shirt (TS-505) is sold at Fashion Hub
+Denim Jeans (DJ-404) is sold at Fashion Hub
+```
+
+This demonstrates that `products.store_id` connects each product to `stores.id`.
+
+## 5. Which errors come from the database?
+
+These failures occurred at the database layer, not in FastAPI or Pydantic:
+
+1. Duplicate SKU → unique-constraint violation
+2. Non-existent `store_id` during product insertion → foreign-key violation
+3. Deleting a store with existing products → foreign-key restriction violation
+
+The repository would later translate these low-level database errors into application-level exceptions. The router could then translate those exceptions into HTTP responses.
+
+## 6. What changes when foreign-key enforcement is disabled?
+
+SQLite stores the foreign-key definition in the table schema, but enforcement is connection-specific. It must be enabled for every connection:
+
+```python
+connection.execute("PRAGMA foreign_keys = ON")
+```
+
+If enforcement is disabled:
+
+- A product with a non-existent `store_id` can be inserted.
 - A store can be deleted while products still reference it.
-- The schema can still be created successfully.
+- The resulting products become orphan records.
+- The tables can still be created successfully; this is not a syntax error.
 
-Key Changes in Behavior
-1. Orphan Records on Insertion
-With Foreign Keys ON: Trying to insert a product with a store_id that does not exist throws an IntegrityError.
+The important distinction is:
 
-With Foreign Keys OFF: SQLite will happily accept the insert. You will end up with orphan records—products referencing a store ID that doesn't exist anywhere in your database.
+```text
+Foreign-key definition exists
+        ≠
+Foreign-key rule is enforced for this connection
+```
 
-2. Deletion Guard Fails (ON DELETE RESTRICT Ignored)
-With Foreign Keys ON: Trying to delete a store that still has products linked to it is blocked with an IntegrityError.
+## 7. Key learning
 
-With Foreign Keys OFF: SQLite allows you to delete the store immediately. The products referencing that store are left behind with a dead/dangling store_id, breaking your relational integrity.
+Application validation improves the user-facing error, but database constraints provide the final protection. They also protect data written by other services, scripts, workers, or concurrent requests.
 
-3. Does it throw a syntax error when creating tables?
-No. SQLite allows you to write FOREIGN KEY constraints in your CREATE TABLE statement regardless of whether the PRAGMA is enabled or disabled. It just treats them as comments/metadata unless the PRAGMA is turned on.
