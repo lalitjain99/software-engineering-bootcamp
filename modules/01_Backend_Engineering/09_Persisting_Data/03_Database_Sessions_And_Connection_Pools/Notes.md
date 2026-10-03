@@ -270,23 +270,76 @@ Pool sizing must consider:
 
 If there are 5 application pods and each pool allows 20 connections, the database may receive up to approximately 100 connections before considering other clients.
 
-## 6. Connection versus session
+## 6. Connection versus database session
 
-The word session can mean different things depending on the library.
+These two terms are related but not identical.
 
-### Database connection
+### Database connection: the communication channel
 
-A physical or logical communication channel to the database server.
+A connection is the live communication path between the application and database:
 
-### Database session
+~~~text
+Application driver ── TCP socket ──> Database server
+~~~
 
-The database server's state associated with a connection, including transaction state and session settings.
+It allows the application to send database-protocol messages and receive responses.
 
-### ORM session
+### Database session: the database's remembered context
 
-Some ORM libraries use Session for an application-level unit of work. It may borrow a physical connection from a pool only when database work begins.
+After the database authenticates a connection, it creates a session for that client. The session is the server-side context associated with the connection.
 
-Do not automatically assume that an ORM Session is the same thing as a physical TCP connection.
+It may remember:
+
+- Which database role was authenticated
+- Which database is being used
+- Whether a transaction is active
+- Session settings such as time zone
+- Temporary tables
+- Prepared statements
+- Locks held by the session
+
+A simple analogy:
+
+~~~text
+Connection = telephone line
+Session     = the conversation and context over that line
+~~~
+
+The connection carries messages. The session gives those messages context.
+
+### Session lifecycle
+
+~~~text
+Open connection
+    ↓
+Authenticate client
+    ↓
+Database creates session context
+    ↓
+Run queries and transactions
+    ↓
+Commit or roll back
+    ↓
+Reset session state
+    ↓
+Return connection to pool or close it
+~~~
+
+If the connection breaks, the database session normally disappears with it. A replacement connection creates a new session and must authenticate again.
+
+When a pooled connection is reused, it may reuse the same database session. That is why the pool must clean up unfinished transactions, locks, temporary state, and session settings before allowing another request to use it.
+
+### ORM session: a separate library concept
+
+Some ORM libraries also use the word Session for an application-level unit of work. An ORM Session may borrow a physical database connection only when database work begins.
+
+Therefore:
+
+~~~text
+Database connection ≠ always the same thing as ORM Session
+~~~
+
+The exact meaning depends on the database driver or ORM.
 
 ## 7. Transaction scope
 
