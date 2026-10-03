@@ -19,14 +19,19 @@ Ans - Wireless Mouse (MS-901) is sold at Tech Superstore
 
 Which errors come from the database rather than from FastAPI or Pydantic?
 
-Ans: 1. When user try to delete a particular store whose product still exists in the product table. Query resulted in error as    Foreign key constraint failed.
-     2. When user try to insert a new product into a non existant resulted in database error. Query resulted in error as Foreign key constraint failed.
+Ans: Duplicate SKU → unique constraint violation
+Non-existent store_id during product insertion → foreign-key violation
+Deleting a store that still has products → foreign-key restriction violation
 
 What changes when PRAGMA foreign_keys = ON is removed?
 
-Ans: When PRAGMA foreign_keys = ON; is removed (meaning it defaults to OFF), SQLite stops enforcing any relationships between your tables.
+Ans: SQLite parses and stores the foreign-key definition, but does not enforce it for that connection unless PRAGMA foreign_keys = ON is enabled.
 
-Even though your table schema explicitly defines a FOREIGN KEY clause and ON DELETE RESTRICT, SQLite will completely ignore them at runtime.
+Also, this setting is connection-specific. Every new SQLite connection must enable it.
+With enforcement disabled:
+- Invalid orphan products can be inserted.
+- A store can be deleted while products still reference it.
+- The schema can still be created successfully.
 
 Key Changes in Behavior
 1. Orphan Records on Insertion
