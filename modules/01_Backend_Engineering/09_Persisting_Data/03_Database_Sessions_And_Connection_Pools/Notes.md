@@ -455,12 +455,13 @@ Do not automatically retry every database operation. A read may often be retried
 ## Mental model
 
 ~~~text
-Pool     → manages reusable database connections
-Request  → temporarily borrows one
-Session  → library-dependent unit of database work
-Service  → decides business operation and transaction intent
-Repository → executes database interaction
-Database → durable state and constraint authority
+Pool              → manages reusable physical database connections
+Request           → temporarily borrows one
+Database session  → server-side context associated with a physical connection
+ORM session       → library-level unit-of-work abstraction
+Service           → decides business operation and transaction intent
+Repository        → executes database interaction
+Database          → durable state and constraint authority
 ~~~
 
 ## What comes next
@@ -476,3 +477,147 @@ This subtopic intentionally does not yet cover:
 - Query performance diagnosis
 
 Those will be introduced in separate subtopics or labs.
+
+
+## 13. What if a connection is returned with an open transaction?
+
+Every connection returned to the pool must be clean. If Request A updates data, fails, and returns the connection without rollback, Request B may receive the same transaction context.
+
+This can cause:
+
+- Request B to accidentally commit Request A's changes;
+- Request B to observe Request A's uncommitted changes on the same connection;
+- locks from Request A to block other work;
+- request-specific settings or temporary state to leak across requests.
+
+The safe lifecycle is:
+
+~~~text
+Success → commit → reset → return
+Failure → rollback if possible → reset → return
+Broken connection → discard, do not return
+~~~
+
+## 14. Pool sizing across pods
+
+Pool limits are local to an application process or pod. The database connection limit is global.
+
+~~~text
+maximum application connections =
+maximum pod count × max_size per pod
+~~~
+
+For example:
+
+~~~text
+10 maximum pods × 6 connections per pod = 60 connections
+~~~
+
+The database must also reserve capacity for other services, background workers, migrations, monitoring, administration, and database-reserved connections.
+
+Do not size only for the current number of pods when autoscaling is enabled. A pool size that is safe for three pods may overload the database after scaling to ten.
+
+A large max_size is usually a maximum possible value; many pools create connections lazily. A large min_size, however, causes more idle connections to be maintained proactively.
+
+## 15. Why use a maximum connection lifetime?
+
+A maximum lifetime retires a connection after a configured age, even when it appears healthy. This helps limit:
+
+- stale firewall, NAT, proxy, or load-balancer state;
+- connections tied to an old database primary after failover;
+- accumulated session state;
+- long-lived driver or network problems;
+- credentials or certificates that need rotation.
+
+Pools normally retire connections after they are returned, rather than interrupting an active query. Randomized lifetime jitter can prevent every pod from reconnecting at the same time.
+
+## 16. Health checks and race conditions
+
+A health check is only a point-in-time observation. A connection can pass its health check and fail immediately before the SQL operation begins.
+
+Failures should be reasoned about differently:
+
+- **Before SQL is sent:** the operation probably did not execute.
+- **While or after SQL is sent:** the database may have executed it, but the response may have been lost.
+
+When a connection fails while in use:
+
+1. the driver reports the error;
+2. the application attempts rollback if possible;
+3. the pool discards the broken connection;
+4. the pool replaces it when capacity is needed;
+5. the application decides whether a retry is safe.
+
+The pool does not repair or redirect an already-running request.
+
+## 17. Pool recovery versus application retry
+
+The pool owns connection lifecycle:
+
+- checking out and returning connections;
+- detecting broken connections;
+- discarding and replacing connections;
+- enforcing pool size and checkout timeouts.
+
+The application or data-access layer owns retry policy:
+
+- classify the error;
+- decide whether the operation is idempotent;
+- choose the attempt limit, backoff, and deadline;
+- return the final application error.
+
+A pool may provide a new connection, but it does not automatically repeat a failed SQL statement.
+
+For reads, a bounded retry may be appropriate. For writes, a connection failure after the statement was sent creates an ambiguous result. Use an idempotency key, a unique business key, or another deduplication mechanism before retrying.
+
+## 18. How to diagnose PoolTimeout errors
+
+A PoolTimeout means the request could not obtain a connection within the checkout timeout. It is different from a slow SQL query and different from a database connection failure.
+
+Before increasing max_size, investigate:
+
+- active, idle, and waiting connections;
+- connection checkout latency;
+- connection-hold duration;
+- slow queries and transaction duration;
+- lock waits and deadlocks;
+- connections not being returned;
+- uneven traffic across pods;
+- database CPU, memory, I/O, and connection limits.
+
+A request may hold a connection while doing unrelated work, such as calling another service. The connection should be held only for the shortest safe database operation.
+
+## 19. Production metrics
+
+Useful metrics include:
+
+### Pool capacity
+
+- active/in-use connections;
+- idle connections;
+- waiting requests;
+- pool utilization;
+- minimum and maximum size.
+
+### Acquisition and health
+
+- checkout latency;
+- PoolTimeout count;
+- connection creation failures;
+- replacement count;
+- health-check failures;
+- broken or expired connections;
+- connection age.
+
+### Database work
+
+- SQL execution latency;
+- slow-query count;
+- transaction duration;
+- rollback count;
+- lock-wait time;
+- deadlock count;
+- total database sessions.
+
+Compare SQL execution time with connection-hold time. If the database is already at high CPU, increasing the pool may move the bottleneck from the application to the database and worsen the outage.
+
