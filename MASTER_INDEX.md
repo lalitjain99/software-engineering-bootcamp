@@ -90,7 +90,8 @@ The application grows step by step. Each topic starts from the previous design a
    - 🟢 [09.01 Database fundamentals](modules/01_Backend_Engineering/09_Persisting_Data/01_Database_Fundamentals/Notes.md) complete
    - 🟢 [09.02 Data modeling and SQL](modules/01_Backend_Engineering/09_Persisting_Data/02_Data_Modeling_And_SQL/Notes.md) complete
    - 🟢 [09.03 Database sessions and connection pools](modules/01_Backend_Engineering/09_Persisting_Data/03_Database_Sessions_And_Connection_Pools/Notes.md) complete
-   - 🟡 [09.04 ORM and migrations](modules/01_Backend_Engineering/09_Persisting_Data/04_ORM_And_Migrations/Notes.md) in progress
+   - 🟢 [09.04 ORM and migrations](modules/01_Backend_Engineering/09_Persisting_Data/04_ORM_And_Migrations/Notes.md) complete
+     - Notes, interview guide, hands-on lab, and observations complete
    - Planned: transactions and concurrent updates; query performance and optimization
 10. ⚪ **When requests spend time waiting**
     - Blocking, synchronous execution, and the motivation for asynchronous I/O
@@ -188,4 +189,4 @@ Topic/
 - End of each phase: mixed mock interview and capstone architecture review
 - Current plan: [Revision and Continuous Practice](REVISION_AND_CONTINUOUS_PRACTICE.md)
 
-Last updated: 2026-10-06
+Last updated: 2026-10-13
