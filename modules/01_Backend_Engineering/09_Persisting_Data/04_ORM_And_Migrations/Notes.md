@@ -239,6 +239,74 @@ The application must define the transaction boundary carefully. A request should
 
 ---
 
+
+## 7.1 Why an ORM session should not be shared globally
+
+An ORM session is a stateful unit of work. It may keep:
+
+- objects loaded from the database;
+- pending changes;
+- transaction state;
+- a borrowed database connection;
+- identity-map or cache state;
+- rollback and commit context.
+
+For this reason, one global ORM session should not be shared by concurrent requests.
+
+Suppose Request A and Request B share the same session:
+
+~~~text
+Request A → loads Product 101
+Request B → loads Product 202
+Request A → changes Product 101
+Request B → calls commit()
+~~~
+
+This can cause:
+
+- Request B to accidentally commit Request A's changes;
+- one request to inherit another request's uncommitted transaction;
+- stale or unexpected objects to be reused;
+- one request's rollback to discard another request's changes;
+- race conditions and ORM errors;
+- locks or connections to remain associated with the wrong request.
+
+The usual lifecycle is:
+
+~~~text
+Request starts
+    ↓
+Create or obtain ORM session
+    ↓
+Perform one unit of work
+    ↓
+Commit on success
+    ↓
+Rollback on failure
+    ↓
+Close or reset session
+~~~
+
+A FastAPI dependency commonly provides one session per request:
+
+~~~python
+async def get_session():
+    async with session_factory() as session:
+        try:
+            yield session
+        except Exception:
+            await session.rollback()
+            raise
+        finally:
+            await session.close()
+~~~
+
+The exact syntax depends on the ORM, but the principle is:
+
+> Keep an ORM session isolated to one request or one deliberate unit of work.
+
+A session-per-request does not necessarily create a new physical database connection every time. The ORM session may borrow a connection from the connection pool and return it after the unit of work completes.
+
 ## 8. Flush, commit, and rollback
 
 These operations have different meanings.
