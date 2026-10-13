@@ -828,7 +828,64 @@ A technical lead should ask:
 
 ---
 
-## 20. Common mistakes
+## 20. Resumable batch backfills
+
+A large backfill should not depend on one long transaction. Process a stable, bounded batch and commit it before moving to the next batch.
+
+A typical flow is:
+
+~~~text
+Read next batch using a stable key
+      ↓
+Update the batch
+      ↓
+Commit the batch
+      ↓
+Record progress
+      ↓
+Repeat
+~~~
+
+For example, a backfill can select IDs in ascending order:
+
+~~~sql
+SELECT id
+FROM products
+WHERE category IS NULL
+  AND id > :last_id
+ORDER BY id
+LIMIT :batch_size;
+~~~
+
+Then update only that batch:
+
+~~~sql
+UPDATE products
+SET category = :category
+WHERE id IN (:batch_ids);
+~~~
+
+After the batch commits, record the last processed ID in a checkpoint table:
+
+~~~text
+backfill_name       last_processed_id
+product_category    650000
+~~~
+
+If the process stops after 650,000 rows, it can restart from the saved checkpoint. A safe backfill should also remain correct if a completed batch is retried.
+
+Prefer stable keyset progress such as an indexed ID over large OFFSET values. OFFSET becomes slower for later pages and can skip or repeat rows when data changes during the backfill.
+
+A production backfill should provide:
+
+- small transactions;
+- stable ordering;
+- progress tracking;
+- retry handling;
+- pause and resume support;
+- monitoring for rows processed, rows remaining, errors, locks, CPU, and replication lag.
+
+## 21. Common mistakes
 
 - Assuming an ORM eliminates the need to understand SQL.
 - Treating an ORM session as the same thing as a database connection.
