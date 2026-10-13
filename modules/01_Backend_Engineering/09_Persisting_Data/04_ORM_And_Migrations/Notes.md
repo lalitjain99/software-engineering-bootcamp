@@ -366,6 +366,102 @@ The correct strategy depends on:
 
 ---
 
+
+### Eager-loading example
+
+Suppose an order belongs to one customer:
+
+~~~python
+class Order:
+    id: int
+    customer_id: int
+    customer: "Customer"
+
+
+class Customer:
+    id: int
+    name: str
+~~~
+
+Without eager loading:
+
+~~~python
+orders = session.query(Order).all()
+
+for order in orders:
+    print(order.customer.name)
+~~~
+
+The ORM may execute:
+
+~~~sql
+SELECT * FROM orders;
+
+SELECT * FROM customers WHERE id = 1;
+SELECT * FROM customers WHERE id = 2;
+SELECT * FROM customers WHERE id = 3;
+~~~
+
+This is the N+1 pattern:
+
+~~~text
+1 query for orders + N queries for customers
+~~~
+
+With SQLAlchemy-style joined loading:
+
+~~~python
+from sqlalchemy.orm import joinedload
+
+orders = (
+    session.query(Order)
+    .options(joinedload(Order.customer))
+    .all()
+)
+~~~
+
+The ORM may generate a join:
+
+~~~sql
+SELECT
+    orders.id,
+    orders.customer_id,
+    customers.id,
+    customers.name
+FROM orders
+JOIN customers
+    ON customers.id = orders.customer_id;
+~~~
+
+With select-in loading:
+
+~~~python
+from sqlalchemy.orm import selectinload
+
+customers = (
+    session.query(Customer)
+    .options(selectinload(Customer.orders))
+    .all()
+)
+~~~
+
+The ORM commonly executes two controlled queries:
+
+~~~sql
+SELECT * FROM customers;
+
+SELECT * FROM orders
+WHERE customer_id IN (1, 2, 3, 4);
+~~~
+
+A practical guideline:
+
+- many-to-one or one-to-one relationships often work well with joined loading;
+- one-to-many collections often work well with select-in loading;
+- validate the choice using result size, generated SQL, row counts, and query plans.
+
+A one-to-many joined load does not automatically create a Cartesian product, but it repeats parent columns for each child row. Joining multiple collection relationships can multiply rows significantly.
+
 ## 12. The N+1 query problem
 
 Suppose an endpoint loads one hundred orders and then accesses each order's customer.
@@ -397,6 +493,83 @@ Possible solutions include:
 - using a data-loader pattern.
 
 Always inspect generated SQL and query counts instead of assuming the ORM is efficient.
+
+
+### Alternatives to eager loading
+
+Eager loading is not the only way to avoid N+1 queries.
+
+#### Explicit join with a projection
+
+If the endpoint needs only a few fields, query those fields directly:
+
+~~~python
+rows = (
+    session.query(Order.id, Customer.name)
+    .join(Customer, Order.customer_id == Customer.id)
+    .all()
+)
+~~~
+
+Equivalent SQL:
+
+~~~sql
+SELECT orders.id, customers.name
+FROM orders
+JOIN customers
+  ON customers.id = orders.customer_id;
+~~~
+
+This avoids creating full ORM objects when the response needs only a small projection.
+
+#### Batch loading with an IN query
+
+Load the parent records first, collect their related IDs, and fetch all related records in one batch:
+
+~~~python
+customer_ids = {order.customer_id for order in orders}
+
+customers = (
+    session.query(Customer)
+    .filter(Customer.id.in_(customer_ids))
+    .all()
+)
+~~~
+
+This changes one query per customer into a small, controlled number of queries.
+
+#### Data-loader pattern
+
+A data loader collects requested IDs during one operation and fetches them together. This is especially useful in GraphQL or service-layer code where multiple resolvers may request related objects.
+
+#### Change the response shape
+
+If customer details are not required, return only the customer ID:
+
+~~~json
+{
+  "id": 101,
+  "customer_id": 7
+}
+~~~
+
+Avoiding unnecessary relationship access prevents unnecessary database calls.
+
+#### Database aggregation
+
+For summary endpoints, let the database calculate the result:
+
+~~~sql
+SELECT customer_id, COUNT(*)
+FROM orders
+GROUP BY customer_id;
+~~~
+
+This is often more efficient than loading every row into Python and calculating there.
+
+The general principle is:
+
+> Fetch only the data required, in as few well-designed queries as possible.
 
 ---
 
