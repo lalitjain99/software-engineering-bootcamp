@@ -4,6 +4,7 @@ from pathlib import Path
 
 from sqlalchemy import (
     DECIMAL,
+    ForeignKey,
     Integer,
     String,
     create_engine,
@@ -49,7 +50,9 @@ class Product(Base):
     __tablename__ = "products"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    store_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    store_id: Mapped[int] = mapped_column(
+        ForeignKey("stores.id"), nullable=False
+    )
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     sku: Mapped[str] = mapped_column(String(50), nullable=False)
     price: Mapped[float] = mapped_column(DECIMAL(10, 2), nullable=False)
