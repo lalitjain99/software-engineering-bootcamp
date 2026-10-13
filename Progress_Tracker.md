@@ -50,7 +50,7 @@ Topics 01–08 and Revision Checkpoint 01 are complete. Topic 09 is in progress;
 | 09.01 Database fundamentals | 🟢 Complete | Notes and foundational discussion |
 | 09.02 Data modeling and SQL | 🟢 Complete | Notes, interview guide, hands-on lab, observations |
 | 09.03 Database sessions and connection pools | 🟢 Complete | Notes, interview guide, simulation lab, observations |
-| 09.04 ORM and migrations | 🟡 In progress | Lecture notes created; interview and hands-on lab pending |
+| 09.04 ORM and migrations | 🟢 Complete | Notes, interview guide, hands-on lab, and observations complete |
 
 ## Continuous Threads
 
@@ -75,14 +75,14 @@ See [Revision and Continuous Practice Plan](REVISION_AND_CONTINUOUS_PRACTICE.md)
 | 6 | [Topic 07 completed](modules/01_Backend_Engineering/07_API_Styles_And_Communication/Notes.md) | A | Not started yet | 🟢 Notes, five micro-labs, observations, and interview complete | ⬜ | — |
 | 7 | [Topic 08 completed](modules/01_Backend_Engineering/08_Application_Layers/Notes.md) | A | Product application structure | 🟢 Notes, refactoring lab, observations, and interview complete | ⬜ | — |
 | 8 | [Revision Checkpoint 01](REVISION_AND_CONTINUOUS_PRACTICE.md) | Review | Establish Topic 08 app as capstone baseline | 🔁 Topics 01–08 recall and integration | 🟡 First private entry | — |
-| 9 | [Topic 09 — Persisting Data](modules/01_Backend_Engineering/09_Persisting_Data/README.md) | A | Replace in-memory repository with durable storage | 🟡 09.04 ORM and migrations | ⬜ | — |
+| 9 | [Topic 09 — Persisting Data](modules/01_Backend_Engineering/09_Persisting_Data/README.md) | A | Replace in-memory repository with durable storage | 🟢 09.04 ORM and migrations complete | 🟢 | — |
 
 ## Current Next Actions
 
-1. Continue Topic 09.04: ORM and database migrations.
+1. Begin the next Topic 09 database subtopic: transactions and concurrent updates.
 2. Revisit recorded weak areas at their planned roadmap points.
 3. Continue using the Topic 08 Product API as the capstone baseline.
 4. Record one private, anonymized leadership-journal entry.
 5. Complete the weekly closed-book recall and light coding exercise.
 
-Last updated: 2026-10-06
+Last updated: 2026-10-13
