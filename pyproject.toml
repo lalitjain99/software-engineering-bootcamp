@@ -9,7 +9,8 @@ dependencies = [
     "strawberry-graphql[fastapi]",
     "grpcio",
     "grpcio-tools",
-    "uuid"
+    "uuid",
+    "sqlalchemy>=2.0"
 ]
 
 [dependency-groups]
