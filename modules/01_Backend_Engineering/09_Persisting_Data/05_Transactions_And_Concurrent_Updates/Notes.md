@@ -366,34 +366,63 @@ Isolation levels and locking strategies determine which anomalies are possible.
 
 ---
 
-## 13. Deadlocks
+## 13. Lock contention and deadlocks
 
-A deadlock occurs when transactions wait for each other indefinitely.
+### Lock contention
+
+Lock contention occurs when multiple transactions need the same database resource, but one transaction already holds its lock.
 
 Example:
 
 ~~~text
-Transaction A locks Product 1
-Transaction B locks Product 2
-
-Transaction A waits for Product 2
-Transaction B waits for Product 1
+Transaction A locks Product 101 to update stock.
+Transaction B also wants to update Product 101.
+Transaction B waits until A commits or rolls back.
 ~~~
 
-Neither transaction can continue.
+The system can still make progress, but waiting increases response time. Excessive contention can cause timeouts and reduce throughput.
 
-Databases usually detect deadlocks and abort one transaction. The application receives an error and may retry the transaction if the operation is safe.
+Common causes include:
 
-Ways to reduce deadlocks:
+- long-running transactions;
+- many concurrent writes to the same rows;
+- locking more rows than necessary;
+- slow processing while a transaction is open.
 
-- acquire locks in a consistent order;
+### Deadlock
+
+A deadlock occurs when transactions wait for one another in a cycle, so none can continue.
+
+Example:
+
+~~~text
+Transaction A locks Product 101.
+Transaction B locks Product 202.
+
+Transaction A requests Product 202 and waits for B.
+Transaction B requests Product 101 and waits for A.
+~~~
+
+The database usually detects this cycle and aborts one transaction, allowing the other to continue.
+
+### Difference
+
+| Lock contention | Deadlock |
+|---|---|
+| One transaction waits for another | Transactions wait for each other |
+| Usually resolves when the first transaction finishes | Cannot resolve without aborting one transaction |
+| Causes delay | Causes a transaction failure and usually requires retry |
+
+### Reducing contention and deadlocks
+
 - keep transactions short;
-- access fewer rows;
-- avoid unnecessary work inside transactions;
+- acquire locks in a consistent order;
+- lock only the rows that are necessary;
+- avoid network calls or slow processing inside transactions;
 - use appropriate indexes;
 - retry transient deadlock errors with bounded backoff.
 
-A retry must recreate the transaction from the beginning. Do not continue using a transaction that the database has already aborted.
+A retry must recreate the complete transaction from the beginning. Do not continue using a transaction that the database has already aborted.
 
 ---
 
