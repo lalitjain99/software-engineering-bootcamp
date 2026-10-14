@@ -226,9 +226,20 @@ The application should not calculate the new stock value from an old Python obje
 
 ## 8. Pessimistic locking
 
-Pessimistic locking assumes that conflicting updates are likely and locks the row while the transaction is working.
+Pessimistic locking means:
 
-Conceptually:
+> “Conflicting work is likely, so lock the row before changing it.”
+
+Imagine that Product 101 has one item left.
+
+~~~text
+Transaction A locks Product 101.
+Transaction B also wants Product 101, so B waits.
+Transaction A updates the stock and commits.
+Transaction B can then read the latest value.
+~~~
+
+The database lock is commonly acquired with:
 
 ~~~sql
 SELECT id, stock
@@ -237,31 +248,43 @@ WHERE id = :product_id
 FOR UPDATE;
 ~~~
 
-The database locks the selected row until the transaction commits or rolls back.
+The selected row stays locked until the transaction commits or rolls back.
 
-A second transaction attempting to lock the same row may:
+A second transaction may wait, time out, fail immediately with a no-wait option, or skip the row if the database supports that option.
 
-- wait for the first transaction;
-- time out;
-- use a no-wait option and fail immediately;
-- skip the locked row if the database supports that behavior.
+Use pessimistic locking when:
 
-Pessimistic locking can protect critical updates, but it reduces concurrency and can create deadlocks if transactions lock resources in inconsistent orders.
+- conflicting updates are likely;
+- the operation is critical;
+- waiting is safer than allowing both requests to proceed.
+
+Cost:
+
+- requests may wait;
+- lock contention can reduce throughput;
+- inconsistent lock order can create deadlocks.
+
+Keep the transaction short. Do not call a slow external service while holding the lock.
 
 ---
 
 ## 9. Optimistic locking
 
-Optimistic locking assumes that conflicts are uncommon.
+Optimistic locking means:
 
-Add a version column:
+> “Conflicts are probably uncommon, so do not lock while reading. Check for a conflict when saving.”
 
-~~~sql
-ALTER TABLE products
-ADD COLUMN version INTEGER NOT NULL DEFAULT 1;
+Add a version number to the row:
+
+~~~text
+Product 101
+stock = 1
+version = 5
 ~~~
 
-When updating, include the version observed during the read:
+Two transactions may both read version 5. When updating, each says:
+
+> “Update this row only if it is still version 5.”
 
 ~~~sql
 UPDATE products
@@ -271,24 +294,41 @@ WHERE id = :product_id
   AND version = :old_version;
 ~~~
 
+The first update succeeds and changes the version from 5 to 6.
+
+The second update affects zero rows because the version is no longer 5. The application detects the conflict and can reload the latest data, retry safely, or return a conflict response.
+
 Interpret the affected-row count:
 
 - one row updated → the version matched and the update succeeded;
-- zero rows updated → another transaction changed the row first.
+- zero rows updated → another transaction changed the row first, or the row does not exist.
 
-The application can then reload the latest data, retry a safe operation, or return a conflict to the client.
+Use optimistic locking when:
 
-Optimistic locking avoids holding database locks while application code is deciding what to do, but the application must handle conflicts explicitly.
+- conflicts are uncommon;
+- waiting would be undesirable;
+- the application can handle a conflict explicitly.
+
+Cost:
+
+- the application must check for conflicts;
+- a failed update may need a retry;
+- it is not enough to silently overwrite the newer value.
 
 ---
 
 ## 10. Pessimistic versus optimistic locking
 
-| Strategy | Main idea | Strength | Cost |
+| Strategy | Simple meaning | What happens to the second request? | Main cost |
 |---|---|---|---|
-| Pessimistic locking | Lock the row before changing it | Prevents conflicting work immediately | Waiting, blocking, and deadlocks |
-| Optimistic locking | Detect whether the row changed before saving | Better concurrency when conflicts are rare | Application must handle conflicts |
-| Atomic conditional update | Put the condition and change in one SQL statement | Efficient for simple invariants | Less suitable for complex multi-step decisions |
+| Pessimistic locking | Lock first because a conflict may happen | It waits or fails while the row is locked | Blocking and possible deadlocks |
+| Optimistic locking | Assume no conflict and check the version when saving | It fails safely if another request changed the row | Application must handle the conflict |
+| Atomic conditional update | Put the condition and update into one SQL statement | The database reports success or zero affected rows | Best for simple rules, less suitable for complex workflows |
+
+Memory aid:
+
+> **Pessimistic locking prevents conflict by making other requests wait.**  
+> **Optimistic locking detects conflict after another request has changed the row.**
 
 The right choice depends on:
 
@@ -298,8 +338,6 @@ The right choice depends on:
 - acceptable client behavior;
 - database capabilities;
 - expected traffic.
-
----
 
 ## 11. Isolation levels
 
