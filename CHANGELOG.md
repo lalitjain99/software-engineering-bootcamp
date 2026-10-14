@@ -2,6 +2,21 @@
 
 All meaningful changes to the Software Engineering Bootcamp roadmap are recorded here.
 
+
+## 2026-10-14
+
+### Completed
+
+- Topic 09.04: ORM and migrations, including notes, interview guide, hands-on lab, and observations.
+
+### Added
+
+- Topic 09.05 notes on transactions and concurrent updates.
+- First-principles explanations of transactions, ACID, transaction boundaries, lost updates, atomic conditional updates, pessimistic locking, optimistic locking, isolation levels, concurrency anomalies, deadlocks, retries, external side effects, and concurrent testing.
+- Example-based explanations of dirty reads, Read Committed, Repeatable Read, and Serializable isolation.
+- Simplified comparison of lock contention, deadlocks, pessimistic locking, and optimistic locking.
+- Resumable batch backfill guidance in the ORM and migrations notes.
+
 ## 2026-09-08
 
 ### Completed
