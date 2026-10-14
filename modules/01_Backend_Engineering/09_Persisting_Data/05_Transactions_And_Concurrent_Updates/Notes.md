@@ -354,7 +354,43 @@ Names and behavior vary slightly by database engine.
 
 ### Read Uncommitted
 
-A transaction may be allowed to read changes that another transaction has not committed. This can produce dirty reads. Many production databases do not provide true dirty reads even when this level is requested.
+Read Uncommitted may allow a transaction to read changes made by another transaction before those changes are committed.
+
+This creates a **dirty read**.
+
+Example:
+
+~~~text
+Initial account balance = ₹10,000
+
+Transaction A:
+1. Withdraws ₹4,000.
+2. Temporary balance becomes ₹6,000.
+3. Has not committed yet.
+
+Transaction B:
+1. Reads the balance.
+2. Sees ₹6,000.
+
+Transaction A:
+1. Encounters an error.
+2. Rolls back.
+3. Actual balance returns to ₹10,000.
+~~~
+
+Transaction B used a value that never became permanent.
+
+Dirty reads are unsafe for production business decisions because they can cause:
+
+- a customer to see a payment or order that later disappears;
+- inventory logic to believe stock was reduced when the reservation is rolled back;
+- a transfer service to make a decision using a temporary balance;
+- reports to include values that never become real;
+- a valid order to be rejected because another transaction temporarily changed the stock.
+
+Production systems generally use Read Committed or stronger isolation so decisions are based on committed data.
+
+Many modern databases do not provide true dirty reads even when Read Uncommitted is requested. For example, PostgreSQL effectively uses Read Committed behavior instead.
 
 ### Read Committed
 
