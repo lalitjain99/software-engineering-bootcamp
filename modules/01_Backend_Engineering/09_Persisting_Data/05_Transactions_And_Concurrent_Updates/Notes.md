@@ -394,29 +394,100 @@ Many modern databases do not provide true dirty reads even when Read Uncommitted
 
 ### Read Committed
 
-A statement generally sees data committed before that statement begins. A later statement in the same transaction may see a newer committed value.
+Read Committed allows a transaction to read only data that other transactions have committed.
 
-This is a common default, but it does not automatically prevent lost updates.
+Example:
+
+~~~text
+Initial stock = 10
+
+Transaction A:
+1. Changes stock to 3.
+2. Has not committed yet.
+
+Transaction B:
+1. Reads stock.
+2. Cannot see A's uncommitted value.
+3. Sees the last committed value: 10.
+
+Transaction A:
+1. Commits.
+2. Stock is now officially 3.
+
+Transaction B:
+1. Reads the same product again.
+2. May now see stock = 3.
+~~~
+
+This prevents dirty reads. However, the same transaction can see different values in two separate reads if another transaction commits between those reads. This is a **non-repeatable read**.
+
+Read Committed is a common production default because it provides useful safety without the full cost of the strongest isolation.
 
 ### Repeatable Read
 
-The transaction gets a more stable view of rows it reads. Concurrent changes may still cause serialization or update conflicts depending on the database.
+Repeatable Read gives a transaction a stable view of rows it has already read.
+
+Example:
+
+~~~text
+Initial stock = 10
+
+Transaction B:
+1. Starts.
+2. Reads stock = 10.
+
+Transaction A:
+1. Changes stock to 3.
+2. Commits.
+
+Transaction B:
+1. Reads the same product again.
+2. Continues seeing its transaction snapshot, stock = 10.
+~~~
+
+This prevents a previously read row from changing underneath Transaction B during its transaction.
+
+The trade-off is that Transaction B may be working with an older snapshot. When it tries to update data that another transaction changed, the database may reject the update or the application may need to retry, depending on the database engine.
+
+Repeatable Read is useful when several reads in one transaction must be consistent with one another.
 
 ### Serializable
 
-The database provides the strongest isolation and makes concurrent transactions behave as if they ran in a serial order.
+Serializable provides the strongest common isolation guarantee. Concurrent transactions behave as if they had run one after another, rather than at the same time.
+
+Example:
+
+~~~text
+Initial stock = 1
+
+Transaction A and Transaction B both try to reserve the last item.
+
+The database serializes the conflicting work:
+1. One transaction reserves the item and commits.
+2. The other transaction then runs against the latest state.
+3. It finds stock = 0 and fails safely.
+~~~
+
+Serializable prevents dirty reads, non-repeatable reads, phantoms, and lost-update-style outcomes caused by unsafe interleaving. The database may achieve this by blocking, detecting conflicts, or aborting a transaction.
 
 The cost may include:
 
-- more blocking;
+- more waiting;
 - serialization failures;
 - deadlocks;
-- retries;
-- lower throughput.
+- lower throughput;
+- application retries.
 
-The application must handle transient serialization errors safely.
+A serializable transaction failure is usually transient. The application should retry the complete transaction from the beginning, with a limit and backoff, when the operation is safe.
 
----
+### Isolation level comparison
+
+| Isolation level | Simple view | Main protection | Main trade-off |
+|---|---|---|---|
+| Read Uncommitted | May see temporary changes | Very little | Dirty reads |
+| Read Committed | Sees committed data at each statement | Prevents dirty reads | Repeated reads may differ |
+| Repeatable Read | Keeps a stable view of rows already read | Prevents many read changes during the transaction | Stale snapshot and possible conflicts |
+| Serializable | Makes concurrent work behave like a serial order | Strongest consistency | More blocking, failures, and retries |
 
 ## 12. Common concurrency anomalies
 
