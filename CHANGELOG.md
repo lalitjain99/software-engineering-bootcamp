@@ -3,6 +3,17 @@
 All meaningful changes to the Software Engineering Bootcamp roadmap are recorded here.
 
 
+## 2026-10-15
+
+### Completed
+
+- Topic 09.05: transactions and concurrent updates, including notes, interview guide, hands-on lab, and observations.
+
+### Added
+
+- Hands-on demonstrations of lost updates, rollback, atomic conditional updates, optimistic locking, lock ordering, and inventory invariants.
+- Production-oriented observations for isolation levels, deadlocks, retries, transaction boundaries, and concurrency diagnosis.
+
 ## 2026-10-14
 
 ### Completed
