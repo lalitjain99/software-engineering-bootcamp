@@ -8,9 +8,13 @@ python modules/01_Backend_Engineering/09_Persisting_Data/05_Transactions_And_Con
 
 ## 1. Lost update
 
-Request A and Request B both read the same starting value: stock = 1. Each one then subtracts 1 from its in-memory copy, so both decide the reservation is valid, and both commits are accepted. The database ends with stock = -1, even though the real available inventory was only one unit.
+Request A and Request B both read the same starting value: stock = 1. Each request subtracts 1 from its own in-memory copy, so both decide the reservation is valid.
 
-The problem is a classic lost update: both transactions read the same state before either committed. The second write overwrote the first, so the application accepted two reservations even though there was only one item. The final stock can look “reasonable” as a number, but it hides the fact that two business claims were applied to one unit of inventory.
+In this SQLite simulation, both requests write stock = 0. The final database value therefore looks numerically reasonable, but two reservations were accepted even though only one item existed. This is the important business failure: the inventory value alone does not reveal that the item was sold twice.
+
+The problem is a classic check-then-act race and lost-update pattern. Both transactions read the same state before either write was committed. The second write overwrote the first write's effect instead of detecting that another request had already reserved the item.
+
+The script interleaves two sessions manually to make the race visible. A production concurrency test should use separate workers and synchronize their start with a barrier or event.
 
 ## 2. Rollback
 
@@ -30,9 +34,11 @@ The application should reload the current product state, confirm the newest vers
 
 ## 5. Pessimistic locking
 
-The SQLAlchemy output is not proof that SQLite would block a second transaction. SQLite compiles the SELECT ... FOR UPDATE statement, but it does not provide the same row-level locking semantics as PostgreSQL or MySQL. In other words, the generated SQL looks like a lock request, but the database engine does not enforce the wait behavior.
+The SQLAlchemy output is not proof that SQLite would block a second transaction. SQLite does not provide the same row-level locking semantics as PostgreSQL or MySQL. Depending on the SQLite dialect and generated SQL, the FOR UPDATE clause may be omitted or have no row-locking effect.
 
-For a realistic test of row locking, use PostgreSQL (or another engine with real row-level locks) and run concurrent transactions while measuring whether the second session blocks until the first one commits or rolls back.
+In other words, seeing a SQLAlchemy locking expression is not the same as observing real database lock behavior.
+
+For a realistic row-locking test, use PostgreSQL or another engine with row-level locks. Run concurrent transactions and measure whether the second session waits until the first transaction commits or rolls back.
 
 ## 6. Deadlock prevention
 
@@ -54,7 +60,7 @@ In other words, the application must preserve the business invariant that the nu
 
 For a simple high-contention stock decrement, I would choose an atomic conditional update as the default design. It is concise, efficient, and enforced by the database itself: the UPDATE only succeeds when stock >= 1, and the rowcount tells us whether the reservation was accepted.
 
-Optimistic locking is a good fit when conflicts are rare and retrying is acceptable. Pessimistic locking is useful when long-running business logic needs exclusive control of a row, but it increases contention and complexity. For a straightforward inventory decrement, the atomic update is usually the best balance of correctness and performance.
+Optimistic locking is a good fit when conflicts are rare and retrying is acceptable. Pessimistic locking is useful when a short, multi-step decision needs exclusive control of a row, but it increases contention and complexity. The transaction should remain as short as possible. For a straightforward inventory decrement, the atomic update is usually the best balance of correctness and performance.
 
 ## 9. Production test improvements
 
