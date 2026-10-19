@@ -81,7 +81,7 @@ See [Revision and Continuous Practice Plan](REVISION_AND_CONTINUOUS_PRACTICE.md)
 
 ## Current Next Actions
 
-1. Begin Topic 10: blocking, synchronous execution, and asynchronous I/O.
+1. Continue Topic 10: review the notes on blocking, synchronous execution, and asynchronous I/O, then answer the chat-based interview questions.
 2. Revisit recorded weak areas at their planned roadmap points.
 3. Continue using the Topic 08 Product API as the capstone baseline.
 4. Record one private, anonymized leadership-journal entry.
