@@ -51,7 +51,7 @@ all timestamps in 2026.
 **Answer:** Use `EXPLAIN (ANALYZE, BUFFERS)` with representative parameters and
 verify estimated versus actual rows, scan/index conditions, buffer hits and
 reads, sort nodes, and execution time. A sequential scan may still be best when
-many rows match. `ANALYZE` executes the query, so use care with statements that
+many rows match. `EXPLAIN ANALYZE` executes the query, so use care with statements that
 modify data.
 
 ## 3. Composite index
