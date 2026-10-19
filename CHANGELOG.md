@@ -5,6 +5,11 @@ All meaningful changes to the Software Engineering Bootcamp roadmap are recorded
 
 ## 2026-10-19
 
+### In Progress
+
+- Topic 10 notes: blocking, synchronous execution, and asynchronous I/O.
+
+
 ### Completed
 
 - Topic 09.06: query performance and optimization, including notes, interview guide, hands-on lab, and observations.
