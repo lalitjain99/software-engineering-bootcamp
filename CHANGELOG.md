@@ -3,6 +3,17 @@
 All meaningful changes to the Software Engineering Bootcamp roadmap are recorded here.
 
 
+## 2026-10-19
+
+### Completed
+
+- Topic 09.06: query performance and optimization, including notes, interview guide, hands-on lab, and observations.
+
+### Added
+
+- First-principles material on execution plans, indexes, sargability, projections, pagination, N+1 diagnosis, and production performance measurement.
+- SQLite lab demonstrating query counts, query plans, composite indexes, projections, and offset versus keyset pagination.
+
 ## 2026-10-15
 
 ### Completed
