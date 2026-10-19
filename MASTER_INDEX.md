@@ -84,7 +84,7 @@ The application grows step by step. Each topic starts from the previous design a
 
 **[Revision Checkpoint 01 — Topics 01–08](REVISION_AND_CONTINUOUS_PRACTICE.md)** is active before continuing.
 
-9. 🟡 **[Persisting data](modules/01_Backend_Engineering/09_Persisting_Data/README.md)**
+9. 🟢 **[Persisting data](modules/01_Backend_Engineering/09_Persisting_Data/README.md)**
    - Why in-memory state is insufficient
    - Database persistence, repositories, constraints, and transaction basics
    - 🟢 [09.01 Database fundamentals](modules/01_Backend_Engineering/09_Persisting_Data/01_Database_Fundamentals/Notes.md) complete
@@ -94,7 +94,8 @@ The application grows step by step. Each topic starts from the previous design a
      - Notes, interview guide, hands-on lab, and observations complete
    - 🟢 [09.05 Transactions and concurrent updates](modules/01_Backend_Engineering/09_Persisting_Data/05_Transactions_And_Concurrent_Updates/Notes.md) complete
      - Notes, interview guide, hands-on lab, and observations complete
-   - Planned: query performance and optimization
+   - 🟢 [09.06 Query performance and optimization](modules/01_Backend_Engineering/09_Persisting_Data/06_Query_Performance_And_Optimization/Notes.md) complete
+     - Notes, interview guide, hands-on lab, and observations complete
 10. ⚪ **When requests spend time waiting**
     - Blocking, synchronous execution, and the motivation for asynchronous I/O
 11. ⚪ **Handling multiple tasks**
@@ -191,4 +192,4 @@ Topic/
 - End of each phase: mixed mock interview and capstone architecture review
 - Current plan: [Revision and Continuous Practice](REVISION_AND_CONTINUOUS_PRACTICE.md)
 
-Last updated: 2026-10-15
+Last updated: 2026-10-19
