@@ -187,6 +187,74 @@ If the event loop is blocked for two seconds, unrelated asynchronous requests ma
 
 ---
 
+## 7A. The Event Loop in Simple Terms
+
+An **event loop** is the scheduler that manages asynchronous tasks. It repeatedly checks:
+
+1. Which task is ready to run?
+2. Which task is waiting for I/O?
+3. Has any waiting I/O completed?
+4. Which paused task should resume?
+
+For example:
+
+```python
+async def fetch_data():
+    print("Start")
+    await database_call()
+    print("Database result received")
+```
+
+When execution reaches `await database_call()`, the event loop pauses `fetch_data()` and runs another ready task instead of keeping the thread idle. When the database responds, the event loop resumes `fetch_data()` from the same point.
+
+```text
+Task A starts
+   ↓
+Task A waits for database
+   ↓
+Event loop runs Task B
+   ↓
+Task B waits for HTTP service
+   ↓
+Database responds
+   ↓
+Event loop resumes Task A
+```
+
+At the application level, the event loop is started and managed by the runtime:
+
+```python
+import asyncio
+
+
+async def main():
+    await fetch_data()
+
+
+asyncio.run(main())
+```
+
+`asyncio.run(main())` creates and runs an event loop. In FastAPI, Uvicorn manages the event loop for you.
+
+The event loop allows many requests to share an execution thread when those requests are waiting on async-compatible I/O. It does not execute all tasks simultaneously on the same thread; it switches between tasks when they cooperatively pause.
+
+This still blocks the event loop:
+
+```python
+async def endpoint():
+    import time
+
+    time.sleep(5)  # blocks the event loop
+```
+
+Although the function is declared `async`, `time.sleep()` does not yield control. During those five seconds, other asynchronous tasks may be delayed.
+
+A useful memory aid is:
+
+> The event loop is a traffic controller for asynchronous tasks: it gives the CPU to work that is ready and returns later to work that is waiting.
+
+---
+
 ## 8. FastAPI: `async def` and `def`
 
 FastAPI supports both styles.
