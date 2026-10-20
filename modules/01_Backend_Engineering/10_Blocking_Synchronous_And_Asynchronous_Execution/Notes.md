@@ -115,46 +115,75 @@ This is especially useful for I/O-bound workloads where many requests spend time
 
 ---
 
-## 6. What `async` and `await` Mean
+## 6. The Event Loop
 
-### `async def`
+An **event loop** is the scheduler that manages asynchronous tasks. It repeatedly checks:
 
-An `async def` function creates a coroutine function. Calling it does not immediately execute the body in the same way as a normal function; it produces a coroutine that must be awaited or scheduled.
+1. Which task is ready to run?
+2. Which task is waiting for I/O?
+3. Has any waiting I/O completed?
+4. Which paused task should resume?
+
+For example:
 
 ```python
 async def fetch_data():
-    return {"value": 1}
+    print("Start")
+    await database_call()
+    print("Database result received")
 ```
 
-### `await`
+When execution reaches `await database_call()`, the event loop pauses `fetch_data()` and runs another ready task instead of keeping the thread idle. When the database responds, the event loop resumes `fetch_data()` from the same point.
 
-`await` pauses the current coroutine until another awaitable operation is ready to complete.
+```text
+Task A starts
+   ↓
+Task A waits for database
+   ↓
+Event loop runs Task B
+   ↓
+Task B waits for HTTP service
+   ↓
+Database responds
+   ↓
+Event loop resumes Task A
+```
+
+At the application level, the event loop is started and managed by the runtime:
 
 ```python
-result = await fetch_data()
+import asyncio
+
+
+async def main():
+    await fetch_data()
+
+
+asyncio.run(main())
 ```
 
-`await` only helps when the operation being awaited cooperates with asynchronous execution. Putting a blocking function inside `await` does not make it non-blocking.
+`asyncio.run(main())` creates and runs an event loop. In FastAPI, Uvicorn manages the event loop for you.
 
-This is still blocking:
+The event loop allows many requests to share an execution thread when those requests are waiting on async-compatible I/O. It does not execute all tasks simultaneously on the same thread; it switches between tasks when they cooperatively pause.
+
+This still blocks the event loop:
 
 ```python
-async def bad_endpoint():
-    time.sleep(2)  # blocking call; async syntax does not change it
-    return {"status": "done"}
+async def endpoint():
+    import time
+
+    time.sleep(5)  # blocks the event loop
 ```
 
-A cooperative version is:
+Although the function is declared `async`, `time.sleep()` does not yield control. During those five seconds, other asynchronous tasks may be delayed.
 
-```python
-async def good_endpoint():
-    await asyncio.sleep(2)  # yields control while waiting
-    return {"status": "done"}
-```
+A useful memory aid is:
+
+> The event loop is a traffic controller for asynchronous tasks: it gives the CPU to work that is ready and returns later to work that is waiting.
 
 ---
 
-## 6A. Coroutine Functions and Coroutine Objects
+## 7. Coroutine Functions and Coroutine Objects
 
 A **coroutine function** is a function defined with `async def`:
 
@@ -251,108 +280,46 @@ create_task()   → schedule it to run concurrently
 
 ---
 
-## 7. The Event Loop
+## 8. What `async` and `await` Mean
 
-An event loop is a scheduler that repeatedly:
+### `async def`
 
-1. finds asynchronous tasks that are ready to run;
-2. runs each task until it reaches an `await` or completes;
-3. waits for I/O readiness when no task can continue;
-4. resumes tasks when their I/O is ready.
-
-A simplified picture:
-
-```text
-Request A starts
-    ↓
-Request A waits for database I/O ─────┐
-                                     │
-Request B runs                       │
-    ↓                                │
-Request B waits for HTTP I/O         │
-                                     │
-Database response arrives ──────────┘
-    ↓
-Request A resumes
-```
-
-A crucial rule is:
-
-> Do not run long blocking work on the event-loop thread.
-
-If the event loop is blocked for two seconds, unrelated asynchronous requests may also wait for those two seconds.
-
----
-
-## 7A. The Event Loop in Simple Terms
-
-An **event loop** is the scheduler that manages asynchronous tasks. It repeatedly checks:
-
-1. Which task is ready to run?
-2. Which task is waiting for I/O?
-3. Has any waiting I/O completed?
-4. Which paused task should resume?
-
-For example:
+An `async def` function creates a coroutine function. Calling it does not immediately execute the body in the same way as a normal function; it produces a coroutine that must be awaited or scheduled.
 
 ```python
 async def fetch_data():
-    print("Start")
-    await database_call()
-    print("Database result received")
+    return {"value": 1}
 ```
 
-When execution reaches `await database_call()`, the event loop pauses `fetch_data()` and runs another ready task instead of keeping the thread idle. When the database responds, the event loop resumes `fetch_data()` from the same point.
+### `await`
 
-```text
-Task A starts
-   ↓
-Task A waits for database
-   ↓
-Event loop runs Task B
-   ↓
-Task B waits for HTTP service
-   ↓
-Database responds
-   ↓
-Event loop resumes Task A
-```
-
-At the application level, the event loop is started and managed by the runtime:
+`await` pauses the current coroutine until another awaitable operation is ready to complete.
 
 ```python
-import asyncio
-
-
-async def main():
-    await fetch_data()
-
-
-asyncio.run(main())
+result = await fetch_data()
 ```
 
-`asyncio.run(main())` creates and runs an event loop. In FastAPI, Uvicorn manages the event loop for you.
+`await` only helps when the operation being awaited cooperates with asynchronous execution. Putting a blocking function inside `await` does not make it non-blocking.
 
-The event loop allows many requests to share an execution thread when those requests are waiting on async-compatible I/O. It does not execute all tasks simultaneously on the same thread; it switches between tasks when they cooperatively pause.
-
-This still blocks the event loop:
+This is still blocking:
 
 ```python
-async def endpoint():
-    import time
-
-    time.sleep(5)  # blocks the event loop
+async def bad_endpoint():
+    time.sleep(2)  # blocking call; async syntax does not change it
+    return {"status": "done"}
 ```
 
-Although the function is declared `async`, `time.sleep()` does not yield control. During those five seconds, other asynchronous tasks may be delayed.
+A cooperative version is:
 
-A useful memory aid is:
-
-> The event loop is a traffic controller for asynchronous tasks: it gives the CPU to work that is ready and returns later to work that is waiting.
+```python
+async def good_endpoint():
+    await asyncio.sleep(2)  # yields control while waiting
+    return {"status": "done"}
+```
 
 ---
 
-## 8. FastAPI: `async def` and `def`
+## 9. FastAPI: `async def` and `def`
 
 FastAPI supports both styles.
 
@@ -390,7 +357,7 @@ Use a consistent stack:
 
 ---
 
-## 9. Async Does Not Mean Parallel CPU Execution
+## 10. Async Does Not Mean Parallel CPU Execution
 
 Async I/O improves concurrency while tasks are waiting. It does not make CPU-heavy work run simultaneously on multiple CPU cores.
 
@@ -415,7 +382,7 @@ Threads are usually more useful for blocking I/O than for Python CPU-bound work.
 
 ---
 
-## 10. Async Is End-to-End
+## 11. Async Is End-to-End
 
 Changing only the route declaration is not enough.
 
@@ -444,7 +411,7 @@ The same principle applies to database access, cache clients, message brokers, a
 
 ---
 
-## 11. Waiting at Different Layers
+## 12. Waiting at Different Layers
 
 A request may wait in several places:
 
@@ -462,7 +429,7 @@ Async I/O can help with cooperative waiting, but it cannot fix slow SQL, a held 
 
 ---
 
-## 12. Choosing the Execution Model
+## 13. Choosing the Execution Model
 
 | Workload | Suitable starting point |
 |---|---|
@@ -477,7 +444,7 @@ The choice is based on the bottleneck and operational constraints, not on the id
 
 ---
 
-## 13. Common Mistakes
+## 14. Common Mistakes
 
 ### Mistake 1: “`async def` makes every function faster”
 
@@ -505,7 +472,7 @@ When a client disconnects or a dependency times out, the application should stop
 
 ---
 
-## 14. Mental Model to Remember
+## 15. Mental Model to Remember
 
 ```text
 CPU work      → execution is busy
