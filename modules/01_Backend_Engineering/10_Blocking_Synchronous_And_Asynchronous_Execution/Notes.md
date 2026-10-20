@@ -154,6 +154,103 @@ async def good_endpoint():
 
 ---
 
+## 6A. Coroutine Functions and Coroutine Objects
+
+A **coroutine function** is a function defined with `async def`:
+
+```python
+async def fetch_data():
+    print("Function body is running")
+    return {"value": 1}
+```
+
+Because it is defined with `async def`, `fetch_data` is a coroutine function.
+
+When you call it:
+
+```python
+result = fetch_data()
+```
+
+Python creates a **coroutine object**. The function body does not run immediately. The object represents asynchronous work that is ready to be awaited or scheduled.
+
+If the coroutine is never awaited or scheduled, Python may report a warning such as `coroutine was never awaited`.
+
+### Awaiting a coroutine
+
+`await` tells Python to run or continue the coroutine and wait for its result:
+
+```python
+async def main():
+    result = await fetch_data()
+    print(result)
+```
+
+`await` is normally used inside another `async def` function. While the awaited operation is waiting for compatible I/O, the event loop can run other ready tasks.
+
+### Scheduling a coroutine
+
+Scheduling means handing the coroutine to the event loop as a task:
+
+```python
+import asyncio
+
+
+async def main():
+    task = asyncio.create_task(fetch_data())
+
+    print("Other work can run here")
+
+    result = await task
+    print(result)
+```
+
+`asyncio.create_task()` schedules `fetch_data()` so it can run when the event loop gets an opportunity. Awaiting `task` later waits for its result.
+
+This is sequential:
+
+```python
+result_a = await fetch_a()
+result_b = await fetch_b()
+```
+
+`fetch_b()` starts only after `fetch_a()` finishes.
+
+This allows the waiting periods to overlap:
+
+```python
+task_a = asyncio.create_task(fetch_a())
+task_b = asyncio.create_task(fetch_b())
+
+result_a = await task_a
+result_b = await task_b
+```
+
+The tasks are concurrent from the event loop's perspective, but this does not necessarily mean they execute simultaneously on multiple CPU cores.
+
+### In FastAPI
+
+When FastAPI sees an async route such as:
+
+```python
+@app.get("/products")
+async def list_products():
+    return await repository.list_products()
+```
+
+FastAPI and Uvicorn invoke and await the route coroutine as part of handling the HTTP request. Application code usually does not call the route function directly.
+
+Memory aid:
+
+```text
+async def       → defines a coroutine function
+function()      → creates a coroutine object
+await coroutine → run/wait for its result
+create_task()   → schedule it to run concurrently
+```
+
+---
+
 ## 7. The Event Loop
 
 An event loop is a scheduler that repeatedly:
