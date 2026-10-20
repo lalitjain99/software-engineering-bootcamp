@@ -317,6 +317,58 @@ async def good_endpoint():
     return {"status": "done"}
 ```
 
+### What `await` Can Be Used With
+
+`await` works with an **awaitable**, not simply with a function that returns a non-`None` value.
+
+Common awaitables include:
+
+- a coroutine;
+- an `asyncio.Task`;
+- an `asyncio.Future`;
+- an object that implements asynchronous behavior.
+
+An awaitable may return `None` and still be valid:
+
+```python
+import asyncio
+
+
+async def save_log() -> None:
+    await asyncio.sleep(1)
+    print("Log saved")
+
+
+async def main():
+    result = await save_log()
+    print(result)  # None
+```
+
+`asyncio.sleep()` also eventually returns `None`, but it is awaitable:
+
+```python
+await asyncio.sleep(5)
+```
+
+By contrast, `time.sleep()` returns `None` but is an ordinary blocking function, so it cannot be awaited:
+
+```python
+import time
+
+await time.sleep(5)  # TypeError
+```
+
+The correct rule is:
+
+```text
+awaitable operation → can use await
+ordinary blocking function → cannot use await
+```
+
+`await` does not convert a synchronous function into asynchronous code. The operation itself must support asynchronous execution.
+
+---
+
 ---
 
 ## 9. FastAPI: `async def` and `def`
