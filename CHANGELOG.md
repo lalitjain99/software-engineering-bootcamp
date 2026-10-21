@@ -5,6 +5,11 @@ All meaningful changes to the Software Engineering Bootcamp roadmap are recorded
 
 ## 2026-10-19
 
+### Added
+
+- Topic 10 hands-on lab for coroutine lifecycle, blocking versus cooperative waiting, `asyncio.gather()`, and bounded concurrency with `asyncio.Semaphore`.
+
+
 ### Completed
 
 - Topic 10 interview guide, compiled from the reviewed chat-based Q&A.
