@@ -496,6 +496,139 @@ The choice is based on the bottleneck and operational constraints, not on the id
 
 ---
 
+## 14. Running Multiple Async Operations Safely
+
+### `asyncio.gather()` — wait for multiple operations
+
+`asyncio.gather()` runs multiple awaitable operations concurrently from the event loop's perspective and returns their results in the same order as the inputs.
+
+```python
+import asyncio
+
+
+async def load_dashboard():
+    products, inventory, reviews = await asyncio.gather(
+        get_products(),
+        get_inventory(),
+        get_reviews(),
+    )
+
+    return {
+        "products": products,
+        "inventory": inventory,
+        "reviews": reviews,
+    }
+```
+
+If the calls are independent, their waiting periods can overlap. If each call takes about one second, the total time may be close to one second rather than three seconds.
+
+This is sequential:
+
+```python
+products = await get_products()
+inventory = await get_inventory()
+reviews = await get_reviews()
+```
+
+Here, the next operation starts only after the previous one finishes.
+
+### What happens when one operation fails?
+
+By default, `return_exceptions` is `False`:
+
+```python
+results = await asyncio.gather(
+    get_products(),
+    get_inventory(),
+    get_reviews(),
+)
+```
+
+If one operation raises an exception, `gather()` propagates that exception to the caller. Other already-running operations are not automatically cancelled merely because one operation failed.
+
+For partial-failure handling, use:
+
+```python
+results = await asyncio.gather(
+    get_products(),
+    get_inventory(),
+    get_reviews(),
+    return_exceptions=True,
+)
+```
+
+Now each result may be either a successful value or an exception object. The application can inspect the results and decide whether to return fallback data, mark one field as unavailable, or fail the whole request.
+
+`gather()` coordinates tasks; it does not by itself impose a safe limit on how many operations are started.
+
+---
+
+### `asyncio.Semaphore` — limit active concurrency
+
+A semaphore is a counter that controls how many tasks may enter a section of code at the same time.
+
+```python
+import asyncio
+
+semaphore = asyncio.Semaphore(20)
+
+
+async def limited_fetch(product_id: int):
+    async with semaphore:
+        return await get_product_details(product_id)
+```
+
+The value `20` means that at most 20 calls can execute inside the `async with` block concurrently. If 1,000 tasks try to enter:
+
+- the first 20 acquire a permit and run;
+- the remaining tasks wait asynchronously;
+- when one task leaves the block, its permit is released;
+- another waiting task can start.
+
+The waiting tasks do not block the event-loop thread. They are paused until a permit is available.
+
+### Combining `gather()` and a semaphore
+
+```python
+async def fetch_all(product_ids: list[int]):
+    return await asyncio.gather(
+        *(limited_fetch(product_id) for product_id in product_ids)
+    )
+```
+
+This pattern provides both:
+
+- `gather()` to coordinate and collect results;
+- `Semaphore` to prevent unbounded active concurrency.
+
+### What a semaphore does not solve
+
+A semaphore does not automatically provide:
+
+- request timeouts;
+- retries or backoff;
+- circuit breaking;
+- rate-limit compliance;
+- cancellation handling;
+- protection from creating an extremely large number of waiting tasks.
+
+For very large input sets, combine bounded concurrency with batching or a queue instead of creating millions of tasks at once.
+
+### Choosing between them
+
+| Need | Tool |
+|---|---|
+| Run a small set of independent async operations together | `asyncio.gather()` |
+| Collect results from several coroutines | `asyncio.gather()` |
+| Limit how many operations are active at once | `asyncio.Semaphore` |
+| Process a very large workload over time | Batching or a worker queue |
+
+The production mental model is:
+
+> Use `gather()` for coordination and `Semaphore` for capacity control.
+
+---
+
 ## 14. Common Mistakes
 
 ### Mistake 1: “`async def` makes every function faster”
