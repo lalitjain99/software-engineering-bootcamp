@@ -98,7 +98,7 @@ The application grows step by step. Each topic starts from the previous design a
      - Notes, interview guide, hands-on lab, and observations complete
 10. 🟡 **[When requests spend time waiting](modules/01_Backend_Engineering/10_Blocking_Synchronous_And_Asynchronous_Execution/Notes.md)**
     - Blocking, synchronous execution, and the motivation for asynchronous I/O
-    - Notes and interview guide complete; hands-on work pending
+    - Notes and interview guide complete; hands-on lab ready for execution
 11. ⚪ **Handling multiple tasks**
     - Event loop, threads, processes, and workload choice
 12. ⚪ **When work cannot finish inside a request**
