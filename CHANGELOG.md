@@ -5,6 +5,11 @@ All meaningful changes to the Software Engineering Bootcamp roadmap are recorded
 
 ## 2026-10-19
 
+### Completed
+
+- Topic 10 interview guide, compiled from the reviewed chat-based Q&A.
+
+
 ### In Progress
 
 - Topic 10 notes: blocking, synchronous execution, and asynchronous I/O.
