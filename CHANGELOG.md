@@ -2,6 +2,18 @@
 
 All meaningful changes to the Software Engineering Bootcamp roadmap are recorded here.
 
+## 2026-10-23
+
+### Completed
+
+- Topic 10: blocking, synchronous, and asynchronous execution, including notes, interview guide, hands-on lab, and reviewed observations.
+
+### Added
+
+- Topic 11 notes on choosing between the event loop, async I/O, bounded threads, processes, and background worker queues.
+- Topic 11 execution-model decision table and common mistakes.
+- Updated the Master Index and Progress Tracker to begin Topic 11.
+
 
 ## 2026-10-19
 
