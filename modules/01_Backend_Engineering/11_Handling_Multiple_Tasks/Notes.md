@@ -40,9 +40,40 @@ Use native async code when:
 
 The await keyword does not make arbitrary code asynchronous. The called operation must itself be awaitable and must cooperate with the event loop.
 
-## 3. Threads: blocking I/O or synchronous libraries
+## 3. Processes, threads, workers, and thread pools
 
-A thread is another execution path inside the same process. It has access to the process's shared memory.
+### What is a process?
+
+A **process** is a running instance of a program.
+
+For example, when you start a FastAPI server, the operating system creates a process for it. A process has:
+
+- its own Python interpreter;
+- its own memory address space;
+- its own file handles, sockets, and other operating-system resources.
+
+Because processes normally have separate memory, one process cannot directly read or change another process's Python variables. Data must be passed through a mechanism such as pipes, queues, sockets, or specially configured shared memory.
+
+### What is shared memory?
+
+In this section, **shared memory** means memory shared by threads inside the same process.
+
+For example, if one process contains a list called products, all threads in that process can potentially access that same list:
+
+    Process
+    ├── Thread A ──┐
+    ├── Thread B ──┼── shared Python objects
+    └── Thread C ──┘
+
+This makes communication convenient, but it also creates race conditions. If two threads update the same object at the same time, a lock or another synchronization strategy may be required.
+
+This is different from processes: separate processes do not automatically share Python objects.
+
+### What is a thread?
+
+A **thread** is a path of execution inside a process. A process can contain several threads.
+
+Threads in the same process share the process's memory, but each thread has its own execution position and call stack. This allows one thread to wait for blocking I/O while another thread performs useful work.
 
 Use a thread when:
 
@@ -53,20 +84,56 @@ Use a thread when:
     def read_from_legacy_client():
         return sync_client.fetch()
 
-FastAPI runs ordinary def endpoints in a thread pool, so a synchronous endpoint does not directly block the async event-loop thread. However, each concurrent operation occupies a thread while it waits.
+Threads do not remove the blocking; they move it to a worker thread. In CPython, ordinary threads generally do not execute Python CPU-bound bytecode truly in parallel because of the GIL.
 
-Threads do not remove the blocking; they move it to a worker thread. A limited thread pool can still become exhausted.
+### What is a worker?
+
+A **worker** is an execution unit assigned to perform jobs. The word describes its role, not one particular technology.
+
+A worker could be:
+
+- a worker thread;
+- a worker process;
+- a queue consumer;
+- a background service.
+
+### What is a worker thread?
+
+A **worker thread** is a thread dedicated to taking jobs from a queue and executing them.
+
+    job queue -> worker thread 1
+              -> worker thread 2
+              -> worker thread 3
+
+A normal thread may be created for one specific purpose and controlled directly by application code. A worker thread usually waits for jobs, processes one job, and then becomes available for another job.
+
+### What is a thread pool?
+
+A **thread pool** is a managed collection of reusable worker threads.
+
+Instead of creating a new thread for every request:
+
+1. the application submits a job to the pool;
+2. an idle worker thread takes the job;
+3. the thread executes the blocking function;
+4. the thread returns to the pool and waits for another job.
+
+    requests -> thread-pool queue -> [worker 1, worker 2, worker 3]
+
+The pool has a finite size. If all worker threads are busy, new jobs wait in the pool queue or fail after a configured limit. This protects the process from creating unlimited threads, but a pool that is too small increases waiting and a pool that is too large can overload downstream systems.
+
+FastAPI runs ordinary def endpoints in a managed thread pool, so a synchronous endpoint does not directly block the async event-loop thread. However, each concurrent operation occupies a thread while it waits, so thread-pool exhaustion is still possible.
 
 ### Thread cautions
 
 - Shared mutable state needs synchronization.
 - Thread-safe database clients and libraries must be used correctly.
 - Creating unlimited threads is unsafe.
-- In CPython, the GIL generally prevents Python bytecode from achieving true CPU parallelism through ordinary threads.
+- A thread pool controls the number of concurrent blocking jobs; it does not make the underlying library non-blocking.
 
 ## 4. Processes: CPU-bound work
 
-A process has its own Python interpreter and memory space. Multiple processes can execute CPU-heavy Python code in parallel on different CPU cores.
+A process has its own Python interpreter and private memory space. Multiple processes can execute CPU-heavy Python code in parallel on different CPU cores. Because their memory is separate, passing inputs and results between processes usually requires serialization or an explicit inter-process communication mechanism.
 
 Use a process pool or dedicated worker process when:
 
