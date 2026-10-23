@@ -1,31 +1,95 @@
-# Observations — Blocking Synchronous and Asynchronous calls
+# Observations — Blocking, Synchronous, and Asynchronous Calls
 
-1. What is the difference between a coroutine function and a coroutine object?
-Ans: Coroutine function is function which is defined using async def while coroutine object is awaitable asynchronous object
+## 1. Coroutine function vs. coroutine object
 
-2. When does the body of a coroutine start executing?
-Ans: when coroutine object is awaited then body of a coroutine starts execution
+A **coroutine function** is declared with `async def`.
 
-3. What difference did you observe between `time.sleep()` and `await asyncio.sleep()`?
-Ans: time.sleep is a synchronous call while asyncio.sleep is coroutine function which is awaitable
+A **coroutine object** is created when that function is called. It represents work that can be awaited, but its body does not start executing merely because it was called.
 
-4. Why is the concurrent elapsed time close to the longest individual delay rather than the sum of all delays?
-Ans: In the concurrent calls all the 3 task (products, inventory, reviews) started simultaneously then gather waited for all to task to be completed before returning the result. On other hand sequential task were executed one by one hence the total time is close to addition of all the delays
+```python
+async def fetch_data():        # coroutine function
+    return "done"
 
-5. What does `asyncio.gather()` coordinate?
-Ans: it coordinate all the task declared/assigned by the gather function
+work = fetch_data()            # coroutine object
+result = await work
+```
 
-6. What does `asyncio.Semaphore(2)` limit?
-Ans it limit maximum number of active task at a give time
+## 2. When does a coroutine body start executing?
 
-7. Did the script create all tasks at once, and did all of them run at the same time? Explain the difference.
-Ans: No, Script does not create all task at once rather it run them at same time
+The body starts when the coroutine is:
 
-8. What production resources could be protected with a semaphore?
-Ans: CPU , memory
+- awaited directly; or
+- scheduled as a task, for example with `asyncio.create_task()` or through `asyncio.gather()`.
 
-9. Why is a semaphore not a replacement for timeouts and retries?
-Ans semaphore only control maximum active task at a particular time, it does not do anything is a task fail or controls the time take by a task or what happens to waiting task.
+Calling an async function only creates the coroutine object.
 
-10. In a real FastAPI application, which parts of this lab would correspond to database or HTTP calls?
-Ans asyncio sleep would correspond to databse or http calls
+## 3. `time.sleep()` vs. `await asyncio.sleep()`
+
+- `time.sleep()` is synchronous and blocks the current thread. In an async endpoint, it blocks the event-loop thread.
+- `asyncio.sleep()` is an asynchronous function. Calling it creates an awaitable coroutine, and `await asyncio.sleep(...)` pauses the current task while allowing the event loop to run other tasks.
+
+## 4. Why was concurrent time close to the longest delay?
+
+With sequential execution, the calls wait one after another, so total time is approximately the sum of their delays.
+
+With concurrent execution, the independent operations overlap. `asyncio.gather()` waits for all of them, so the total is approximately the duration of the slowest operation, plus small scheduling overhead.
+
+## 5. What does `asyncio.gather()` coordinate?
+
+`asyncio.gather()` schedules or coordinates multiple awaitables, waits for all of them, and returns their results in the same order as the inputs.
+
+It coordinates completion; it does not by itself limit how many operations may be active.
+
+## 6. What does `asyncio.Semaphore(2)` limit?
+
+It limits the number of tasks that may hold the semaphore and execute the protected section at the same time to **two**.
+
+Other tasks may exist and wait for a permit, but they do not enter the limited section until a permit is released.
+
+## 7. Were all tasks created and did they all run at once?
+
+The script prepares all six coroutine calls and `gather()` schedules them for execution. However, they do **not** all execute the semaphore-protected work at the same time.
+
+Because the semaphore capacity is two:
+
+- at most two tasks are active inside the limited section;
+- the remaining tasks wait asynchronously for a permit;
+- when one task exits, another waiting task can enter.
+
+This distinguishes **number of scheduled tasks** from **maximum active concurrency**.
+
+## 8. What production resources could a semaphore protect?
+
+A semaphore can protect limited capacity such as:
+
+- downstream HTTP service concurrency;
+- database or connection-pool usage;
+- file descriptors and sockets;
+- memory consumed by concurrent work;
+- an external provider’s rate or concurrency limit.
+
+It is a capacity-control tool, not a general performance guarantee.
+
+## 9. Why is a semaphore not a replacement for timeouts and retries?
+
+A semaphore only controls how many operations may be active simultaneously.
+
+It does not:
+
+- stop an operation that runs too long;
+- decide whether a failure is retryable;
+- perform retries or backoff;
+- provide a circuit breaker;
+- guarantee that a downstream service is healthy.
+
+Production code may need a semaphore together with timeouts, bounded retries, backoff, and error handling.
+
+## 10. Which lab calls represent database or HTTP calls?
+
+The `asyncio.sleep()` calls simulate waiting for I/O. In a real FastAPI application, they could represent:
+
+- an async HTTP request using `httpx.AsyncClient`;
+- an async database query;
+- an async file or object-storage operation.
+
+The important similarity is that a real async I/O operation yields control while waiting, allowing other tasks to make progress.
