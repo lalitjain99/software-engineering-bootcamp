@@ -4,7 +4,7 @@
 
 🟢 Revision Checkpoint 01 complete — Topics 01–08
 
-Topics 01–10 and Revision Checkpoint 01 are complete. Topic 11 is now in progress.
+Topics 01–11 and Revision Checkpoint 01 are complete.
 
 ## Goals
 
@@ -70,7 +70,7 @@ Topics 01–10 and Revision Checkpoint 01 are complete. Topic 11 is now in progr
 | `Notes.md` | 🟢 First-principles lecture created |
 | `Interview.md` | ⚪ To be created after chat Q&A |
 | `Hands_On/` | ⚪ To be created after the lecture and Q&A |
-| Topic completion | 🟡 In progress |
+| Topic completion | 🟢 Complete |
 
 ## Continuous Threads
 
@@ -101,12 +101,11 @@ See [Revision and Continuous Practice Plan](REVISION_AND_CONTINUOUS_PRACTICE.md)
 
 ## Current Next Actions
 
-1. Read the Topic 11 lecture notes and ask questions while working through the execution-model examples.
-2. Continue with Topic 11 chat interview Q&A after the notes.
-3. Run the Topic 11 hands-on lab and record observations.
+1. Begin Topic 12: when work cannot finish inside a request.
+2. Revisit recorded weak areas at their planned roadmap points.
 2. Revisit recorded weak areas at their planned roadmap points.
 3. Continue using the Topic 08 Product API as the capstone baseline.
 4. Record one private, anonymized leadership-journal entry.
 5. Complete the weekly closed-book recall and light coding exercise.
 
-Last updated: 2026-10-23
+Last updated: 2026-10-27
