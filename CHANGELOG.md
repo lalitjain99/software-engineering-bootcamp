@@ -4,6 +4,12 @@ All meaningful changes to the Software Engineering Bootcamp roadmap are recorded
 
 ## 2026-10-27
 
+### Added
+
+- Topic 12 first-principles notes on request-time work, in-process background tasks, durable queues, workers, acknowledgement, redelivery, job status, and backpressure.
+
+## 2026-10-27
+
 ### Completed
 
 - Topic 11: handling multiple tasks, including notes, chat Q&A, interview guide, hands-on lab, and reviewed observations.
