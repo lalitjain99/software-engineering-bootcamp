@@ -103,7 +103,7 @@ See [Revision and Continuous Practice Plan](REVISION_AND_CONTINUOUS_PRACTICE.md)
 
 1. Read the Topic 11 lecture notes and ask questions while working through the execution-model examples.
 2. Continue with Topic 11 chat interview Q&A after the notes.
-3. Build and run the Topic 11 hands-on lab after the Q&A.
+3. Build and run the Topic 11 hands-on lab after the interview guide.
 2. Revisit recorded weak areas at their planned roadmap points.
 3. Continue using the Topic 08 Product API as the capstone baseline.
 4. Record one private, anonymized leadership-journal entry.
