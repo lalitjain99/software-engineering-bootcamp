@@ -99,8 +99,9 @@ The application grows step by step. Each topic starts from the previous design a
 10. 🟢 **[When requests spend time waiting](modules/01_Backend_Engineering/10_Blocking_Synchronous_And_Asynchronous_Execution/Notes.md)**
     - Blocking, synchronous execution, and the motivation for asynchronous I/O
     - Notes, interview guide, hands-on lab, and observations complete
-11. 🟡 **[Handling multiple tasks](modules/01_Backend_Engineering/11_Handling_Multiple_Tasks/Notes.md)**
-    - Event loop, threads, processes, and workload choice
+11. 🟢 **[Handling multiple tasks](modules/01_Backend_Engineering/11_Handling_Multiple_Tasks/Notes.md)**
+    - Event loop, threads, processes, worker pools, queues, and workload choice
+    - Notes, interview guide, hands-on lab, and observations complete
 12. ⚪ **When work cannot finish inside a request**
     - Background execution, workers, and queues
 13. ⚪ **When operations repeat or fail**
@@ -193,4 +194,4 @@ Topic/
 - End of each phase: mixed mock interview and capstone architecture review
 - Current plan: [Revision and Continuous Practice](REVISION_AND_CONTINUOUS_PRACTICE.md)
 
-Last updated: 2026-10-23
+Last updated: 2026-10-27
