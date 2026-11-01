@@ -8,7 +8,9 @@ flowchart TD
     B --> C{"Can work finish within request limits?"}
     C -->|"Yes"| D["Perform bounded request-time work"]
     D --> E["Return 200/201 result"]
-    C -->|"No"| F["Begin database transaction"]
+    C -->|"No"| AI{"Queue capacity available?"}
+    AI -->|"No"| AJ["Reject new job: 429 or 503 + Retry-After"]
+    AI -->|"Yes"| F["Begin database transaction"]
     F --> G["Insert job: QUEUED"]
     G --> H["Insert outbox event: UNPUBLISHED"]
     H --> I{"Transaction commits?"}
@@ -41,9 +43,6 @@ flowchart TD
     AF -->|"Yes"| AG["Set FAILED; send to DLQ; acknowledge"]
     AC -->|"Worker crash or lease expires"| AH["Reclaim with lease/version check"]
     AH --> Q
-    K --> AI{"Queue capacity available?"}
-    AI -->|"No"| AJ["Reject new job: 429 or 503 + Retry-After"]
-    AI -->|"Yes"| M
     L --> AK{"Current job state"}
     AK -->|"QUEUED/RUNNING"| AL["Return 200 + current state"]
     AK -->|"SUCCEEDED"| AM["Return 200 + result URL"]
