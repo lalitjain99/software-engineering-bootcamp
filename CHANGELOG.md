@@ -2,6 +2,12 @@
 
 All meaningful changes to the Software Engineering Bootcamp roadmap are recorded here.
 
+## 2026-11-01
+
+### Completed
+
+- Topic 12 chat-based interview Q&A and consolidated interview guide created.
+
 ## 2026-10-27
 
 ### Added
