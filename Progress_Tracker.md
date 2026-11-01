@@ -78,7 +78,7 @@ Topics 01–11 and Revision Checkpoint 01 are complete.
 |---|:---:|
 | `Notes.md` | 🟢 First-principles lecture created |
 | `Interview.md` | ⚪ To be created after chat Q&A |
-| `Hands_On/` | ⚪ To be created after interview guide |
+| `Hands_On/` | 🟢 Lab ready for execution |
 | Topic completion | 🟡 In progress |
 
 ## Continuous Threads
@@ -111,7 +111,7 @@ See [Revision and Continuous Practice Plan](REVISION_AND_CONTINUOUS_PRACTICE.md)
 ## Current Next Actions
 
 1. Read the Topic 12 lecture notes and ask questions while working through background-work examples.
-2. Build and run the Topic 12 hands-on lab after the interview guide.
+2. Run the Topic 12 hands-on lab and record observations.
 2. Revisit recorded weak areas at their planned roadmap points.
 3. Continue using the Topic 08 Product API as the capstone baseline.
 4. Record one private, anonymized leadership-journal entry.
