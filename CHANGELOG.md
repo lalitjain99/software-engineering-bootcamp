@@ -4,6 +4,11 @@ All meaningful changes to the Software Engineering Bootcamp roadmap are recorded
 
 ## 2026-11-01
 
+### Added
+
+- Topic 12 consolidated Mermaid flow covering request acceptance, transactional outbox, queue publishing, worker claims, leases, retries, cancellation, idempotency, job status, and backpressure.
+
+
 ### Completed
 
 - Topic 12 chat-based interview Q&A and consolidated interview guide created.
