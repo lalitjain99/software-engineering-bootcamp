@@ -104,6 +104,7 @@ The application grows step by step. Each topic starts from the previous design a
     - Notes, interview guide, hands-on lab, and observations complete
 12. 🟡 **[When work cannot finish inside a request](modules/01_Backend_Engineering/12_Background_Workers_And_Queues/Notes.md)**
     - Background execution, workers, queues, job status, and durable handoff
+    - [Consolidated end-to-end flow](modules/01_Backend_Engineering/12_Background_Workers_And_Queues/Flow.md)
 13. ⚪ **When operations repeat or fail**
     - Retries, idempotency, and safe state transitions
 14. ⚪ **When the application becomes slow or unreliable**
