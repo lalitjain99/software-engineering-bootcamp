@@ -1,5 +1,9 @@
 # When Work Cannot Finish Inside a Request
 
+## Consolidated flow
+
+See the [end-to-end background job flow](Flow.md) for the complete request, outbox, queue, worker, retry, cancellation, and backpressure path.
+
 ## Why this topic matters
 
 An HTTP request is a temporary interaction:
