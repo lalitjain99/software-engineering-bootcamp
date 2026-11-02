@@ -2,6 +2,12 @@
 
 All meaningful changes to the Software Engineering Bootcamp roadmap are recorded here.
 
+## 2026-11-02
+
+### Completed
+
+- Topic 12: background execution, workers, queues, job status, durable handoff, hands-on lab, and reviewed observations.
+
 ## 2026-11-01
 
 ### Added
