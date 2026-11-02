@@ -78,8 +78,8 @@ Topics 01–11 and Revision Checkpoint 01 are complete.
 |---|:---:|
 | `Notes.md` | 🟢 First-principles lecture created |
 | `Interview.md` | ⚪ To be created after chat Q&A |
-| `Hands_On/` | 🟢 Lab ready for execution |
-| Topic completion | 🟡 In progress |
+| `Hands_On/` | 🟢 Lab and observations complete |
+| Topic completion | 🟢 Complete |
 
 ## Continuous Threads
 
