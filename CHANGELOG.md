@@ -4,6 +4,11 @@ All meaningful changes to the Software Engineering Bootcamp roadmap are recorded
 
 ## 2026-11-02
 
+### Added
+
+- Topic 13 first-principles notes on transient and permanent failures, retry policy, backoff, jitter, idempotency keys, safe state transitions, and ambiguous external outcomes.
+
+
 ### Completed
 
 - Topic 12: background execution, workers, queues, job status, durable handoff, hands-on lab, and reviewed observations.
