@@ -81,6 +81,15 @@ Topics 01–11 and Revision Checkpoint 01 are complete.
 | `Hands_On/` | 🟢 Lab and observations complete |
 | Topic completion | 🟢 Complete |
 
+## Topic 13 Progress
+
+| Deliverable | Status |
+|---|:---:|
+| `Notes.md` | 🟢 First-principles lecture created |
+| `Interview.md` | ⚪ To be created after chat Q&A |
+| `Hands_On/` | ⚪ To be created after interview guide |
+| Topic completion | 🟡 In progress |
+
 ## Continuous Threads
 
 | Thread | Status | Current action |
