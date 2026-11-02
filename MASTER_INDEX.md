@@ -106,7 +106,7 @@ The application grows step by step. Each topic starts from the previous design a
     - Background execution, workers, queues, job status, and durable handoff
     - Notes, interview guide, hands-on lab, observations, and consolidated flow complete
     - [Consolidated end-to-end flow](modules/01_Backend_Engineering/12_Background_Workers_And_Queues/Flow.md)
-13. ⚪ **When operations repeat or fail**
+13. 🟡 **[When operations repeat or fail](modules/01_Backend_Engineering/13_Retries_Idempotency_And_Safe_State_Transitions/Notes.md)**
     - Retries, idempotency, and safe state transitions
 14. ⚪ **When the application becomes slow or unreliable**
     - Measurement, database diagnosis, resilience, and observability
