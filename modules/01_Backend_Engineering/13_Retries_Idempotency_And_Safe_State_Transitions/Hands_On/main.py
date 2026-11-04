@@ -115,13 +115,14 @@ async def create_order(
     if state == 'IN_PROGRESS':
         return {'outcome': 'IN_PROGRESS'}
 
+    fencing_token = record.fencing_token
     await asyncio.sleep(0.01)
     response = {'order_id': 'order-1', 'amount': payload['amount']}
     if crash_before_complete:
-        return {'outcome': 'WORKER_CRASHED', 'token': record.fencing_token}
+        return {'outcome': 'WORKER_CRASHED', 'token': fencing_token}
 
     accepted = await store.complete(
-        client_id, key, fingerprint, record.fencing_token, response
+        client_id, key, fingerprint, fencing_token, response
     )
     if not accepted:
         return {'outcome': 'STALE_WORKER_REJECTED'}
@@ -154,7 +155,8 @@ async def main() -> None:
     first_state, first_record = await store.claim(
         'client-1', 'lease-demo', lease_fingerprint, lease_seconds=0.05
     )
-    print('initial lease:', first_state, 'token=', first_record.fencing_token)
+    first_token = first_record.fencing_token
+    print('initial lease:', first_state, 'token=', first_token)
     await asyncio.sleep(0.06)
 
     reclaim_state, reclaim_record = await store.claim(
@@ -166,7 +168,7 @@ async def main() -> None:
         'client-1',
         'lease-demo',
         lease_fingerprint,
-        first_record.fencing_token,
+        first_token,
         {'order_id': 'stale-order'},
     )
     print('stale worker accepted:', stale_accepted)
