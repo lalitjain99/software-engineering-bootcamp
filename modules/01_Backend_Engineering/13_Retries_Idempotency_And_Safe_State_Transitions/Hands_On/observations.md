@@ -54,14 +54,13 @@ Paste the output for the crashed worker, reclaim, and stale-worker behavior:
 ```
 initial lease: CLAIMED token= 1
 reclaim: RECLAIMED token= 2
-stale worker accepted: True
-current worker accepted: False
-completed retry: {'outcome': 'REPLAYED', 'response': {'order_id': 'stale-order'}}
+stale worker accepted: False
+current worker accepted: True
+completed retry: {'outcome': 'REPLAYED', 'response': {'order_id': 'order-2', 'amount': 50}}
 ```
 
 - Why could the old worker not overwrite the reclaimed result?
-  - In the design, fencing tokens should prevent an old worker from completing after the lease has been reclaimed. However, the observed run exposed a mutation issue in this in-memory example: `first_record` is the same object returned again after reclaim, so its token changed from 1 to 2. The stale completion was therefore incorrectly accepted as the current token, and the real current token completed as stale.
-  - A separate copy or saved old token should be used when testing fencing so that `stale worker accepted` is `False` and `current worker accepted` is `True`.
+  - The original worker held token 1, while the reclaimer received token 2. The completion update includes the worker token, so the stale worker's update affected zero records and was rejected. The current worker with token 2 completed successfully.
 - What would happen if the operation had already called a payment provider?
   - The provider could have charged the customer even if the local worker later crashed. Reconciliation and provider-side idempotency are required to determine the provider result and avoid a second charge.
 
