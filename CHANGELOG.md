@@ -2,6 +2,17 @@
 
 All meaningful changes to the Software Engineering Bootcamp roadmap are recorded here.
 
+## 2026-11-04
+
+### Completed
+
+- Topic 13 interview guide and hands-on lab for retries, idempotency, safe state transitions, leases, fencing tokens, retry budgets, and circuit breakers.
+
+### Added
+
+- Consolidated Topic 13 `Interview.md` from the reviewed chat Q&A.
+- Topic 13 hands-on simulation for duplicate requests, idempotency replay, payload mismatch, lease reclaim, and stale-worker protection.
+
 ## 2026-11-02
 
 ### Added
