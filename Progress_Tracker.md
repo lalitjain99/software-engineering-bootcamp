@@ -4,7 +4,7 @@
 
 🟢 Revision Checkpoint 01 complete — Topics 01–08
 
-Topics 01–11 and Revision Checkpoint 01 are complete.
+Topics 01–13 and Revision Checkpoint 01 are complete.
 
 ## Goals
 
@@ -18,7 +18,7 @@ Topics 01–11 and Revision Checkpoint 01 are complete.
 | Phase | Focus | Target weeks | Status | Completion |
 |---|---|---:|:---:|---:|
 | 0 | Skills audit and setup | 0–1 | 🟡 | 35% |
-| 1 | Backend engineering depth | 1–14 | 🟡 | 45% |
+| 1 | Backend engineering depth | 1–14 | 🟡 | 50% |
 | 2 | System design | 15–24 | ⚪ | 0% |
 | 3 | DevOps, cloud, and production | 25–32 | ⚪ | 0% |
 | 4 | Leadership and interview synthesis | 33–36 | ⚪ | 0% |
@@ -77,7 +77,7 @@ Topics 01–11 and Revision Checkpoint 01 are complete.
 | Deliverable | Status |
 |---|:---:|
 | `Notes.md` | 🟢 First-principles lecture created |
-| `Interview.md` | ⚪ To be created after chat Q&A |
+| `Interview.md` | 🟢 Chat answers reviewed and guide created |
 | `Hands_On/` | 🟢 Lab and observations complete |
 | Topic completion | 🟢 Complete |
 
@@ -87,8 +87,17 @@ Topics 01–11 and Revision Checkpoint 01 are complete.
 |---|:---:|
 | `Notes.md` | 🟢 First-principles lecture created |
 | `Interview.md` | ⚪ To be created after chat Q&A |
-| `Hands_On/` | ⚪ To be created after interview guide |
-| Topic completion | 🟡 In progress |
+| `Hands_On/` | 🟢 Lab and observations complete |
+| Topic completion | 🟢 Complete |
+
+## Topic 14 Next
+
+| Deliverable | Status |
+|---|:---:|
+| `Notes.md` | ⚪ To be created |
+| `Interview.md` | ⚪ After chat Q&A |
+| `Hands_On/` | ⚪ After lecture and Q&A |
+| Topic status | 🟡 Next topic |
 
 ## Continuous Threads
 
@@ -115,15 +124,16 @@ See [Revision and Continuous Practice Plan](REVISION_AND_CONTINUOUS_PRACTICE.md)
 | 8 | [Revision Checkpoint 01](REVISION_AND_CONTINUOUS_PRACTICE.md) | Review | Establish Topic 08 app as capstone baseline | 🔁 Topics 01–08 recall and integration | 🟡 First private entry | — |
 | 9 | [Topic 09 — Persisting Data](modules/01_Backend_Engineering/09_Persisting_Data/README.md) | A | Replace in-memory repository with durable storage | 🟢 09.06 query performance and optimization complete | 🟢 | — |
 | 10 | [Topic 10 — Blocking and asynchronous execution](modules/01_Backend_Engineering/10_Blocking_Synchronous_And_Asynchronous_Execution/Notes.md) | A | Add non-blocking downstream calls and bounded concurrency | 🟢 Notes, interview, lab, and observations complete | ⬜ | — |
-| 11 | [Topic 11 — Handling multiple tasks](modules/01_Backend_Engineering/11_Handling_Multiple_Tasks/Notes.md) | A | Choose execution model for each workload | ⬜ | ⬜ | — |
+| 11 | [Topic 11 — Handling multiple tasks](modules/01_Backend_Engineering/11_Handling_Multiple_Tasks/Notes.md) | A | Choose execution model for each workload | 🟢 | 🟢 | — |
+| 12 | [Topic 12 — Background workers and queues](modules/01_Backend_Engineering/12_Background_Workers_And_Queues/Notes.md) | A | Add durable background work to the capstone | 🟢 | 🟢 | — |
+| 13 | [Topic 13 — Retries and idempotency](modules/01_Backend_Engineering/13_Retries_Idempotency_And_Safe_State_Transitions/Notes.md) | A | Add safe retries and state transitions | 🟢 | 🟢 | — |
 
 ## Current Next Actions
 
-1. Read the Topic 12 lecture notes and ask questions while working through background-work examples.
-2. Run the Topic 12 hands-on lab and record observations.
+1. Read the Topic 14 lecture notes and ask questions while working through reliability and observability examples.
 2. Revisit recorded weak areas at their planned roadmap points.
-3. Continue using the Topic 08 Product API as the capstone baseline.
+3. Continue evolving the Topic 08 Product API as the capstone baseline.
 4. Record one private, anonymized leadership-journal entry.
 5. Complete the weekly closed-book recall and light coding exercise.
 
-Last updated: 2026-10-27
+Last updated: 2026-11-04
