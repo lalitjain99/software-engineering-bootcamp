@@ -6,6 +6,17 @@ All meaningful changes to the Software Engineering Bootcamp roadmap are recorded
 
 ### Completed
 
+- Topic 13: retries, idempotency, safe state transitions, leases, fencing tokens, retry budgets, and circuit breakers.
+- Topic 13 consolidated interview guide, hands-on simulation, and reviewed observations.
+
+### Next
+
+- Topic 14: application reliability, observability, and production diagnosis.
+
+## 2026-11-04
+
+### Completed
+
 - Topic 13 interview guide and hands-on lab for retries, idempotency, safe state transitions, leases, fencing tokens, retry budgets, and circuit breakers.
 
 ### Added
