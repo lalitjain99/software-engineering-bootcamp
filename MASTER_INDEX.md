@@ -106,8 +106,10 @@ The application grows step by step. Each topic starts from the previous design a
     - Background execution, workers, queues, job status, and durable handoff
     - Notes, interview guide, hands-on lab, observations, and consolidated flow complete
     - [Consolidated end-to-end flow](modules/01_Backend_Engineering/12_Background_Workers_And_Queues/Flow.md)
-13. 🟡 **[When operations repeat or fail](modules/01_Backend_Engineering/13_Retries_Idempotency_And_Safe_State_Transitions/Notes.md)**
+13. 🟢 **[When operations repeat or fail](modules/01_Backend_Engineering/13_Retries_Idempotency_And_Safe_State_Transitions/Notes.md)**
     - Retries, idempotency, and safe state transitions
+    - [Interview guide](modules/01_Backend_Engineering/13_Retries_Idempotency_And_Safe_State_Transitions/Interview.md), [hands-on lab](modules/01_Backend_Engineering/13_Retries_Idempotency_And_Safe_State_Transitions/Hands_On/README.md), and [observations template](modules/01_Backend_Engineering/13_Retries_Idempotency_And_Safe_State_Transitions/Hands_On/observations.md) added
+    - QA covered ambiguous outcomes, idempotency keys, atomic claims, leases, fencing tokens, retry policies, and failure containment
 14. ⚪ **When the application becomes slow or unreliable**
     - Measurement, database diagnosis, resilience, and observability
 
@@ -196,4 +198,4 @@ Topic/
 - End of each phase: mixed mock interview and capstone architecture review
 - Current plan: [Revision and Continuous Practice](REVISION_AND_CONTINUOUS_PRACTICE.md)
 
-Last updated: 2026-10-27
+Last updated: 2026-11-04
