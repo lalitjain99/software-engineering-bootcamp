@@ -18,7 +18,7 @@
 Paste the output showing two concurrent requests with the same key:
 
 ```
-<!-- paste output here -->
+duplicate requests: [{'outcome': 'CLAIMED', 'response': {'order_id': 'order-1', 'amount': 100}}, {'outcome': 'IN_PROGRESS'}]
 ```
 
 - How many side effects were created?
@@ -40,7 +40,11 @@ Paste the output showing two concurrent requests with the same key:
 Paste the output for the crashed worker, reclaim, and stale-worker behavior:
 
 ```
-<!-- paste output here -->
+crashed worker: {'outcome': 'WORKER_CRASHED', 'token': 1}
+
+reclaimed operation: {'outcome': 'RECLAIMED', 'response': {'order_id': 'order-1', 'amount': 50}}
+
+stale/completed retry: {'outcome': 'REPLAYED', 'response': {'order_id': 'order-1', 'amount': 50}}
 ```
 
 - Why could the old worker not overwrite the reclaimed result?
