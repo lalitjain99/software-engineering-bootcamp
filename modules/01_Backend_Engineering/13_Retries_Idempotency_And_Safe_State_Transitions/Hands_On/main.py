@@ -147,17 +147,42 @@ async def main() -> None:
     except ValueError as exc:
         print('payload mismatch:', exc)
 
-    crashed = await create_order(
-        store, 'client-1', 'lease-demo', {'amount': 50}, crash_before_complete=True
+    lease_payload = {'amount': 50}
+    lease_fingerprint = hashlib.sha256(
+        repr(sorted(lease_payload.items())).encode()
+    ).hexdigest()
+    first_state, first_record = await store.claim(
+        'client-1', 'lease-demo', lease_fingerprint, lease_seconds=0.05
     )
-    print('crashed worker:', crashed)
+    print('initial lease:', first_state, 'token=', first_record.fencing_token)
     await asyncio.sleep(0.06)
 
-    recovered = await create_order(store, 'client-1', 'lease-demo', {'amount': 50})
-    print('reclaimed operation:', recovered)
+    reclaim_state, reclaim_record = await store.claim(
+        'client-1', 'lease-demo', lease_fingerprint, lease_seconds=0.05
+    )
+    print('reclaim:', reclaim_state, 'token=', reclaim_record.fencing_token)
 
-    stale = await create_order(store, 'client-1', 'lease-demo', {'amount': 50})
-    print('stale/completed retry:', stale)
+    stale_accepted = await store.complete(
+        'client-1',
+        'lease-demo',
+        lease_fingerprint,
+        first_record.fencing_token,
+        {'order_id': 'stale-order'},
+    )
+    print('stale worker accepted:', stale_accepted)
+
+    current_accepted = await store.complete(
+        'client-1',
+        'lease-demo',
+        lease_fingerprint,
+        reclaim_record.fencing_token,
+        {'order_id': 'order-2', 'amount': 50},
+    )
+    print('current worker accepted:', current_accepted)
+    completed_retry = await create_order(
+        store, 'client-1', 'lease-demo', lease_payload
+    )
+    print('completed retry:', completed_retry)
 
 
 if __name__ == '__main__':
