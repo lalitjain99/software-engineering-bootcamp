@@ -94,7 +94,7 @@ Topics 01–13 and Revision Checkpoint 01 are complete.
 
 | Deliverable | Status |
 |---|:---:|
-| `Notes.md` | ⚪ To be created |
+| `Notes.md` | 🟢 First-principles lecture created |
 | `Interview.md` | ⚪ After chat Q&A |
 | `Hands_On/` | ⚪ After lecture and Q&A |
 | Topic status | 🟡 Next topic |
@@ -136,4 +136,4 @@ See [Revision and Continuous Practice Plan](REVISION_AND_CONTINUOUS_PRACTICE.md)
 4. Record one private, anonymized leadership-journal entry.
 5. Complete the weekly closed-book recall and light coding exercise.
 
-Last updated: 2026-11-04
+Last updated: 2026-11-05
