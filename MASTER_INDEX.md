@@ -117,6 +117,10 @@ The application grows step by step. Each topic starts from the previous design a
 
 ### Track 1C — Production Backend Depth
 
+15. 🟡 **[FastAPI architecture and dependency management](modules/01_Backend_Engineering/15_FastAPI_Architecture_And_Dependency_Management/Notes.md)**
+    - Application structure, dependency graphs, resource lifetimes, testing overrides, and composition boundaries
+    - Notes created; interview guide and hands-on lab will follow the lecture and Q&A
+
 After the foundations above, focused topics will deepen:
 
 - FastAPI architecture and dependency management
