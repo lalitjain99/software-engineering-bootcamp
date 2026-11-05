@@ -99,6 +99,15 @@ Topics 01–13 and Revision Checkpoint 01 are complete.
 | `Hands_On/` | 🟢 Lab and observations complete |
 | Topic status | 🟢 Complete |
 
+## Topic 15 Progress
+
+| Deliverable | Status |
+|---|:---:|
+| `Notes.md` | 🟢 First-principles lecture created |
+| `Interview.md` | ⚪ After chat Q&A |
+| `Hands_On/` | ⚪ After interview guide |
+| Topic status | 🟡 In progress |
+
 ## Continuous Threads
 
 | Thread | Status | Current action |
@@ -130,7 +139,7 @@ See [Revision and Continuous Practice Plan](REVISION_AND_CONTINUOUS_PRACTICE.md)
 
 ## Current Next Actions
 
-1. Read the Topic 14 lecture notes and ask questions while working through reliability and observability examples.
+1. Read the Topic 15 lecture notes and ask questions while working through FastAPI architecture and dependency examples.
 2. Revisit recorded weak areas at their planned roadmap points.
 3. Continue evolving the Topic 08 Product API as the capstone baseline.
 4. Record one private, anonymized leadership-journal entry.
