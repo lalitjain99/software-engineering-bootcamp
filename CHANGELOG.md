@@ -4,6 +4,16 @@ All meaningful changes to the Software Engineering Bootcamp roadmap are recorded
 
 ## 2026-11-05
 
+### Completed
+
+- Topic 14: application reliability and observability, including notes, interview guide, observability simulation, and reviewed observations.
+
+### Next
+
+- Continue with revision and capstone integration before moving to the next backend-depth topic.
+
+## 2026-11-05
+
 ### In Progress
 
 - Topic 14 first-principles notes on application reliability, observability, latency decomposition, health checks, SLOs, timeouts, and production diagnosis.
