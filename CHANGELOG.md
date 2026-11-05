@@ -2,6 +2,12 @@
 
 All meaningful changes to the Software Engineering Bootcamp roadmap are recorded here.
 
+## 2026-11-05
+
+### In Progress
+
+- Topic 14 first-principles notes on application reliability, observability, latency decomposition, health checks, SLOs, timeouts, and production diagnosis.
+
 ## 2026-11-04
 
 ### Completed
