@@ -4,6 +4,12 @@ All meaningful changes to the Software Engineering Bootcamp roadmap are recorded
 
 ## 2026-11-05
 
+### In Progress
+
+- Topic 15 first-principles notes on FastAPI architecture, dependency injection, dependency graphs, resource lifetimes, testing overrides, and application composition.
+
+## 2026-11-05
+
 ### Completed
 
 - Topic 14: application reliability and observability, including notes, interview guide, observability simulation, and reviewed observations.
