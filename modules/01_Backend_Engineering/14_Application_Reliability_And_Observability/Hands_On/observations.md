@@ -53,7 +53,7 @@ Record one change at a time and its effect:
 | External service | 20 ms span / 41.12 ms total | 180 ms span / 201.52 ms total | The inventory span increased by approximately 160 ms and account for nearly the entire total latency increase. |
 | Lock wait | 0 ms span / 127.18 ms total with the lock scenario's 90 ms pool wait | 220 ms span / 347.69 ms total | Lock wait directly raised request latency while the SQL span remained about 10 ms; the lock owner was more likely than SQL execution to be the bottleneck. |
 | Pool wait | 5 ms span / 262.08 ms total with lock wait fixed at 220 ms | 90 ms span / 347.69 ms total | Additional connection-checkout wait was added nearly directly to request total; connection capacity or connection lifetime should be investigated. |
-| Serialization | 5 ms / 262.08 ms total with lock wait fixed at 220 ms | 80 ms / 337.69 ms estimated total | A larger serialization cost should raise total latency without changing database or dependency spans; response payload size and serialization efficiency become the primary suspects. |
+| Serialization | 5 ms / 347.69 ms total with pool wait at 90 ms and lock wait at 220 ms | 80 ms / 422.69 ms estimated total | Increasing serialization from 5 ms to 80 ms adds approximately 75 ms; database and dependency spans should remain unchanged, so response payload size and serialization efficiency become the primary suspects. |
 
 For precise values after changing lock, pool, or serialization, rerun `main.py` and replace the inferred totals above with the new measured output.
 
@@ -71,8 +71,8 @@ Write a short incident diagnosis in this format:
 1. User-visible symptom: Order requests are unusually slow, but the application is still returning successful responses.
 2. Evidence: The p95 is 333.07 ms, while the error rate remains 0.0%; traces show either an external inventory dependency delay or, in the contention scenario, 220.51 ms of lock wait and 90.61 ms of pool wait.
 3. Most likely bottleneck: Database lock and connection-pool waits for the lock-contention scenario, or slow inventory-service latency in the slow-external scenario.
-4. First safe mitigation: Route traffic away from or temporarily defer the slow dependency where possible; for lock contention, reduce transaction scope or terminate or delay the conflicting transaction after confirming it is safe.
-5. Follow-up prevention: Add dependency timeouts and retries with bounded backoff, optimize transaction boundaries, provide sufficient pool capacity with connection monitoring, investigate lock holders, and add latency/error dashboards and alerts.
+4. First safe mitigation: Use dependency timeouts and graceful degradation where possible; for lock contention, identify the blocking transaction, verify whether it is stale or legitimate, reduce transaction scope, and terminate it only through an approved incident procedure when safe.
+5. Follow-up prevention: Add dependency timeouts and retries with bounded backoff, optimize transaction boundaries, monitor active/idle connections, checkout time, transaction duration, and pool capacity rather than increasing pool size blindly, investigate lock holders, and add latency/error dashboards and alerts.
 
 ## 6. Interview summary
 
