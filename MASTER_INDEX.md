@@ -110,9 +110,10 @@ The application grows step by step. Each topic starts from the previous design a
     - Retries, idempotency, and safe state transitions
     - [Interview guide](modules/01_Backend_Engineering/13_Retries_Idempotency_And_Safe_State_Transitions/Interview.md), [hands-on lab](modules/01_Backend_Engineering/13_Retries_Idempotency_And_Safe_State_Transitions/Hands_On/README.md), and [observations template](modules/01_Backend_Engineering/13_Retries_Idempotency_And_Safe_State_Transitions/Hands_On/observations.md) added
     - QA covered ambiguous outcomes, idempotency keys, atomic claims, leases, fencing tokens, retry policies, and failure containment
-14. 🟡 **When the application becomes slow or unreliable**
+14. 🟡 **[When the application becomes slow or unreliable](modules/01_Backend_Engineering/14_Application_Reliability_And_Observability/Notes.md)**
     - Measurement, database diagnosis, resilience, and observability
-    - Next topic after Topic 13 completion
+    - [Interview guide](modules/01_Backend_Engineering/14_Application_Reliability_And_Observability/Interview.md) and [hands-on lab](modules/01_Backend_Engineering/14_Application_Reliability_And_Observability/Hands_On/README.md) created
+    - Observations pending
 
 ### Track 1C — Production Backend Depth
 
