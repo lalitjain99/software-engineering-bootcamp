@@ -95,9 +95,9 @@ Topics 01–13 and Revision Checkpoint 01 are complete.
 | Deliverable | Status |
 |---|:---:|
 | `Notes.md` | 🟢 First-principles lecture created |
-| `Interview.md` | ⚪ After chat Q&A |
-| `Hands_On/` | ⚪ After lecture and Q&A |
-| Topic status | 🟡 Next topic |
+| `Interview.md` | 🟢 Chat answers reviewed and guide created |
+| `Hands_On/` | 🟡 Lab created; observations pending |
+| Topic status | 🟡 In progress |
 
 ## Continuous Threads
 
