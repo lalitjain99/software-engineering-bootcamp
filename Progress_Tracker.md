@@ -67,7 +67,7 @@ Topics 01–13 and Revision Checkpoint 01 are complete.
 
 | Deliverable | Status |
 |---|:---:|
-| `Notes.md` | 🟢 First-principles lecture created |
+| `Notes.md` | 🟢 First-principles lecture complete |
 | `Interview.md` | 🟢 Chat answers reviewed and guide created |
 | `Hands_On/` | ⚪ To be created after the lecture and Q&A |
 | Topic completion | 🟢 Complete |
@@ -96,8 +96,8 @@ Topics 01–13 and Revision Checkpoint 01 are complete.
 |---|:---:|
 | `Notes.md` | 🟢 First-principles lecture created |
 | `Interview.md` | 🟢 Chat answers reviewed and guide created |
-| `Hands_On/` | 🟡 Lab created; observations pending |
-| Topic status | 🟡 In progress |
+| `Hands_On/` | 🟢 Lab and observations complete |
+| Topic status | 🟢 Complete |
 
 ## Continuous Threads
 
