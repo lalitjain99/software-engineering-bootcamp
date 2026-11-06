@@ -6,12 +6,12 @@ class ProductNotFoundError(Exception):
         self.message = f"Product with ID {product_id} was not found"
         super().__init__(self.message)
 
-product_repository = ProductRepository()
 
-class ProductService:
+
+class ProductService(ProductRepository):
 
     def __init__(self):
-        self.product_repository = product_repository
+        self.product_repository = ProductRepository()
 
 
     def get_product(self,product_id):
