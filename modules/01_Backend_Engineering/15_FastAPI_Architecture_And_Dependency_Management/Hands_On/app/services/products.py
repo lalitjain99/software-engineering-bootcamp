@@ -1,24 +1,24 @@
-from app.repositories import ProductRepository
+from app.repositories.products import ProductRepository
 
 class ProductNotFoundError(Exception):
-    def __init__(self, product_id, message):
+    def __init__(self, product_id):
         self.product_id = product_id
-        self.message = message or f"Product with ID {product_id} was not found"
+        self.message = f"Product with ID {product_id} was not found"
         super().__init__(self.message)
 
-
+product_repository = ProductRepository()
 
 class ProductService:
 
     def __init__(self):
-        self.product_repository = ProductRepository
+        self.product_repository = product_repository
 
 
     def get_product(self,product_id):
         
-        product = self.product_repository.find_product(product_id)
+        product = self.product_repository.find_product(product_id=product_id)
 
-        if not product:
+        if product is None:
             raise ProductNotFoundError(product_id)
         return product
         
