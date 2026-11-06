@@ -2,6 +2,13 @@
 
 All meaningful changes to the Software Engineering Bootcamp roadmap are recorded here.
 
+## 2026-11-06
+
+### Added
+
+- Topic 15 Stage 1 requirements-only hands-on lab for a small, testable Product API using routers, schemas, a service, an in-memory repository, and one `Depends` dependency.
+- Topic 15 observations template; implementation is intentionally left to the learner.
+
 ## 2026-11-05
 
 ### In Progress
