@@ -13,4 +13,5 @@ def get_product(product_id:int,service: ProductService = Depends(get_product_ser
         product = service.get_product(product_id)
         return product
     except ProductNotFoundError as e:
-        raise HTTPException(status_code=404)
+        raise HTTPException(status_code=404,
+                            detail= e.message)
