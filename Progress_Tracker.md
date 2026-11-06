@@ -105,7 +105,7 @@ Topics 01–13 and Revision Checkpoint 01 are complete.
 |---|:---:|
 | `Notes.md` | 🟢 First-principles lecture created |
 | `Interview.md` | ⚪ After chat Q&A |
-| `Hands_On/` | ⚪ After interview guide |
+| `Hands_On/` | 🟡 Stage 1 requirements created; implementation pending |
 | Topic status | 🟡 In progress |
 
 ## Continuous Threads
