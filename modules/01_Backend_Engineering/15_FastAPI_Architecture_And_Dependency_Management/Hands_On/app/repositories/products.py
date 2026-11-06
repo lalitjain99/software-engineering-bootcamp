@@ -1,5 +1,5 @@
 class ProductRepository:
-    products = {"1":
+    products = {1:
         {
             "id" : 101,
             "name": "Monitor",
@@ -7,7 +7,7 @@ class ProductRepository:
             "stock": 5,
             "category": "electronics"
         },
-        "2":
+        2:
         {
             "id" : 102,
             "name": "Keyboard",
@@ -15,7 +15,7 @@ class ProductRepository:
             "stock": 15,
             "category": "electronics"
         },
-        "3":
+        3:
         {
             "id" : 103,
             "name": "Mouse",
@@ -25,8 +25,8 @@ class ProductRepository:
         }
     }
 
-    def find_product(id:int,products):
-        for ele,product in products:
-            if id in product:
+    def find_product(self,product_id:int):
+        for product in self.products.values():
+            if product[id] == product_id:
                 return product
         return None
