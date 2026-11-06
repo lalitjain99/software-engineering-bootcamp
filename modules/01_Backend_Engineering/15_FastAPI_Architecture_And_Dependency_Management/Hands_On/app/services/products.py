@@ -8,10 +8,10 @@ class ProductNotFoundError(Exception):
 
 
 
-class ProductService(ProductRepository):
+class ProductService():
 
-    def __init__(self):
-        self.product_repository = ProductRepository()
+    def __init__(self,repository: ProductRepository):
+        self.product_repository = repository
 
 
     def get_product(self,product_id):
