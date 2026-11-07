@@ -25,7 +25,7 @@
 
 - Request: /products/101
 - Status code: 200
-- Response: {"id": 101, "name": Monitor, "price": 5000}
+- Response: {"id": 101, "name": "Monitor", "price": 5000}
 
 ### Missing product
 
