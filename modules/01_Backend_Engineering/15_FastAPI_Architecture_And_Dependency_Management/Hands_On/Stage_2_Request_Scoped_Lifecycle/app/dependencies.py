@@ -7,12 +7,12 @@ logger = logging.getLogger("uvicorn.error")
 
 class ResourceLifeCycleMarker:
     def __init__(self):
-        logging.info("[Lifecycle] Request scoped resource initiated")
+        logger.info("[Lifecycle] Request scoped resource initiated")
         self.active = True
 
     def close(self):
         self.active = False
-        logging.info("[Lifecycle] Request scoped resource cleaned up")
+        logger.info("[Lifecycle] Request scoped resource cleaned up")
 
 
 def get_product_service():
