@@ -12,10 +12,10 @@
  app/
     ├── main.py
     ├── api/
-    │   └── routes/
-    ├── schemas/
-    ├── services/
-    ├── repositories/
+    │   └── routes/products.py
+    ├── schemas/products.py
+    ├── services/products.py
+    ├── repositories/products.py
     ├── dependencies.py
 ```
 
@@ -23,13 +23,13 @@
 
 ### Existing product
 
-- Request: /product/101
+- Request: /products/101
 - Status code: 200
-- Response: {id: 101, name: Monitor, price: 5000}
+- Response: {"id": 101, "name": Monitor, "price": 5000}
 
 ### Missing product
 
-- Request: /product/999
+- Request: /products/999
 - Status code: 404
 - Response: {"detail": "Product with ID 999 was not found"}
 
