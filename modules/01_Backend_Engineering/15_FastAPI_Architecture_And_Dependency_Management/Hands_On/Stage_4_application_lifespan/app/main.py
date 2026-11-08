@@ -1,7 +1,32 @@
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
 from app.api.routes.products import router as product_router
+import logging
 
-app = FastAPI(title="Product API")
+logger = logging.getLogger("uvicorn.error")
+
+class ApplicationResources:
+    def __init__(self):
+        self.active = True
+        logger.info("Application starting up")
+
+    def close(self):
+        self.active = False
+        logger.info("Application Shutting down")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app_resource = ApplicationResources()
+
+    app.state.shared_resource = app_resource
+
+    yield
+
+    app_resource.close()
+
+
+app = FastAPI(title="Product API",lifespan=lifespan)
 
 app.include_router(product_router)
 
