@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 import logging
+import uuid
 
 from fastapi import FastAPI
 
@@ -12,6 +13,7 @@ logger = logging.getLogger("uvicorn.error")
 class ApplicationResources:
     def __init__(self):
         self.active = True
+        self.resource_id = uuid.uuid4()
         logger.info("Application starting up")
 
     def close(self):
