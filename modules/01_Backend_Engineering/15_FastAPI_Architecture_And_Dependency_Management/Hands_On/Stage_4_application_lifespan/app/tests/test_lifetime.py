@@ -1,19 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from app.main import app
-from app.dependencies import get_product_service,get_shared_resource
-from app.services.products import ProductNotFoundError
 
-class FakeProductService:
-    def get_product(self, product_id: int):
-        if product_id == 1:
-            return {
-                "id": 1,
-                "name": "Laptop",
-                "price": 999.99,
-            }
-
-        raise ProductNotFoundError(product_id=product_id)
 
 
 @pytest.fixture
