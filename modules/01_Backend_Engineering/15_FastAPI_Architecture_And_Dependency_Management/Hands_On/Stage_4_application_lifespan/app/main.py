@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from app.api.routes.products import router as product_router
 import logging
+
+from app.api.routes.products import router as product_router
+
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -12,7 +14,7 @@ class ApplicationResources:
 
     def close(self):
         self.active = False
-        logger.info("Application Shutting down")
+        logger.info("Application shutting down")
 
 
 @asynccontextmanager
