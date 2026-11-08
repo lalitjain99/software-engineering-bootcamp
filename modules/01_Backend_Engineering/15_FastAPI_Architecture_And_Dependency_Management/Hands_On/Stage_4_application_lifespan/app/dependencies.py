@@ -8,6 +8,7 @@ from app.services.products import ProductService
 
 logger = logging.getLogger("uvicorn.error")
 
+
 class ResourceLifeCycleMarker:
     def __init__(self):
         logger.info("[Lifecycle] Request scoped resource initiated")
@@ -24,7 +25,7 @@ def get_shared_resource(request: Request):
     if resource is None:
         raise RuntimeError(
             "Application shared resource is not initialized"
-            )
+        )
 
     return resource
 
