@@ -10,7 +10,7 @@ router = APIRouter(prefix="/products",
 
 
 @router.get("/resource-status")
-def get_resource_status(resource: ... = Depends(get_shared_resource)):
+def get_resource_status(resource=Depends(get_shared_resource)):
     return {"active": resource.active}
 
 
@@ -21,7 +21,7 @@ def get_product(product_id: int, service: ProductService = Depends(get_product_s
         return product
     except ProductNotFoundError as e:
         raise HTTPException(status_code=404,
-                            detail= e.message)
+                            detail=e.message)
 
 
 
