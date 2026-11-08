@@ -1,9 +1,10 @@
+import logging
 from fastapi import Request
 
 from app.repositories.products import ProductRepository
 from app.services.products import ProductService
 
-import logging
+
 
 logger = logging.getLogger("uvicorn.error")
 
