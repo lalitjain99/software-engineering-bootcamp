@@ -5,7 +5,7 @@ from app.dependencies import get_product_service
 from app.services.products import ProductNotFoundError
 
 class FakeProductService:
-    def get_product(self, product_id:int):
+    def get_product(self, product_id: int):
         if product_id == 1:
             return {
                 "id": 1,
@@ -15,14 +15,16 @@ class FakeProductService:
 
         raise ProductNotFoundError(product_id=product_id)
 
+
 @pytest.fixture
 def client():
-    app.dependency_overrides[get_product_service] = ( lambda: FakeProductService() )
+    app.dependency_overrides[get_product_service] = ( 
+        lambda: FakeProductService() 
+        )
     with TestClient(app) as test_client:
         yield test_client
 
     app.dependency_overrides.pop(get_product_service,None)
-
 
 
 def test_get_product_success(client):
@@ -32,6 +34,7 @@ def test_get_product_success(client):
     assert data["id"] == 1
     assert data["name"] == "Laptop"
     assert data["price"] == 999.99
+
 
 def test_get_product_failure(client):
     response = client.get("/products/999")
