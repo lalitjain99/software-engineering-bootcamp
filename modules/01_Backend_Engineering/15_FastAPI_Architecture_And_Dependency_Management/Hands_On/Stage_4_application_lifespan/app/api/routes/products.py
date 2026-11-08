@@ -10,11 +10,11 @@ router = APIRouter(prefix="/products",
 
 
 @router.get("/resource-status")
-def get_resource_status(resource = Depends(get_shared_resource)):
+def get_resource_status(resource: ... = Depends(get_shared_resource)):
     return {"active": resource.active}
 
 
-@router.get("/{product_id}", response_model= ProductResponse)
+@router.get("/{product_id}", response_model=ProductResponse)
 def get_product(product_id: int, service: ProductService = Depends(get_product_service)):
     try:
         product = service.get_product(product_id)
