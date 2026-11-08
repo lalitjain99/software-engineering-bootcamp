@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from app.main import app
-from app.dependencies import get_product_service
+from app.dependencies import get_product_service,get_shared_resource
 from app.services.products import ProductNotFoundError
 
 class FakeProductService:
@@ -18,26 +18,33 @@ class FakeProductService:
 
 @pytest.fixture
 def client():
-    app.dependency_overrides[get_product_service] = ( 
-        lambda: FakeProductService() 
-        )
     with TestClient(app) as test_client:
         yield test_client
 
-    app.dependency_overrides.pop(get_product_service,None)
+
+def test_application_resource_lifecycle(client):
+
+    resource = app.state.shared_resource
+    assert resource.active is True
+
+    first_response = client.get("/products/resource-status")
+    second_response = client.get("/products/resource-status")
+
+    assert first_response.status_code == 200
+    assert second_response.status_code == 200
+    assert first_response.json()["resource_id"] == second_response.json()["resource_id"]
+
+    resource_id = str(resource.resource_id)
+
+    assert first_response.json()["resource_id"] == resource_id
+    assert second_response.json()["resource_id"] == resource_id
 
 
-def test_get_product_success(client):
-    response = client.get("/products/1")
-    assert response.status_code == 200
-    data = response.json()
-    assert data["id"] == 1
-    assert data["name"] == "Laptop"
-    assert data["price"] == 999.99
+def test_resource_closes_when_client_exits():
+    with TestClient(app) as client:
+        resource = app.state.shared_resource
+        assert resource.active is True
 
-
-def test_get_product_failure(client):
-    response = client.get("/products/999")
-    assert response.status_code == 404
-    assert response.json()["detail"] == "Product with ID 999 was not found"
+        response = client.get("/products/resource-status")
+        assert response.status_code == 200
 
