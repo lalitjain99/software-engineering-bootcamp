@@ -1,11 +1,13 @@
-from fastapi import FastAPI
 from contextlib import asynccontextmanager
 import logging
+
+from fastapi import FastAPI
 
 from app.api.routes.products import router as product_router
 
 
 logger = logging.getLogger("uvicorn.error")
+
 
 class ApplicationResources:
     def __init__(self):
@@ -28,10 +30,11 @@ async def lifespan(app: FastAPI):
     app_resource.close()
 
 
-app = FastAPI(title= "Product API",lifespan= lifespan)
+app = FastAPI(title="Product API", lifespan=lifespan)
 
 app.include_router(product_router)
 
+
 @app.get("/health")
-def health() -> dict[str,str]:
+def health() -> dict[str, str]:
     return {"status": "ok"}
