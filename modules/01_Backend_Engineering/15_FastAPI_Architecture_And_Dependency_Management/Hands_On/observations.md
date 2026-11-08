@@ -157,3 +157,99 @@ The different log order is expected. During the error path, FastAPI unwinds the 
 - [x] Cleanup verified for a not-found request
 - [x] Logger is used consistently for lifecycle messages
 - [x] Request-scoped and application-lifetime resources are distinguished
+
+---
+
+## Stage 3 — Dependency Overrides and Router Testing
+
+### Run information
+
+- Date: 08-Nov-2026
+- Python version: 3.14.4
+- Platform: Windows
+- Test command: `python -m pytest app/tests/test_router.py -v`
+- Stage 3 implementation path: `Stage_3_dependency_overrides_and_router_testing/`
+
+### Test design
+
+The router tests use a `FakeProductService` instead of the real service dependency.
+
+The fake service:
+
+- returns a deterministic product for product ID `1`;
+- raises `ProductNotFoundError` for an unknown product ID.
+
+The test fixture:
+
+1. installs the fake service through `app.dependency_overrides`;
+2. creates a `TestClient`;
+3. yields the client to the test;
+4. removes the override after the test completes.
+
+This keeps the router test independent from repositories, databases, and external services.
+
+### Success test
+
+Request:
+
+```
+GET /products/1
+```
+
+Assertions:
+
+- HTTP status is `200`;
+- response contains the expected product ID;
+- response contains the expected product name;
+- response contains the expected price.
+
+### Failure test
+
+Request:
+
+```
+GET /products/999
+```
+
+Assertions:
+
+- HTTP status is `404`;
+- response detail is `Product with ID 999 was not found`.
+
+### Test result
+
+```
+collected 2 items
+
+test_get_product_success PASSED
+test_get_product_failure PASSED
+
+2 passed in 0.44s
+```
+
+### Warnings
+
+Two dependency warnings were reported from the installed FastAPI/Starlette/AnyIO stack:
+
+- Starlette reported an `httpx` compatibility deprecation warning.
+- AnyIO reported a deprecated `BlockingPortal` alias.
+
+These warnings did not fail the tests and are separate from the router implementation. They can be addressed later by aligning package versions.
+
+### Key learning
+
+- Router tests should verify HTTP behavior, not service business logic or database queries.
+- `app.dependency_overrides` allows a real dependency to be replaced with a fake dependency.
+- A pytest fixture can use `yield` to separate test setup from cleanup.
+- Overrides must be removed after each test to prevent test-order-dependent failures.
+- A service test should use a fake repository.
+- A repository test should use a real isolated test database.
+
+### Stage 3 review checklist
+
+- [x] Real service dependency is overridden
+- [x] Fake service returns deterministic data
+- [x] Successful route behavior is tested
+- [x] Domain error to HTTP 404 conversion is tested
+- [x] Dependency override is removed after each test
+- [x] Tests pass without a real database
