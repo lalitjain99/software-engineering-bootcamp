@@ -28,7 +28,7 @@ async def lifespan(app: FastAPI):
     app_resource.close()
 
 
-app = FastAPI(title="Product API",lifespan=lifespan)
+app = FastAPI(title="Product API",lifespan= lifespan)
 
 app.include_router(product_router)
 
