@@ -1,9 +1,9 @@
 import logging
+
 from fastapi import Request
 
 from app.repositories.products import ProductRepository
 from app.services.products import ProductService
-
 
 
 logger = logging.getLogger("uvicorn.error")
@@ -17,15 +17,17 @@ class ResourceLifeCycleMarker:
         self.active = False
         logger.info("[Lifecycle] Request scoped resource cleaned up")
 
-def get_shared_resources(request: Request):
+
+def get_shared_resource(request: Request):
     resource = getattr(request.app.state, "shared_resource", None)
 
     if resource is None:
         raise RuntimeError(
-            "Application shared resources is not initialized"
+            "Application shared resource is not initialized"
             )
 
     return resource
+
 
 def get_product_service():
     try:
