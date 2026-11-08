@@ -47,4 +47,7 @@ def test_resource_closes_when_client_exits():
 
         response = client.get("/products/resource-status")
         assert response.status_code == 200
+        assert response.json()["active"] is True
+
+    assert resource.active is False
 
