@@ -17,7 +17,7 @@ class ResourceLifeCycleMarker:
         logger.info("[Lifecycle] Request scoped resource cleaned up")
 
 def get_shared_resources(request: Request):
-    resource = getattr(request.app.state, "shared_resources", None)
+    resource = getattr(request.app.state, "shared_resource", None)
 
     if resource is None:
         raise RuntimeError(
