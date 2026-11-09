@@ -253,3 +253,118 @@ These warnings did not fail the tests and are separate from the router implement
 - [x] Domain error to HTTP 404 conversion is tested
 - [x] Dependency override is removed after each test
 - [x] Tests pass without a real database
+
+
+---
+
+## Stage 4 — Application Lifespan Resources
+
+### Run information
+
+- Date: 09-Nov-2026
+- Python version: 3.14.4
+- Platform: Windows
+- Stage 4 implementation path: `Stage_4_application_lifespan/`
+- Test command: `python -m pytest app/tests/test_lifetime.py -v`
+
+### Lifespan implementation
+
+The application uses FastAPI's lifespan context to manage an application-scoped resource:
+
+1. `ApplicationResources` is created during application startup.
+2. The resource is stored in `app.state.shared_resource`.
+3. Requests retrieve the existing resource through `get_shared_resource()`.
+4. The application continues serving requests while the lifespan is active.
+5. When the application shuts down, execution continues after the lifespan `yield`.
+6. The resource's `close()` method marks it inactive.
+
+This resource is created once per application process, not once per request.
+
+### Manual verification
+
+Before restarting the application, two requests returned the same resource ID:
+
+```
+GET /products/resource-status
+{"active":true,"resource_id":"c3110fae-49fb-4003-8698-fe8ea059377f"}
+
+GET /products/resource-status
+{"active":true,"resource_id":"c3110fae-49fb-4003-8698-fe8ea059377f"}
+```
+
+After restarting the application, a new resource ID was returned:
+
+```
+GET /products/resource-status
+{"active":true,"resource_id":"b6df8ce4-ff0a-4bf7-825b-d2fefb27a7a1"}
+```
+
+This proves that requests within one application lifetime reuse the same resource, while a new application startup creates a new resource.
+
+### Startup and shutdown verification
+
+Observed startup logs:
+
+```
+INFO: Uvicorn running on http://127.0.0.1:8000
+INFO: Waiting for application startup.
+INFO: Application starting up
+INFO: Application startup complete.
+```
+
+Observed shutdown logs:
+
+```
+INFO: Shutting down
+INFO: Waiting for application shutdown.
+INFO: Application shutting down
+INFO: Application shutdown complete.
+```
+
+### Test design
+
+`test_lifetime.py` verifies:
+
+- the resource is active while `TestClient` is running;
+- two requests receive the same `resource_id`;
+- the response reports `active: true`;
+- the resource becomes inactive after the `TestClient` context exits.
+
+### Test result
+
+```
+collected 2 items
+
+test_application_resource_lifecycle PASSED
+test_resource_closes_when_client_exits PASSED
+
+2 passed in 0.45s
+```
+
+### Warnings
+
+The test run reported two dependency warnings from the installed FastAPI/Starlette/AnyIO stack:
+
+- Starlette reported an `httpx` compatibility deprecation warning.
+- AnyIO reported a deprecated `BlockingPortal` alias.
+
+The warnings did not fail the tests and are separate from the lifespan implementation.
+
+### Key learning
+
+- Application lifespan is appropriate for shared resources such as database pools, Redis clients, and HTTP clients.
+- `app.state` stores application-owned objects that can be retrieved from a request through `request.app.state`.
+- A request-scoped dependency can retrieve an application-scoped resource without creating a new one.
+- `TestClient` used as a context manager runs application startup and shutdown events.
+- Application state is local to one process. Multiple workers or pods have separate application-state objects.
+
+### Stage 4 review checklist
+
+- [x] Lifespan context manager creates the shared resource
+- [x] Resource is stored in `app.state`
+- [x] Request dependency retrieves the existing resource
+- [x] Diagnostic endpoint reports resource status and ID
+- [x] Same resource ID verified across requests
+- [x] New resource ID verified after application restart
+- [x] Shutdown cleanup verified with `TestClient`
+- [x] Two lifecycle tests pass
