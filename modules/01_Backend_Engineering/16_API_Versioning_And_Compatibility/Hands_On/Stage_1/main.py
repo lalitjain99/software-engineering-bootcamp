@@ -30,7 +30,7 @@ async def lifespan(app: FastAPI):
 
     app_resource.close()
 
-app = FastAPI(title="API vesioning Demonstration",lifespan=lifespan)
+app = FastAPI(title="API versioning Demonstration",lifespan=lifespan)
 
 app.include_router(product_v1_router)
 app.include_router(product_v2_router)
