@@ -14,5 +14,5 @@ class ProductService:
         product = self.repository.get_product(product_id)
 
         if product is None:
-            raise ProductNotFoundError
+            raise ProductNotFoundError(product_id=product_id)
         return product

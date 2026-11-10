@@ -25,6 +25,6 @@ class ProductRepository:
 
     def get_product(self,product_id: int):
         for product in self.products.values():
-            if product_id in product:
+            if product["id"] == product_id:
                 return product
         return None

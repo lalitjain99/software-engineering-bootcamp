@@ -17,10 +17,7 @@ class ApplicationResource:
 
 
 def get_product_service():
-    try:
-        resource = ApplicationResource()
-        repository = ProductRepository()
-        service = ProductService(repository=repository)
-        return service
-    finally:
-        resource.close
+    repository = ProductRepository()
+    service = ProductService(repository=repository)
+    return service
+        
