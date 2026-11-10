@@ -15,10 +15,6 @@ Request:
 
     GET /api/v1/products/101
 
-Response:
-
-Status code:
-
 
 Answer:
 
@@ -40,11 +36,6 @@ Request:
 
     GET /api/v2/products/101
 
-Response:
-
-    
-
-Status code:
 
 Answer:
 
@@ -69,11 +60,6 @@ Request:
 
     GET /api/v1/products/999
 
-Response:
-
-Status code:
-
-404
 
 Answer:
 
@@ -94,12 +80,6 @@ Status code:
 Request:
 
     GET /api/v2/products/999
-
-Response:
-
-    
-
-Status code:
 
 Answer:
 
