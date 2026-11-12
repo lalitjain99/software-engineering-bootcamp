@@ -4,7 +4,7 @@
 
 🟢 Revision Checkpoint 01 complete — Topics 01–08
 
-Topics 01–13 and Revision Checkpoint 01 are complete.
+Topics 01–15 and Revision Checkpoint 01 are complete; Topic 16 Stage 1 is complete and in progress.
 
 ## Goals
 
@@ -103,10 +103,21 @@ Topics 01–13 and Revision Checkpoint 01 are complete.
 
 | Deliverable | Status |
 |---|:---:|
-| `Notes.md` | 🟢 First-principles lecture created |
-| `Interview.md` | ⚪ After chat Q&A |
-| `Hands_On/` | 🟡 Stage 1 requirements created; implementation pending |
+| `Notes.md` | 🟢 Complete |
+| `Interview.md` | 🟢 Complete |
+| `Hands_On/` | 🟢 Four stages and observations complete |
+| Topic status | 🟢 Complete |
+
+## Topic 16 Progress
+
+| Deliverable | Status |
+|---|:---:|
+| `Notes.md` | 🟢 Complete |
+| `Interview.md` | 🟢 Complete |
+| `Hands_On/Stage_1` | 🟢 Implementation and observations complete |
 | Topic status | 🟡 In progress |
+
+Later Topic 16 stages will cover compatibility regression tests, deprecation signaling, and migration monitoring.
 
 ## Continuous Threads
 
@@ -139,10 +150,10 @@ See [Revision and Continuous Practice Plan](REVISION_AND_CONTINUOUS_PRACTICE.md)
 
 ## Current Next Actions
 
-1. Read the Topic 15 lecture notes and ask questions while working through FastAPI architecture and dependency examples.
+1. Begin Topic 16 Stage 2 compatibility tests after the current notes, QA, and observations checkpoint.
 2. Revisit recorded weak areas at their planned roadmap points.
 3. Continue evolving the Topic 08 Product API as the capstone baseline.
 4. Record one private, anonymized leadership-journal entry.
 5. Complete the weekly closed-book recall and light coding exercise.
 
-Last updated: 2026-11-05
+Last updated: 2026-11-12
