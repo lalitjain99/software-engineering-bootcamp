@@ -117,10 +117,15 @@ The application grows step by step. Each topic starts from the previous design a
 
 ### Track 1C — Production Backend Depth
 
-15. 🟡 **[FastAPI architecture and dependency management](modules/01_Backend_Engineering/15_FastAPI_Architecture_And_Dependency_Management/Notes.md)**
+15. 🟢 **[FastAPI architecture and dependency management](modules/01_Backend_Engineering/15_FastAPI_Architecture_And_Dependency_Management/Notes.md)**
     - Application structure, dependency graphs, resource lifetimes, testing overrides, and composition boundaries
-    - Notes and Stage 1 requirements-only hands-on lab created; implementation and observations pending
-    - [Hands-on lab](modules/01_Backend_Engineering/15_FastAPI_Architecture_And_Dependency_Management/Hands_On/README.md)
+    - Notes, interview guide, four-stage hands-on implementation, lifecycle verification, and observations complete
+    - [Interview guide](modules/01_Backend_Engineering/15_FastAPI_Architecture_And_Dependency_Management/Interview.md), [hands-on lab](modules/01_Backend_Engineering/15_FastAPI_Architecture_And_Dependency_Management/Hands_On/README.md), and [observations](modules/01_Backend_Engineering/15_FastAPI_Architecture_And_Dependency_Management/Hands_On/observations.md)
+
+16. 🟡 **[API versioning and compatibility](modules/01_Backend_Engineering/16_API_Versioning_And_Compatibility/Notes.md)**
+    - Backward-compatible evolution, breaking changes, versioning strategies, deprecation, migration, and rolling schema compatibility
+    - Stage 1 versioned Product API implementation, observations, interview guide, and QA complete; later compatibility stages remain
+    - [Interview guide](modules/01_Backend_Engineering/16_API_Versioning_And_Compatibility/Interview.md), [hands-on lab](modules/01_Backend_Engineering/16_API_Versioning_And_Compatibility/Hands_On/README.md), and [observations](modules/01_Backend_Engineering/16_API_Versioning_And_Compatibility/Hands_On/Stage_1/observations.md)
 
 After the foundations above, focused topics will deepen:
 
@@ -205,4 +210,4 @@ Topic/
 - End of each phase: mixed mock interview and capstone architecture review
 - Current plan: [Revision and Continuous Practice](REVISION_AND_CONTINUOUS_PRACTICE.md)
 
-Last updated: 2026-11-05
+Last updated: 2026-11-12
