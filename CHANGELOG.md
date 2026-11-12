@@ -2,6 +2,23 @@
 
 All meaningful changes to the Software Engineering Bootcamp roadmap are recorded here.
 
+## 2026-11-12
+
+### Completed
+
+- Topic 15: FastAPI architecture and dependency management, including notes, interview guide, four-stage hands-on implementation, lifecycle verification, dependency override tests, and observations.
+
+### Added
+
+- Topic 16 first-principles notes on API versioning and compatibility.
+- Topic 16 Stage 1 hands-on lab for versioned Product API routes, separate response schemas, shared service logic, and backward-compatible v1/v2 behavior.
+- Topic 16 Stage 1 observations and detailed interview guide.
+- Topic 16 QA covering additive changes, breaking changes, deprecation, partner migration, shared business rules, and expand-and-contract rollout.
+
+### In Progress
+
+- Topic 16 later hands-on stages for compatibility tests, deprecation headers, and version monitoring.
+
 ## 2026-11-06
 
 ### Added
