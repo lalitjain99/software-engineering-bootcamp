@@ -43,3 +43,4 @@ def test_get_products_v2(client):
 def test_get_products_v2_missing_product(client):
     response = client.get("/api/v2/products/999")
     assert response.status_code == 404
+    assert response.json()["detail"] == "Product with ID 999 was not found"
