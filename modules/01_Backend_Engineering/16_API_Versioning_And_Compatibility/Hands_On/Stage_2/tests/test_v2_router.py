@@ -9,7 +9,7 @@ class FakeProductService:
     def get_product(self,product_id: int):
         if product_id == 101:
             return {
-                "id": 1,
+                "id": 101,
                 "name": "Shirt",
                 "price": 499.96,
                 "category": "Clothing",
@@ -30,12 +30,16 @@ def client():
     app.dependency_overrides.pop(get_product_service,None)
 
 
-def test_get_products_v1(client):
+def test_get_products_v2(client):
     response = client.get("/api/v2/products/101")
     assert response.status_code == 200
     data = response.json()
-    assert data["id"] == 1
+    assert data["id"] == 101
     assert data["name"] == "Shirt"
     assert data["price"] == 499.96
     assert data["category"] == "Clothing"
     assert data["stock"] == 4
+
+def test_get_products_v2_missing_product(client):
+    response = client.get("/api/v2/products/999")
+    assert response.status_code == 404
