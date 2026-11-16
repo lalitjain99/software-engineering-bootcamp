@@ -13,7 +13,7 @@ class FakeProductService:
                 "name": "Shirt",
                 "price": 499.96,
                 "category": "Clothing",
-                "stock": 4
+                "stock": 4,
             }
         
         raise ProductNotFoundError(product_id=product_id)
@@ -30,7 +30,7 @@ def client():
     app.dependency_overrides.pop(get_product_service,None)
 
 
-def test_get_products_v2(client):
+def test_get_products_v2_success(client):
     response = client.get("/api/v2/products/101")
     assert response.status_code == 200
     data = response.json()
@@ -43,4 +43,4 @@ def test_get_products_v2(client):
 def test_get_products_v2_missing_product(client):
     response = client.get("/api/v2/products/999")
     assert response.status_code == 404
-    assert response.json()["detail"] == "Product with ID 999 was not found"
+    assert response.json()["detail"] == "Product with product id 999 not found"
