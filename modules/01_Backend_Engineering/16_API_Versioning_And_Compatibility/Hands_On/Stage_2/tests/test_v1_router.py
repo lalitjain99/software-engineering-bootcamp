@@ -36,5 +36,5 @@ def test_get_products_v1(client):
     assert data["price"] == 499.96
 
 def test_get_products_v1_missing_product(client):
-    response = client.get("/api/v2/products/999")
+    response = client.get("/api/v1/products/999")
     assert response.status_code == 404
