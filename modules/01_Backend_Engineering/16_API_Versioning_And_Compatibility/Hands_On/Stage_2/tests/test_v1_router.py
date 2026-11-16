@@ -7,7 +7,7 @@ from main import app
 
 class FakeProductService:
     def get_product(self,product_id: int):
-        if product_id == 1:
+        if product_id == 101:
             return {
                 "id": 1,
                 "name": "Shirt",
@@ -28,7 +28,7 @@ def client():
 
 
 def test_get_products_v1(client):
-    response = client.get("/products/1")
+    response = client.get("/api/v1/products/101")
     assert response.status_code == 200
     data = response.json()
     assert data["id"] == 1
