@@ -6,25 +6,14 @@ from main import app
 
 
 class FakeProductService:
-    def get_product_v1(product_id: int):
+    def get_product(self,product_id: int):
         if product_id == 1:
-            products = {
+            return {
                 "id": 1,
                 "name": "Shirt",
                 "price": 499.96,
             }
         raise ProductNotFoundError(product_id=product_id)
-
-    def get_product_v2(product_id: int):
-            if product_id == 1:
-                products = {
-                    "id": 1,
-                    "name": "Shirt",
-                    "price": 499.96,
-                    "category": "Clothing",
-                    "stock": 4
-                }
-            raise ProductNotFoundError(product_id=product_id)
 
 @pytest.fixture
 def client():
@@ -39,7 +28,9 @@ def client():
 
 
 def test_get_products_v1(client):
-    resource = app.state.shared_resources
-    assert resource.active is True
-
-    response = client.get
+    response = client.get("/products/1")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["id"] == 1
+    assert data["name"] == "Shirt"
+    assert data["price"] == 499.96
