@@ -1,157 +1,103 @@
-# Topic 16 Hands-On Observations — Stage 1
+# Topic 16 Hands-On Observations — Stage 2
 
 ## Run information
 
-- Date: 10-Nov-2026
+- Date: 18-Nov-2026
 - Python version: 3.14.4
-- Command used: python -m uvicorn main:app --reload
-- Project path: modules\01_Backend_Engineering\16_API_Versioning_And_Compatibility\Hands_On\Stage_1
+- Command used: `$env:PYTHONPATH = (Get-Location).Path; uv run --group dev pytest -q`
+- Project path: `modules\01_Backend_Engineering\16_API_Versioning_And_Compatibility\Hands_On\Stage_2`
+- Test result: 5 passed
 
-## Endpoint verification
+The tests use FastAPI's `TestClient` and replace `get_product_service` with a fake service. This keeps the API contract tests independent of the in-memory repository while exercising the real routers and response schemas.
 
-### Version 1 — existing product
+## Compatibility test observations
+
+### Existing product — version 1
 
 Request:
 
     GET /api/v1/products/101
 
+Test service data:
 
-Answer:
+    {
+      "id": 101,
+      "name": "Shirt",
+      "price": 499.96,
+      "category": "Clothing",
+      "stock": 4
+    }
 
-Response:
+Expected response (HTTP 200):
 
-{
-  "id": 101,
-  "name": "Monitor",
-  "price": 999.99
-}
+    {
+      "id": 101,
+      "name": "Shirt",
+      "price": 499.96
+    }
 
-Status code:
+The v1 response schema omits `category` and `stock`, even though the shared service returns them.
 
-200
-
-### Version 2 — existing product
+### Existing product — version 2
 
 Request:
 
     GET /api/v2/products/101
 
+Expected response (HTTP 200):
 
-Answer:
+    {
+      "id": 101,
+      "name": "Shirt",
+      "price": 499.96,
+      "category": "Clothing",
+      "stock": 4
+    }
 
-Response:
+The v2 response includes the additional fields. The tests also compare `id`, `name`, and `price` across both responses to verify that those shared fields retain the same values.
 
-{
-  "id": 101,
-  "name": "Monitor",
-  "price": 999.99,
-  "category": "Electronics",
-  "stock": 3
-}
+### Missing product — both versions
 
-Status code:
-
-200
-
-
-### Version 1 — missing product
-
-Request:
+Requests:
 
     GET /api/v1/products/999
-
-
-Answer:
-
-Response:
-
-{
-  "detail": "Product with product id 999 not found"
-}
-
-Status code:
-
-404
-
-
-
-### Version 2 — missing product
-
-Request:
-
     GET /api/v2/products/999
 
-Answer:
+Expected response for each (HTTP 404):
 
-Response:
+    {
+      "detail": "Product with product id 999 not found"
+    }
 
-{
-  "detail": "Product with product id 999 not found"
-}
-
-Status code:
-
-404
-
+Both version-specific tests confirm the status and detail message.
 
 ## Questions
 
-### 1. What is the main difference between the v1 and v2 response contracts?
+### 1. What does the compatibility test verify beyond testing each router separately?
 
-Answer: The response contracts differ by schema. Both versions return `id`, `name`, and `price`; v2 also returns `category` and `stock`. The v1 response schema filters out those additional fields.
+Answer: It requests the same product through both versions, verifies that `id`, `name`, and `price` are equal, and confirms that v1 excludes `category` and `stock` while v2 includes them. This directly checks that the new response contract has not changed the legacy v1 shape.
 
+### 2. Why does the test override `get_product_service` with a fake service?
 
-### 2. Which fields are intentionally hidden from v1, and why?
+Answer: The fake service supplies predictable product data and a predictable missing-product error. The test therefore focuses on HTTP routing, response serialization, and version-specific schemas without depending on repository state.
 
-Answer: Version 1 omits `category` and `stock` to preserve its original response contract. Clients using v1 continue receiving the established shape, while clients that need the additional data can use v2.
+### 3. What behavior is shared between the versions?
 
+Answer: Both routes use the `get_product_service` dependency and the same service behavior. They return matching values for the shared fields and the same 404 detail for a missing product.
 
-### 3. Why should v1 remain available after v2 is introduced?
+### 4. What is the version-specific behavior?
 
-Answer: Existing clients may still depend on v1's routes and response format. Keeping v1 available avoids disrupting them while they migrate to v2; it should only be retired through a communicated deprecation process.
+Answer: Each route uses its own response schema. The v1 schema returns only `id`, `name`, and `price`; v2 also returns `category` and `stock`.
 
+### 5. What does this test suite not verify?
 
-### 4. Which parts of the implementation are shared by both API versions?
+Answer: Because the service is replaced with a fake, these tests do not verify repository lookup or the production product data. Those concerns should be covered separately; these tests specifically protect the API contracts and their compatibility.
 
-Answer: Both versions use the same `ProductService`, `ProductRepository`, and `get_product_service` dependency, so they share the product lookup and underlying data. Each version has its own router and response schema to keep its API contract independent.
+## Stage 2 checklist
 
-
-### 5. Why should version-specific response formatting remain in the router/schema layer instead of the service layer?
-
-Answer: The router and response schema define the public API contract, including which fields each version returns. The service layer should provide version-independent business logic and data; putting version-specific formatting there would couple that logic to individual API versions and could affect other consumers.
-
-
-### 6. What would happen if the v1 response schema were changed to require `category`?
-
-Answer: The v1 contract would change: `category` would become part of the v1 response instead of being omitted. If the service returned a product without `category`, FastAPI response validation could fail because the field is required. Either outcome can break existing v1 clients, so v1 should retain its current schema.
-
-
-### 7. How does the missing-product behavior remain compatible across both versions?
-
-Answer: Both routers call the shared service, which raises `ProductNotFoundError` when the product is absent. Each router converts that error into the same HTTP 404 response with the same detail message, so clients receive consistent missing-product behavior in v1 and v2.
-
-
-### 8. Is adding `category` and `stock` to v2 a breaking change for existing v1 clients? Explain why.
-
-Answer: No. The v2 additions are isolated by its separate router and response schema. The v1 schema continues to return only `id`, `name`, and `price`, so existing v1 clients are unaffected.
-
-
-### 9. What would be a breaking change to the v1 contract?
-
-Answer: Removing or renaming an existing v1 field, changing a field's type or meaning, or making a previously optional field required would be breaking changes. In general, changing the documented v1 behavior in a way that existing clients rely on can break compatibility.
-
-
-### 10. What would you monitor before deprecating v1 in a production system?
-
-Answer: Monitor v1 traffic by client and endpoint, identify active clients, and track their migration progress. Also review errors and support needs, communicate a deprecation and shutdown timeline, and confirm usage has stopped (or obtain an explicit migration plan) before removing v1.
-
-
-## Stage 1 checklist
-
-- [x] Version 1 route implemented
-- [x] Version 2 route implemented
-- [x] Separate response schemas created
-- [x] Shared service logic reused
-- [x] Existing product verified for both versions
-- [x] Missing product verified for both versions
+- [x] v1 success and missing-product behavior tested
+- [x] v2 success and missing-product behavior tested
+- [x] Shared response fields compared across versions
+- [x] v1 omission of v2-only fields verified
+- [x] Stage 2 test suite passed (5 tests)
 - [x] Observation answers completed
