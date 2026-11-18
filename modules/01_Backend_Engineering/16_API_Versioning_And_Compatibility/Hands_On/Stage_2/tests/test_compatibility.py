@@ -31,7 +31,7 @@ def client():
     app.dependency_overrides.pop(get_product_service)
 
 
-def test_get_product(client):
+def test_shared_product_fields_are_compatible(client):
     response_v1 = client.get("/api/v1/products/101")
     response_v2 = client.get("/api/v2/products/101")
 
@@ -51,3 +51,7 @@ def test_get_product(client):
     assert data_v2["price"] == 4999.91
     assert data_v2["category"] == "Electronics"
     assert data_v2["stock"] == 5
+
+    assert data_v1["id"] == data_v2["id"]
+    assert data_v1["name"] == data_v2["name"]
+    assert data_v1["price"] == data_v2["price"]
