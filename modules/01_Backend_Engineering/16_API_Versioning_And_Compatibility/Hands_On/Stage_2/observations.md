@@ -4,7 +4,7 @@
 
 - Date: 18-Nov-2026
 - Python version: 3.14.4
-- Command used: `$env:PYTHONPATH = (Get-Location).Path; uv run --group dev pytest -q`
+- Command used: `$env:PYTHONPATH = (Get-Location).Path; python -m pytest tests -v`
 - Project path: `modules\01_Backend_Engineering\16_API_Versioning_And_Compatibility\Hands_On\Stage_2`
 - Test result: 5 passed
 
@@ -22,8 +22,8 @@ Test service data:
 
     {
       "id": 101,
-      "name": "Shirt",
-      "price": 499.96,
+      "name": "Fan",
+      "price": 4999.91
       "category": "Clothing",
       "stock": 4
     }
@@ -32,8 +32,8 @@ Expected response (HTTP 200):
 
     {
       "id": 101,
-      "name": "Shirt",
-      "price": 499.96
+      "name": "Fan",
+      "price": 4999.91
     }
 
 The v1 response schema omits `category` and `stock`, even though the shared service returns them.
