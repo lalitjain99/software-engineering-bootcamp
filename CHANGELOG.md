@@ -9,9 +9,14 @@ All meaningful changes to the Software Engineering Bootcamp roadmap are recorded
 - Topic 16 Stage 2: API compatibility tests for v1 and v2 product endpoints, including shared-field preservation, v1 field omission, v2 field additions, and consistent 404 behavior.
 - Topic 16 Stage 2 observations documenting the five passing tests and the compatibility contract.
 
+### Completed
+
+- Topic 16 Stage 3: v1 deprecation signaling with Deprecation, Sunset, and Link headers, including success and 404 responses.
+- Topic 16 Stage 3 tests and observations documenting header behavior and v2 isolation.
+
 ### Next
 
-- Continue Topic 16 with deprecation signaling, expand-and-contract migration behavior, and API-version monitoring.
+- Continue Topic 16 with expand-and-contract migration behavior and API-version monitoring.
 
 ## 2026-11-12
 
