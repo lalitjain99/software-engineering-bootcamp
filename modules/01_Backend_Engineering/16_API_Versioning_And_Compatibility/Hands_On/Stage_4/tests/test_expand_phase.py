@@ -9,22 +9,21 @@ class FakeProductService:
     def get_product(self,product_id: int):
         if product_id == 101:
             return {
-                "id": 101,
-                "name": "Fan",
-                "price": 4999.91,
-                "category": "Electronics",
-                "stock": 5,
-                "discount_percentage": None
-            }
+            "id": 101,
+            "name": "Monitor",
+            "price": 999.99,
+            "category": "Electronics",
+            "stock": 3
+        }
 
         if product_id == 102:
             return {
                 "id": 102,
-                "name": "Fan",
-                "price": 4999.91,
+                "name": "Keyboard",
+                "price": 99.99,
                 "category": "Electronics",
-                "stock": 5,
-                "discount_percentage": 10
+                "stock": 6,
+                "discount_percentage": 20
             }
         raise ProductNotFoundError(product_id=product_id)
 
@@ -45,10 +44,10 @@ def test_v2_expand_phase_success(client):
     assert response.status_code == 200
     assert response.json() == {
         "id": 101,
-        "name": "Fan",
-        "price": 4999.91,
+        "name": "Monitor",
+        "price": 999.99,
         "category": "Electronics",
-        "stock": 5,
+        "stock": 3,
         "discount_percentage": None
     }
 
@@ -56,11 +55,11 @@ def test_v2_expand_phase_success(client):
     assert response.status_code == 200
     assert response.json() == {
         "id": 102,
-        "name": "Fan",
-        "price": 4999.91,
+        "name": "Keyboard",
+        "price": 99.99,
         "category": "Electronics",
-        "stock": 5,
-        "discount_percentage": 10
+        "stock": 6,
+        "discount_percentage": 20
     }
 
 def test_v1_expand_phase_success(client):
@@ -69,8 +68,8 @@ def test_v1_expand_phase_success(client):
     assert response.status_code == 200
     assert response.json() == {
         "id": 102,
-        "name": "Fan",
-        "price": 4999.91
+        "name": "Keyboard",
+        "price": 99.99,
     }
 
     
