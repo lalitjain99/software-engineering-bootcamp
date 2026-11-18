@@ -124,8 +124,8 @@ The application grows step by step. Each topic starts from the previous design a
 
 16. 🟡 **[API versioning and compatibility](modules/01_Backend_Engineering/16_API_Versioning_And_Compatibility/Notes.md)**
     - Backward-compatible evolution, breaking changes, versioning strategies, deprecation, migration, and rolling schema compatibility
-    - Stage 1 versioned Product API implementation, observations, interview guide, and QA complete; later compatibility stages remain
-    - [Interview guide](modules/01_Backend_Engineering/16_API_Versioning_And_Compatibility/Interview.md), [hands-on lab](modules/01_Backend_Engineering/16_API_Versioning_And_Compatibility/Hands_On/README.md), and [observations](modules/01_Backend_Engineering/16_API_Versioning_And_Compatibility/Hands_On/Stage_1/observations.md)
+    - Stage 1 versioned Product API and Stage 2 compatibility tests complete; deprecation signaling, migration, and monitoring stages remain
+    - [Interview guide](modules/01_Backend_Engineering/16_API_Versioning_And_Compatibility/Interview.md), [hands-on lab](modules/01_Backend_Engineering/16_API_Versioning_And_Compatibility/Hands_On/README.md), [Stage 1 observations](modules/01_Backend_Engineering/16_API_Versioning_And_Compatibility/Hands_On/Stage_1/observations.md), and [Stage 2 observations](modules/01_Backend_Engineering/16_API_Versioning_And_Compatibility/Hands_On/Stage_2/observations.md)
 
 After the foundations above, focused topics will deepen:
 
@@ -210,4 +210,4 @@ Topic/
 - End of each phase: mixed mock interview and capstone architecture review
 - Current plan: [Revision and Continuous Practice](REVISION_AND_CONTINUOUS_PRACTICE.md)
 
-Last updated: 2026-11-12
+Last updated: 2026-11-18
