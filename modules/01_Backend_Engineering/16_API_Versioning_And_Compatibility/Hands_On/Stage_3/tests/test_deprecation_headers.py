@@ -43,7 +43,8 @@ def test_get_product_v1_with_deprecation_headers_success(client):
         '</api/v2/products/101>; rel="successor-version"'
     )
 
-def test_get_product_v1_with_deprecation_headers_failue(client):
+
+def test_get_product_v1_with_deprecation_headers_failure(client):
     response = client.get("/api/v1/products/999")
 
     assert response.status_code == 404
@@ -56,6 +57,7 @@ def test_get_product_v1_with_deprecation_headers_failue(client):
         '</api/v2/products/999>; rel="successor-version"'
     )
 
+
 def test_get_product_v2_success(client):
     response = client.get("/api/v2/products/101")
 
@@ -65,7 +67,7 @@ def test_get_product_v2_success(client):
         "name": "Fan",
         "price": 4999.91,
         "category": "Electronics",
-        "stock": 5
+        "stock": 5,
     }
     assert "deprecation" not in response.headers
     assert "sunset" not in response.headers
