@@ -4,7 +4,7 @@
 
 🟢 Revision Checkpoint 01 complete — Topics 01–08
 
-Topics 01–15 and Revision Checkpoint 01 are complete; Topic 16 Stage 1 is complete and in progress.
+Topics 01–15 and Revision Checkpoint 01 are complete; Topic 16 Stages 1–2 are complete and later stages remain in progress.
 
 ## Goals
 
@@ -115,9 +115,10 @@ Topics 01–15 and Revision Checkpoint 01 are complete; Topic 16 Stage 1 is comp
 | `Notes.md` | 🟢 Complete |
 | `Interview.md` | 🟢 Complete |
 | `Hands_On/Stage_1` | 🟢 Implementation and observations complete |
+| `Hands_On/Stage_2` | 🟢 Compatibility tests and observations complete |
 | Topic status | 🟡 In progress |
 
-Later Topic 16 stages will cover compatibility regression tests, deprecation signaling, and migration monitoring.
+Later Topic 16 stages will cover deprecation signaling, expand-and-contract migration, and version monitoring.
 
 ## Continuous Threads
 
@@ -150,10 +151,10 @@ See [Revision and Continuous Practice Plan](REVISION_AND_CONTINUOUS_PRACTICE.md)
 
 ## Current Next Actions
 
-1. Begin Topic 16 Stage 2 compatibility tests after the current notes, QA, and observations checkpoint.
+1. Begin Topic 16 Stage 3: deprecation signaling and version-aware migration behavior.
 2. Revisit recorded weak areas at their planned roadmap points.
 3. Continue evolving the Topic 08 Product API as the capstone baseline.
 4. Record one private, anonymized leadership-journal entry.
 5. Complete the weekly closed-book recall and light coding exercise.
 
-Last updated: 2026-11-12
+Last updated: 2026-11-18
