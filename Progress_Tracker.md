@@ -116,9 +116,10 @@ Topics 01–15 and Revision Checkpoint 01 are complete; Topic 16 Stages 1–2 ar
 | `Interview.md` | 🟢 Complete |
 | `Hands_On/Stage_1` | 🟢 Implementation and observations complete |
 | `Hands_On/Stage_2` | 🟢 Compatibility tests and observations complete |
+| `Hands_On/Stage_3` | 🟢 Deprecation headers, tests, and observations complete |
 | Topic status | 🟡 In progress |
 
-Later Topic 16 stages will cover deprecation signaling, expand-and-contract migration, and version monitoring.
+Later Topic 16 stages will cover expand-and-contract migration behavior and API-version monitoring.
 
 ## Continuous Threads
 
@@ -151,7 +152,7 @@ See [Revision and Continuous Practice Plan](REVISION_AND_CONTINUOUS_PRACTICE.md)
 
 ## Current Next Actions
 
-1. Begin Topic 16 Stage 3: deprecation signaling and version-aware migration behavior.
+1. Begin Topic 16 Stage 4: expand-and-contract migration behavior and version monitoring.
 2. Revisit recorded weak areas at their planned roadmap points.
 3. Continue evolving the Topic 08 Product API as the capstone baseline.
 4. Record one private, anonymized leadership-journal entry.
