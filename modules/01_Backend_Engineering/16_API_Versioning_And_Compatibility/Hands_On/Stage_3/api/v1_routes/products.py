@@ -9,13 +9,14 @@ router = APIRouter(tags=["products"],
 
 @router.get("/{product_id}", response_model=ProductResponse)
 def get_product(product_id: int,response: Response, service: ProductService = Depends(get_product_service)):
+    headers = {
+                "Deprecation": "true",
+                "Sunset": "Thu, 31 Dec 2026 23:59:59 GMT",
+                "Link": f'</api/v2/products/{product_id}>; rel="successor-version"'
+            }
+    response.headers.update(headers)
     try:
-        headers = {
-            "Deprecation": "true",
-            "Sunset": "Wed, 31 Dec 2026 23:59:59 GMT",
-            "Link": '</api/v2/products/101>; rel="successor-version"'
-        }
-        response.headers.update(headers)
+        
         product = service.get_product(product_id=product_id)
         return product
     except ProductNotFoundError as e:
