@@ -24,8 +24,8 @@ Test service data:
       "id": 101,
       "name": "Fan",
       "price": 4999.91
-      "category": "Clothing",
-      "stock": 4
+      "category": "Electronics",
+      "stock": 5
     }
 
 Expected response (HTTP 200):
@@ -50,8 +50,8 @@ Expected response (HTTP 200):
       "id": 101,
       "name": "Shirt",
       "price": 499.96,
-      "category": "Clothing",
-      "stock": 4
+      "category": "Electronics",
+      "stock": 5
     }
 
 The v2 response includes the additional fields. The tests also compare `id`, `name`, and `price` across both responses to verify that those shared fields retain the same values.
