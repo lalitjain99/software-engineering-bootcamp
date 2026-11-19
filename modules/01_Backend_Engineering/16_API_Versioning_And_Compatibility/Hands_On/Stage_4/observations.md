@@ -1,105 +1,118 @@
-# Topic 16 Hands-On Observations — Stage 3
+# Topic 16 Hands-On Observations — Stage 4
 
 ## Run information
 
-- Date: 18-Nov-2026
+- Date: 19-Nov-2026
 - Python version: 3.14.4
 - Command used: `$env:PYTHONPATH = (Get-Location).Path; uv run --group dev pytest tests -v`
-- Project path: `modules\01_Backend_Engineering\16_API_Versioning_And_Compatibility\Hands_On\Stage_3`
-- Test result: 8 passed, 1 third-party deprecation warning
+- Project path: `modules\01_Backend_Engineering\16_API_Versioning_And_Compatibility\Hands_On\Stage_4`
+- Test result: 9 passed, 1 failed
 
-The tests use FastAPI's `TestClient` and override `get_product_service` with a fake service. This provides predictable product data while exercising the real routers, response schemas, and HTTP headers.
+The Stage 4 suite uses FastAPI's `TestClient` and dependency overrides to test both routing behavior and the expand-and-contract response change. The v2 response schema now includes an optional `discount_percentage` field.
 
-## Deprecation header verification
+## Expand phase verification
 
-### Deprecated v1 — existing product
+The fake service for the expand-phase tests contains two products:
 
-Request:
+- Product 101 has no `discount_percentage` value.
+- Product 102 has `discount_percentage: 20`.
 
-    GET /api/v1/products/101
+Because the v2 schema defines `discount_percentage` as optional with a default of `None`, product 101 is serialized as:
 
-Expected response (HTTP 200):
+```json
+{
+  "id": 101,
+  "name": "Monitor",
+  "price": 999.99,
+  "category": "Electronics",
+  "stock": 3,
+  "discount_percentage": null
+}
+```
 
-    {
-      "id": 101,
-      "name": "Fan",
-      "price": 4999.91
-    }
+Product 102 is serialized with the actual value:
 
-Expected response headers:
+```json
+{
+  "id": 102,
+  "name": "Keyboard",
+  "price": 99.99,
+  "category": "Electronics",
+  "stock": 6,
+  "discount_percentage": 20
+}
+```
 
-    Deprecation: true
-    Sunset: Thu, 31 Dec 2026 23:59:59 GMT
-    Link: </api/v2/products/101>; rel="successor-version"
-
-The v1 success test verifies the status, legacy response body, and all three headers. The `Link` value identifies the v2 product endpoint corresponding to the requested product ID.
-
-### Deprecated v1 — missing product
-
-Request:
-
-    GET /api/v1/products/999
-
-Expected response (HTTP 404):
-
-    {
-      "detail": "Product with product id 999 not found"
-    }
-
-The response includes the same `Deprecation` and `Sunset` values, with the successor link pointing to `/api/v2/products/999`. This confirms that the deprecation metadata is returned for both successful and not-found v1 responses.
-
-### Current v2 — existing product
-
-Request:
-
-    GET /api/v2/products/101
-
-Expected response (HTTP 200):
-
-    {
-      "id": 101,
-      "name": "Fan",
-      "price": 4999.91,
-      "category": "Electronics",
-      "stock": 5
-    }
-
-The v2 test verifies that `Deprecation`, `Sunset`, and `Link` are absent from the response headers.
+The v1 response for product 102 remains unchanged and contains only `id`, `name`, and `price`. This confirms that the additive v2 field does not alter the legacy v1 contract.
 
 ## Compatibility test observations
 
-The compatibility test confirms that v1 and v2 still return equal values for `id`, `name`, and `price`. Version 1 omits `category` and `stock`; version 2 includes them. The added deprecation metadata does not change the v1 response body or the v2 contract.
+The compatibility test confirms that v1 and v2 still share the original fields:
+
+- `id`
+- `name`
+- `price`
+
+Version 1 continues to omit `category`, `stock`, and `discount_percentage`. Version 2 includes `category` and `stock`, and the expanded v2 schema may also include `discount_percentage`.
+
+## Deprecation header observations
+
+The v1 success and 404 tests pass and continue to verify:
+
+- `Deprecation: true`
+- `Sunset: Thu, 31 Dec 2026 23:59:59 GMT`
+- A successor `Link` header containing the requested product ID
+
+The v1 and v2 route behavior tests pass for existing and missing products. The v2 404 response remains a consistent error response without v1 deprecation headers.
+
+## Current test failure
+
+One test in `test_deprecation_headers.py` failed because it uses the earlier v2 contract and does not include `discount_percentage`.
+
+The expected response omits the new field, while the actual v2 response includes:
+
+```json
+"discount_percentage": null
+```
+
+This is expected expand-phase behavior from the optional v2 schema. The test expectation should be updated to match the expanded v2 contract while keeping the deprecation-header assertions unchanged.
 
 ## Questions
 
-### 1. Why send deprecation headers on v1 responses?
+### 1. What does “expand” mean in an expand-and-contract migration?
 
-Answer: They provide machine-readable migration information to clients while v1 remains available. The `Sunset` value communicates the planned end-of-service time, and the `Link` header points to the successor-version endpoint.
+Answer: Expand means adding the new optional field to the current API contract before removing or changing the old behavior. Existing clients tolerate additive JSON fields, while the provider is able to serve the new data.
 
-### 2. Why should the successor link include the requested product ID?
+### 2. Why is `discount_percentage` optional in the v2 schema?
 
-Answer: Each response should point to the matching v2 resource. Using the request's `product_id` makes the header useful for any product rather than hard-coding one ID.
+Answer: It allows v2 to support products that do not yet provide a discount. Pydantic returns `null` for a missing optional field, which avoids changing or rejecting existing v2 product records during expansion.
 
-### 3. Why test headers on both successful and missing-product responses?
+### 3. Why should v1 remain unchanged during the expand phase?
 
-Answer: Both are v1 responses, and clients may need migration information regardless of whether the requested product exists. The tests confirm the headers are preserved on the normal response and the `HTTPException` error response.
+Answer: V1 represents the legacy contract and may be consumed by clients that do not understand new fields. Its schema intentionally filters out `category`, `stock`, and `discount_percentage`, preserving the established v1 response shape.
 
-### 4. Why assert that deprecation headers are absent from v2?
+### 4. Why can the new field be added to v2 but not returned directly from every product source?
 
-Answer: V2 is the successor API in this exercise, so it should not be marked as deprecated by the v1 migration headers. Checking absence ensures the metadata is scoped to the intended version.
+Answer: The field is optional, so the API can expose a null value when source data does not contain it. Later, data migration or backend changes can populate the field for more products without breaking the v2 response model.
 
-### 5. What does the fake service mean these tests do not cover?
+### 5. What should the contract do in the final “contract” phase?
 
-Answer: They do not validate repository lookup or real stored product data. They focus on route behavior, serialized response contracts, and deprecation headers.
+Answer: After usage is monitored and v1 consumers have migrated, v1 can be sunset and removed. The final v2 contract can then continue without legacy compatibility constraints, and the optional field can become required only if all v2 product data guarantees it.
 
-## Stage 3 checklist
+### 6. What does the fake service mean these tests do not cover?
 
-- [x] v1 success response includes deprecation headers
-- [x] v1 404 response includes deprecation headers
-- [x] Successor link uses the requested product ID
-- [x] v2 response does not include v1 deprecation headers
-- [x] Existing v1/v2 response compatibility remains tested
-- [x] Stage 3 test suite passed (8 tests)
-- [x] Observation answers completed
+Answer: They do not verify repository persistence or real database migration behavior. They verify response schemas, route behavior, compatibility, deprecation metadata, and serialization of the optional field.
 
-> Note: The implementation currently sends `Deprecation: true` as configured for this exercise. For standards-based interoperability, check the current HTTP Deprecation header specification and use its date format when appropriate.
+## Stage 4 checklist
+
+- [x] Additive v2 field implemented in the response schema
+- [x] Missing optional value serialized as `null`
+- [x] Product with a discount returned the discount percentage
+- [x] Existing v1 contract remains unchanged
+- [x] Shared original fields remain compatible
+- [x] Expand-phase tests passed
+- [ ] Full Stage 4 suite passes
+- [ ] Legacy v2 test expectation updated for `discount_percentage`
+- [ ] Observation answers completed
+
+> The expand phase intentionally changes v2 while preserving v1. The remaining failure is a stale test expectation, not evidence that v1 compatibility or optional-field expansion is broken.
