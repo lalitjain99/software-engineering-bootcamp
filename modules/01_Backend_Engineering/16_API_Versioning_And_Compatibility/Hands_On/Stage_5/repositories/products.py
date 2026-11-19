@@ -6,7 +6,6 @@ class ProductRepository:
             "price": 999.99,
             "category": "Electronics",
             "stock": 3,
-            "discount_percentage": 0
         },
         2:{
             "id": 102,
@@ -30,3 +29,8 @@ class ProductRepository:
             if product["id"] == product_id:
                 return product
         return None
+
+    def backfill_missing_discounts(self):
+        for product in self.products.values():
+            if "discount_percentage" not in product:
+                product["discount_percentage"] = 0
