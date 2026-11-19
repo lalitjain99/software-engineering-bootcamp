@@ -68,6 +68,7 @@ def test_get_product_v2_success(client):
         "price": 4999.91,
         "category": "Electronics",
         "stock": 5,
+        "discount_percentage": None
     }
     assert "deprecation" not in response.headers
     assert "sunset" not in response.headers
