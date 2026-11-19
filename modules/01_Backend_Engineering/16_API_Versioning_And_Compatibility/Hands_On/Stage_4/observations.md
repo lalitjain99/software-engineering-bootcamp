@@ -6,7 +6,7 @@
 - Python version: 3.14.4
 - Command used: `$env:PYTHONPATH = (Get-Location).Path; uv run --group dev pytest tests -v`
 - Project path: `modules\01_Backend_Engineering\16_API_Versioning_And_Compatibility\Hands_On\Stage_4`
-- Test result: 9 passed, 1 failed
+- Test result: 10 passed
 
 The Stage 4 suite uses FastAPI's `TestClient` and dependency overrides to test both routing behavior and the expand-and-contract response change. The v2 response schema now includes an optional `discount_percentage` field.
 
@@ -65,18 +65,6 @@ The v1 success and 404 tests pass and continue to verify:
 
 The v1 and v2 route behavior tests pass for existing and missing products. The v2 404 response remains a consistent error response without v1 deprecation headers.
 
-## Current test failure
-
-One test in `test_deprecation_headers.py` failed because it uses the earlier v2 contract and does not include `discount_percentage`.
-
-The expected response omits the new field, while the actual v2 response includes:
-
-```json
-"discount_percentage": null
-```
-
-This is expected expand-phase behavior from the optional v2 schema. The test expectation should be updated to match the expanded v2 contract while keeping the deprecation-header assertions unchanged.
-
 ## Questions
 
 ### 1. What does “expand” mean in an expand-and-contract migration?
@@ -111,8 +99,8 @@ Answer: They do not verify repository persistence or real database migration beh
 - [x] Existing v1 contract remains unchanged
 - [x] Shared original fields remain compatible
 - [x] Expand-phase tests passed
-- [ ] Full Stage 4 suite passes
-- [ ] Legacy v2 test expectation updated for `discount_percentage`
-- [ ] Observation answers completed
+- [x] Full Stage 4 suite passes
+- [x] Legacy v2 test expectation updated for `discount_percentage`
+- [x] Observation answers completed
 
-> The expand phase intentionally changes v2 while preserving v1. The remaining failure is a stale test expectation, not evidence that v1 compatibility or optional-field expansion is broken.
+> The expand phase intentionally changes v2 while preserving v1. The API contract remains compatible for clients that tolerate additive response fields; clients with strict response parsing should be validated before rollout.
